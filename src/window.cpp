@@ -240,7 +240,7 @@ void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
 }
 
 
-void Window::destoryWindow() {
+void Window::destroyWindow() {
     glfwDestroyWindow(_window);
     glfwDestroyCursor(glfwCursorNormal);
     glfwDestroyCursor(glfwCursorCanPoint);

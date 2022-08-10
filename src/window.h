@@ -7,6 +7,7 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 #include <string>
+#include <vulkan/vulkan.h>
 
 namespace Window {
     enum CursorType {
@@ -19,7 +20,7 @@ namespace Window {
 
     inline static int WIDTH, HEIGHT;
     void createWindow(bool fullscreen, bool vsync);
-    void destoryWindow();
+    void destroyWindow();
     void setCursor(CursorType cursor);
     void setFullscreen(bool fullscreen);
     void switchFullscreen();

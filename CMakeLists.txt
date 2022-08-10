@@ -19,7 +19,17 @@ add_executable(${PROJECT_NAME}
         src/scene_handler.h
         src/scene_data.cpp
         src/scene_data.h
-        src/vk/gra_setup.cpp src/vk/gra_setup.h src/vk/gra_presentation.cpp src/vk/gra_presentation.h)
+        src/vk/setup/gra_setup.cpp
+        src/vk/setup/gra_setup.h
+        src/vk/gra_presentation.cpp
+        src/vk/gra_presentation.h
+        src/vk/setup/gra_logical_device.cpp
+        src/vk/setup/gra_physical_device.cpp
+        src/vk/setup/gra_queue_families.cpp
+        src/vk/setup/gra_instance.cpp
+        src/vk/setup/gra_debug.cpp
+
+        src/vk/setup/gra_queue_families.cpp.h src/vk/setup/gra_physical_device.h src/vk/setup/gra_logical_device.h src/vk/setup/gra_instance.h src/vk/setup/gra_debug.h)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIRS})
