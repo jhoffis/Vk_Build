@@ -19,10 +19,10 @@ add_executable(${PROJECT_NAME}
         src/scene_handler.h
         src/scene_data.cpp
         src/scene_data.h
-        src/vk/setup/gra_setup.cpp
-        src/vk/setup/gra_setup.h
-        src/vk/gra_presentation.cpp
-        src/vk/gra_presentation.h
+        src/vk/gra_setup.cpp
+        src/vk/gra_setup.h
+        src/vk/presentation/gra_presentation.cpp
+        src/vk/presentation/gra_presentation.h
         src/vk/setup/gra_logical_device.cpp
         src/vk/setup/gra_physical_device.cpp
         src/vk/setup/gra_queue_families.cpp

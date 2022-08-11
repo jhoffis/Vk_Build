@@ -3,6 +3,8 @@
 #include "src/window.h"
 #include <cstdint>
 #include <optional>
+#include <memory>
+
 
 struct QueueFamilyIndices {
     // C++17 introduced a data structure to distinguish between the case of a value existing or not:
@@ -14,5 +16,5 @@ struct QueueFamilyIndices {
 };
 
 namespace Gra {
-    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+    QueueFamilyIndices findQueueFamilies(std::shared_ptr<VkPhysicalDevice> &device);
 }

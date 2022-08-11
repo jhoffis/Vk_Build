@@ -3,13 +3,9 @@
 //
 #include <vector>
 #include <stdexcept>
-#include <memory>
 #include "gra_instance.h"
 #include "gra_logical_device.h"
 #include "gra_debug.h"
-
-VkInstance m_instance;
-
 
 std::vector<const char *> getRequiredExtensions(
         bool enableValidationLayers
@@ -29,9 +25,9 @@ std::vector<const char *> getRequiredExtensions(
 
 std::shared_ptr<VkInstance> Gra::createInstance(
         bool enableValidationLayers,
-        const std::vector<const char *>& validationLayers
+        std::vector<const char *>& validationLayers
 ) {
-    if (enableValidationLayers && !checkValidationLayerSupport()) {
+    if (enableValidationLayers && !checkValidationLayerSupport(validationLayers)) {
         throw std::runtime_error("validation Layers requested, but not available");
     }
 
@@ -64,10 +60,12 @@ std::shared_ptr<VkInstance> Gra::createInstance(
         createInfo.pNext = nullptr;
     }
 
-    if (vkCreateInstance(&createInfo, nullptr, &m_instance) != VK_SUCCESS) {
+    VkInstance instance;
+
+    if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create instance!");
     }
 
-    return std::make_shared<VkInstance>(m_instance);
+    return std::make_shared<VkInstance>(instance);
 }
 

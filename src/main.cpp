@@ -1,5 +1,5 @@
 #include <iostream>
-#include "src/vk/setup/gra_setup.h"
+#include "src/vk/gra_setup.h"
 
 int main() {
     std::cout << "Hello, World!" << std::endl;

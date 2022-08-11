@@ -9,10 +9,10 @@
 VkDevice device;
 VkQueue graphicsQueue;
 
-void Gra::createLogicalDevice(
+VkDevice Gra::createLogicalDevice(
         bool enableValidationLayers,
-        VkPhysicalDevice &physicalDevice,
-        std::vector<const char *>& validationLayers
+        std::vector<const char *>& validationLayers,
+        std::shared_ptr<VkPhysicalDevice> &physicalDevice
 ) {
     QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
@@ -40,11 +40,13 @@ void Gra::createLogicalDevice(
         createInfo.enabledLayerCount = 0;
     }
 
-    if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
+    if (vkCreateDevice(*physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
         throw std::runtime_error("failed to create logical device!");
     }
 
     vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+
+    return device;
 }
 
 

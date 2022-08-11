@@ -23,7 +23,8 @@ auto rateDeviceSuitability(VkPhysicalDevice device) -> uint32_t {
     // Maximum possible size of textures affects graphics quality
     score += deviceProperties.limits.maxImageDimension2D;
 
-    QueueFamilyIndices indices = Gra::findQueueFamilies(device);
+    auto device_ptr = std::make_shared<VkPhysicalDevice>(device);
+    QueueFamilyIndices indices = Gra::findQueueFamilies(device_ptr);
     // Application can't function without geometry shaders
     if (!deviceFeatures.geometryShader || !indices.isComplete())
         return 0;
@@ -31,16 +32,16 @@ auto rateDeviceSuitability(VkPhysicalDevice device) -> uint32_t {
 }
 
 
-auto Gra::pickPhysicalDevice(VkInstance& instance) -> std::shared_ptr<VkPhysicalDevice> {
+auto Gra::pickPhysicalDevice(std::shared_ptr<VkInstance>& instance) -> std::shared_ptr<VkPhysicalDevice> {
     uint32_t deviceCount = 0;
-    vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+    vkEnumeratePhysicalDevices(*instance, &deviceCount, nullptr);
 
     if (deviceCount == 0) {
         throw std::runtime_error("failed to find GPUs with Vulkan support!");
     }
 
     std::vector<VkPhysicalDevice> devices(deviceCount);
-    vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+    vkEnumeratePhysicalDevices(*instance, &deviceCount, devices.data());
 
     std::multimap<int, VkPhysicalDevice> candidates;
 

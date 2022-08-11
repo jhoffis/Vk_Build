@@ -53,14 +53,20 @@ void Gra::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &c
 }
 
 
-void setupDebugMessenger(bool enableValidationLayers, VkInstance& instance) {
+void Gra::setupDebugMessenger(bool enableValidationLayers, std::shared_ptr<VkInstance>& instance) {
     if (!enableValidationLayers)
         return;
 
     VkDebugUtilsMessengerCreateInfoEXT createInfo;
     Gra::populateDebugMessengerCreateInfo(createInfo);
 
-    if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &m_debugMessenger) != VK_SUCCESS) {
+    if (CreateDebugUtilsMessengerEXT(*instance, &createInfo, nullptr, &m_debugMessenger) != VK_SUCCESS) {
         throw std::runtime_error("failed to set up debug messenger!");
+    }
+}
+
+void Gra::cleanDebug(bool enableValidationLayers, std::shared_ptr<VkInstance>& instance) {
+    if (enableValidationLayers) {
+        DestroyDebugUtilsMessengerEXT(*instance, m_debugMessenger, nullptr);
     }
 }
