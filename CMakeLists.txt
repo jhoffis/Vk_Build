@@ -21,15 +21,15 @@ add_executable(${PROJECT_NAME}
         src/scene_data.h
         src/vk/gra_setup.cpp
         src/vk/gra_setup.h
-        src/vk/presentation/gra_presentation.cpp
-        src/vk/presentation/gra_presentation.h
+        src/vk/presentation/gra_surface.cpp
+        src/vk/presentation/gra_surface.h
         src/vk/setup/gra_logical_device.cpp
         src/vk/setup/gra_physical_device.cpp
         src/vk/setup/gra_queue_families.cpp
         src/vk/setup/gra_instance.cpp
         src/vk/setup/gra_debug.cpp
 
-        src/vk/setup/gra_queue_families.cpp.h src/vk/setup/gra_physical_device.h src/vk/setup/gra_logical_device.h src/vk/setup/gra_instance.h src/vk/setup/gra_debug.h)
+        src/vk/setup/gra_queue_families.cpp.h src/vk/setup/gra_physical_device.h src/vk/setup/gra_logical_device.h src/vk/setup/gra_instance.h src/vk/setup/gra_debug.h src/vk/presentation/gra_swap_chain.cpp src/vk/presentation/gra_swap_chain.h src/vk/presentation/gra_image_views.cpp src/vk/presentation/gra_image_views.h)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIRS})
@@ -54,7 +54,13 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Change this to false if you want to disable warnings_as_errors in developer mode
 set(OPT_WARNINGS_AS_ERRORS_DEVELOPER_DEFAULT TRUE)
-
+if (MSVC)
+    # warning level 4 and all warnings as errors
+    add_compile_options(/W4 /WX)
+else()
+    # lots of warnings and all warnings as errors
+    add_compile_options(-Wall -Wextra -pedantic -Werror)
+endif()
 
 # Experience shows that explicit package naming can help make it easier to sort
 # out potential ABI related issues before they start, while helping you

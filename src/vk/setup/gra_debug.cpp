@@ -65,8 +65,8 @@ void Gra::setupDebugMessenger(bool enableValidationLayers, std::shared_ptr<VkIns
     }
 }
 
-void Gra::cleanDebug(bool enableValidationLayers, std::shared_ptr<VkInstance>& instance) {
+void Gra::cleanDebug(bool enableValidationLayers, VkInstance instance) {
     if (enableValidationLayers) {
-        DestroyDebugUtilsMessengerEXT(*instance, m_debugMessenger, nullptr);
+        DestroyDebugUtilsMessengerEXT(instance, m_debugMessenger, nullptr);
     }
 }

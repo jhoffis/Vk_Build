@@ -84,8 +84,8 @@ build CMakeFiles/Vulkan.dir/src/vk/gra_setup.cpp.obj: CXX_COMPILER__Vulkan_Debug
   OBJECT_DIR = CMakeFiles\Vulkan.dir
   OBJECT_FILE_DIR = CMakeFiles\Vulkan.dir\src\vk
 
-build CMakeFiles/Vulkan.dir/src/vk/presentation/gra_presentation.cpp.obj: CXX_COMPILER__Vulkan_Debug C$:/Users/jh/CLionProjects/Vulkan/src/vk/presentation/gra_presentation.cpp || cmake_object_order_depends_target_Vulkan
-  DEP_FILE = CMakeFiles\Vulkan.dir\src\vk\presentation\gra_presentation.cpp.obj.d
+build CMakeFiles/Vulkan.dir/src/vk/presentation/gra_surface.cpp.obj: CXX_COMPILER__Vulkan_Debug C$:/Users/jh/CLionProjects/Vulkan/src/vk/presentation/gra_surface.cpp || cmake_object_order_depends_target_Vulkan
+  DEP_FILE = CMakeFiles\Vulkan.dir\src\vk\presentation\gra_surface.cpp.obj.d
   FLAGS = -g -std=c++23
   INCLUDES = -IC:/Users/jh/CLionProjects/Vulkan/cmake-build-debug -IC:/Users/jh/CLionProjects/Vulkan -IC:/Users/jh/CLionProjects/Vulkan/Libraries/glm -IC:/Users/jh/CLionProjects/Vulkan/Libraries/stb -IC:/Users/jh/CLionProjects/Vulkan/Libraries/glfw/include -IC:/Users/jh/CLionProjects/Vulkan/Libraries/glm/glm/.. -isystem C:/VulkanSDK/1.3.204.1/Include
   OBJECT_DIR = CMakeFiles\Vulkan.dir
@@ -126,6 +126,20 @@ build CMakeFiles/Vulkan.dir/src/vk/setup/gra_debug.cpp.obj: CXX_COMPILER__Vulkan
   OBJECT_DIR = CMakeFiles\Vulkan.dir
   OBJECT_FILE_DIR = CMakeFiles\Vulkan.dir\src\vk\setup
 
+build CMakeFiles/Vulkan.dir/src/vk/presentation/gra_swap_chain.cpp.obj: CXX_COMPILER__Vulkan_Debug C$:/Users/jh/CLionProjects/Vulkan/src/vk/presentation/gra_swap_chain.cpp || cmake_object_order_depends_target_Vulkan
+  DEP_FILE = CMakeFiles\Vulkan.dir\src\vk\presentation\gra_swap_chain.cpp.obj.d
+  FLAGS = -g -std=c++23
+  INCLUDES = -IC:/Users/jh/CLionProjects/Vulkan/cmake-build-debug -IC:/Users/jh/CLionProjects/Vulkan -IC:/Users/jh/CLionProjects/Vulkan/Libraries/glm -IC:/Users/jh/CLionProjects/Vulkan/Libraries/stb -IC:/Users/jh/CLionProjects/Vulkan/Libraries/glfw/include -IC:/Users/jh/CLionProjects/Vulkan/Libraries/glm/glm/.. -isystem C:/VulkanSDK/1.3.204.1/Include
+  OBJECT_DIR = CMakeFiles\Vulkan.dir
+  OBJECT_FILE_DIR = CMakeFiles\Vulkan.dir\src\vk\presentation
+
+build CMakeFiles/Vulkan.dir/src/vk/presentation/gra_image_views.cpp.obj: CXX_COMPILER__Vulkan_Debug C$:/Users/jh/CLionProjects/Vulkan/src/vk/presentation/gra_image_views.cpp || cmake_object_order_depends_target_Vulkan
+  DEP_FILE = CMakeFiles\Vulkan.dir\src\vk\presentation\gra_image_views.cpp.obj.d
+  FLAGS = -g -std=c++23
+  INCLUDES = -IC:/Users/jh/CLionProjects/Vulkan/cmake-build-debug -IC:/Users/jh/CLionProjects/Vulkan -IC:/Users/jh/CLionProjects/Vulkan/Libraries/glm -IC:/Users/jh/CLionProjects/Vulkan/Libraries/stb -IC:/Users/jh/CLionProjects/Vulkan/Libraries/glfw/include -IC:/Users/jh/CLionProjects/Vulkan/Libraries/glm/glm/.. -isystem C:/VulkanSDK/1.3.204.1/Include
+  OBJECT_DIR = CMakeFiles\Vulkan.dir
+  OBJECT_FILE_DIR = CMakeFiles\Vulkan.dir\src\vk\presentation
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Vulkan
@@ -134,7 +148,7 @@ build CMakeFiles/Vulkan.dir/src/vk/setup/gra_debug.cpp.obj: CXX_COMPILER__Vulkan
 #############################################
 # Link the executable Vulkan.exe
 
-build Vulkan.exe: CXX_EXECUTABLE_LINKER__Vulkan_Debug CMakeFiles/Vulkan.dir/src/main.cpp.obj CMakeFiles/Vulkan.dir/src/window.cpp.obj CMakeFiles/Vulkan.dir/src/scene_handler.cpp.obj CMakeFiles/Vulkan.dir/src/scene_data.cpp.obj CMakeFiles/Vulkan.dir/src/vk/gra_setup.cpp.obj CMakeFiles/Vulkan.dir/src/vk/presentation/gra_presentation.cpp.obj CMakeFiles/Vulkan.dir/src/vk/setup/gra_logical_device.cpp.obj CMakeFiles/Vulkan.dir/src/vk/setup/gra_physical_device.cpp.obj CMakeFiles/Vulkan.dir/src/vk/setup/gra_queue_families.cpp.obj CMakeFiles/Vulkan.dir/src/vk/setup/gra_instance.cpp.obj CMakeFiles/Vulkan.dir/src/vk/setup/gra_debug.cpp.obj | C$:/VulkanSDK/1.3.204.1/Lib/vulkan-1.lib Libraries/glfw/src/libglfw3.a || Libraries/glfw/src/libglfw3.a
+build Vulkan.exe: CXX_EXECUTABLE_LINKER__Vulkan_Debug CMakeFiles/Vulkan.dir/src/main.cpp.obj CMakeFiles/Vulkan.dir/src/window.cpp.obj CMakeFiles/Vulkan.dir/src/scene_handler.cpp.obj CMakeFiles/Vulkan.dir/src/scene_data.cpp.obj CMakeFiles/Vulkan.dir/src/vk/gra_setup.cpp.obj CMakeFiles/Vulkan.dir/src/vk/presentation/gra_surface.cpp.obj CMakeFiles/Vulkan.dir/src/vk/setup/gra_logical_device.cpp.obj CMakeFiles/Vulkan.dir/src/vk/setup/gra_physical_device.cpp.obj CMakeFiles/Vulkan.dir/src/vk/setup/gra_queue_families.cpp.obj CMakeFiles/Vulkan.dir/src/vk/setup/gra_instance.cpp.obj CMakeFiles/Vulkan.dir/src/vk/setup/gra_debug.cpp.obj CMakeFiles/Vulkan.dir/src/vk/presentation/gra_swap_chain.cpp.obj CMakeFiles/Vulkan.dir/src/vk/presentation/gra_image_views.cpp.obj | C$:/VulkanSDK/1.3.204.1/Lib/vulkan-1.lib Libraries/glfw/src/libglfw3.a || Libraries/glfw/src/libglfw3.a
   FLAGS = -g
   LINK_LIBRARIES = C:/VulkanSDK/1.3.204.1/Lib/vulkan-1.lib  Libraries/glfw/src/libglfw3.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Vulkan.dir

@@ -10,7 +10,8 @@ const bool enableValidationLayers = true;
 #include "src/vk/setup/gra_debug.h"
 #include "src/vk/setup/gra_physical_device.h"
 #include "src/vk/setup/gra_logical_device.h"
-#include "src/vk/presentation/gra_presentation.h"
+#include "src/vk/presentation/gra_surface.h"
+#include "src/vk/presentation/gra_swap_chain.h"
 #include <vector>
 
 std::vector<const char *> m_validationLayers = {
@@ -21,34 +22,43 @@ std::vector<const char *> m_validationLayers = {
 /*
  * Base
  */
-std::shared_ptr<VkInstance> m_instance;
-VkDevice m_device;
-VkSurfaceKHR m_surface;
+namespace Gra {
+    VkDevice m_device;
+    VkInstance m_instance;
+    std::shared_ptr<VkSurfaceKHR> m_surface;
+    VkPhysicalDevice m_physicalDevice;
 
-void Gra::initVulkan() {
-    m_instance = Gra::createInstance(
-            enableValidationLayers,
-            m_validationLayers
-    );
-    Gra::setupDebugMessenger(enableValidationLayers, m_instance);
+    void initVulkan() {
+        auto instance = Gra::createInstance(
+                enableValidationLayers,
+                m_validationLayers
+        );
+        m_instance = *instance;
+        setupDebugMessenger(enableValidationLayers, instance);
 
-    m_surface = Gra::createSurface(m_instance);
+        auto surface = createSurface(instance);
+        m_surface = surface;
 
-    auto physicalDevice = Gra::pickPhysicalDevice(m_instance);
-    m_device = Gra::createLogicalDevice(
-            enableValidationLayers,
-            m_validationLayers,
-            physicalDevice
-    );
+        auto physicalDevice = pickPhysicalDevice(instance, surface);
+        m_physicalDevice = *physicalDevice;
+
+        m_device = Gra::createLogicalDevice(
+                enableValidationLayers,
+                m_validationLayers,
+                physicalDevice
+        );
+
+        Gra::createSwapChain();
+    }
+
+
+    void cleanup() {
+        vkDestroyDevice(m_device, nullptr);
+        cleanDebug(enableValidationLayers, m_instance);
+
+        vkDestroySurfaceKHR(m_instance, *m_surface, nullptr);
+        vkDestroyInstance(m_instance, nullptr);
+
+    }
+
 }
-
-
-void Gra::cleanup() {
-    vkDestroyDevice(m_device, nullptr);
-    Gra::cleanDebug(enableValidationLayers, m_instance);
-
-    vkDestroySurfaceKHR(*m_instance, m_surface, nullptr);
-    vkDestroyInstance(*m_instance, nullptr);
-    vkDestroyInstance(*m_instance, nullptr);
-}
-

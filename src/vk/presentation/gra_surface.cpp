@@ -1,6 +1,6 @@
 #include <stdexcept>
-#include "gra_presentation.h"
-#include <cassert>
+#include <vector>
+#include "gra_surface.h"
 
 
 std::shared_ptr<VkSurfaceKHR> Gra::createSurface(std::shared_ptr<VkInstance>& instance) {

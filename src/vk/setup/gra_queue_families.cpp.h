@@ -9,12 +9,13 @@
 struct QueueFamilyIndices {
     // C++17 introduced a data structure to distinguish between the case of a value existing or not:
     std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> presentFamily;
 
-    [[nodiscard]] constexpr bool isComplete() const {
-        return graphicsFamily.has_value();
+    bool isComplete() {
+        return graphicsFamily.has_value() && presentFamily.has_value();
     }
 };
 
 namespace Gra {
-    QueueFamilyIndices findQueueFamilies(std::shared_ptr<VkPhysicalDevice> &device);
+    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 }

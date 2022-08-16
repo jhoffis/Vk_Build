@@ -7,16 +7,16 @@
 
 
 GLFWcursor* glfwCursorNormal, * glfwCursorCanPoint, * glfwCursorIsPoint, * glfwCursorCanHold, * glfwCursorIsHold;
-bool _focused;
-int _fullscreen = -1;
-GLFWwindow* _window;
-GLFWmonitor* _monitor;
-bool _previousMouseStateVisible;
-Window::CursorType _cursorTypeSelected;
+bool m_focused;
+int m_fullscreen = -1;
+GLFWwindow* m_window;
+GLFWmonitor* m_monitor;
+bool m_previousMouseStateVisible;
+Window::CursorType m_cursorTypeSelected;
 
 
 GLFWwindow* Window::getWindow() {
-    return _window;
+    return m_window;
 }
 
 void glfwErrors(int error_code, const char *description) {
@@ -79,17 +79,17 @@ GLFWmonitor* getCurrentMonitor(GLFWwindow *window, GLFWmonitor *monitor) {
 
 
 void Window::mouseStateHide(bool lock) {
-    _previousMouseStateVisible = glfwGetInputMode(_window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
-    glfwSetInputMode(_window, GLFW_CURSOR,
+    m_previousMouseStateVisible = glfwGetInputMode(m_window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
+    glfwSetInputMode(m_window, GLFW_CURSOR,
                      lock ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
 void Window::mouseStateToPrevious() {
-    mouseStateHide(_previousMouseStateVisible);
+    mouseStateHide(m_previousMouseStateVisible);
 }
 
 void Window::setCursor(CursorType cursor) {
-    _cursorTypeSelected = cursor;
+    m_cursorTypeSelected = cursor;
     GLFWcursor *glfwCursor;
     switch (cursor) {
         case CursorType::cursorCanHold :
@@ -108,7 +108,7 @@ void Window::setCursor(CursorType cursor) {
             glfwCursor = glfwCursorNormal;
             break;
     }
-    glfwSetCursor(_window, glfwCursor);
+    glfwSetCursor(m_window, glfwCursor);
 }
 
 GLFWimage createGLFWImage(const char *path) {
@@ -138,14 +138,14 @@ GLFWcursor* createCursor(const char* path, float xPercent) {
 
 void Window::setFullscreen(bool fullscreenTemp) {
 
-    GLFWmonitor *monitorTemp = getCurrentMonitor(_window, _monitor);
+    GLFWmonitor *monitorTemp = getCurrentMonitor(m_window, m_monitor);
     const GLFWvidmode *vidmode = glfwGetVideoMode(monitorTemp);
 
-    if (_monitor == monitorTemp && _fullscreen == (fullscreenTemp ? 1 : 0))
+    if (m_monitor == monitorTemp && m_fullscreen == (fullscreenTemp ? 1 : 0))
         return;
 
-    _monitor = monitorTemp;
-    _fullscreen = fullscreenTemp ? 1 : 0;
+    m_monitor = monitorTemp;
+    m_fullscreen = fullscreenTemp ? 1 : 0;
 
     if (fullscreenTemp) {
         // switch to fullscreen
@@ -160,14 +160,14 @@ void Window::setFullscreen(bool fullscreenTemp) {
     }
 
     int wx, wy;
-    glfwGetWindowPos(_window, &wx, &wy);
+    glfwGetWindowPos(m_window, &wx, &wy);
 
-    glfwSetWindowMonitor(_window, monitorTemp, wx, wy,
+    glfwSetWindowMonitor(m_window, monitorTemp, wx, wy,
                          WIDTH, HEIGHT, monitorTemp == nullptr ? GLFW_DONT_CARE : vidmode->refreshRate);
 
     // if windowed
     if (monitorTemp == nullptr && wx == 0 && wy == 0) {
-        glfwSetWindowPos(_window, (vidmode->width - WIDTH) / 2,
+        glfwSetWindowPos(m_window, (vidmode->width - WIDTH) / 2,
                          (vidmode->height - HEIGHT) / 2);
     }
 
@@ -175,7 +175,7 @@ void Window::setFullscreen(bool fullscreenTemp) {
 }
 
 void Window::switchFullscreen() {
-    setFullscreen(_fullscreen == 0);
+    setFullscreen(m_fullscreen == 0);
 }
 
 void Window::createWindow(bool fullscreen, bool vsync) {
@@ -187,8 +187,8 @@ void Window::createWindow(bool fullscreen, bool vsync) {
         throw std::runtime_error("Unable to initialize glfw");
     }
 
-    _monitor = glfwGetPrimaryMonitor();
-    auto mode = glfwGetVideoMode(_monitor);
+    m_monitor = glfwGetPrimaryMonitor();
+    auto mode = glfwGetVideoMode(m_monitor);
     updateWithinWindow(mode->width);
 
     glfwSetErrorCallback(glfwErrors);
@@ -200,24 +200,24 @@ void Window::createWindow(bool fullscreen, bool vsync) {
     
     // vk
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    
 
-    _monitor = glfwGetPrimaryMonitor();
 
-    _window = glfwCreateWindow(WIDTH, HEIGHT, "vk", nullptr, nullptr);
-    if (_window == nullptr) {
+    m_monitor = glfwGetPrimaryMonitor();
+
+    m_window = glfwCreateWindow(WIDTH, HEIGHT, "vk", nullptr, nullptr);
+    if (m_window == nullptr) {
         glfwTerminate();
         throw std::runtime_error("Failed to create the glfw window");
     }
 
-    glfwSetWindowFocusCallback(_window, [](auto window, auto f)
+    glfwSetWindowFocusCallback(m_window, [](auto window, auto f)
         {
-            _focused = f;
+            m_focused = f;
         });
 
     // ICON
     const GLFWimage icon = createGLFWImage("pics/icon.png");
-    glfwSetWindowIcon(_window, 1, &icon);
+    glfwSetWindowIcon(m_window, 1, &icon);
 
     // Cursor
     glfwCursorNormal = createCursor("pics/cursor.png", 0);
@@ -234,14 +234,14 @@ void Window::createWindow(bool fullscreen, bool vsync) {
 }
 
 void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
-    if (glfwCreateWindowSurface(instance, _window, nullptr, surface) != VK_SUCCESS) {
+    if (glfwCreateWindowSurface(instance, m_window, nullptr, surface) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create window surface");
     }
 }
 
 
 void Window::destroyWindow() {
-    glfwDestroyWindow(_window);
+    glfwDestroyWindow(m_window);
     glfwDestroyCursor(glfwCursorNormal);
     glfwDestroyCursor(glfwCursorCanPoint);
     glfwDestroyCursor(glfwCursorIsPoint);

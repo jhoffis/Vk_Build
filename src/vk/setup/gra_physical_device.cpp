@@ -3,13 +3,19 @@
 //
 #include "gra_physical_device.h"
 #include "gra_queue_families.cpp.h"
+#include "src/vk/presentation/gra_swap_chain.h"
 #include <stdexcept>
 #include <vector>
 #include <map>
 #include <iostream>
+#include <set>
 
 
-auto rateDeviceSuitability(VkPhysicalDevice device) -> uint32_t {
+
+auto rateDeviceSuitability(
+        VkPhysicalDevice device,
+        std::shared_ptr<VkSurfaceKHR> &surface
+) -> uint32_t {
     VkPhysicalDeviceProperties deviceProperties;
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     VkPhysicalDeviceFeatures deviceFeatures;
@@ -23,16 +29,18 @@ auto rateDeviceSuitability(VkPhysicalDevice device) -> uint32_t {
     // Maximum possible size of textures affects graphics quality
     score += deviceProperties.limits.maxImageDimension2D;
 
-    auto device_ptr = std::make_shared<VkPhysicalDevice>(device);
-    QueueFamilyIndices indices = Gra::findQueueFamilies(device_ptr);
+    QueueFamilyIndices indices = Gra::findQueueFamilies(device);
     // Application can't function without geometry shaders
-    if (!deviceFeatures.geometryShader || !indices.isComplete())
+    if (!deviceFeatures.geometryShader || !indices.isComplete() || !Gra::isDeviceSuitable(device))
         return 0;
     return score;
 }
 
 
-auto Gra::pickPhysicalDevice(std::shared_ptr<VkInstance>& instance) -> std::shared_ptr<VkPhysicalDevice> {
+auto Gra::pickPhysicalDevice(
+        std::shared_ptr<VkInstance> &instance,
+        std::shared_ptr<VkSurfaceKHR> &surface
+) -> std::shared_ptr<VkPhysicalDevice> {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(*instance, &deviceCount, nullptr);
 
@@ -45,8 +53,8 @@ auto Gra::pickPhysicalDevice(std::shared_ptr<VkInstance>& instance) -> std::shar
 
     std::multimap<int, VkPhysicalDevice> candidates;
 
-    for (const auto& device : devices) {
-        auto score = rateDeviceSuitability(device);
+    for (const auto &device: devices) {
+        auto score = rateDeviceSuitability(device, surface);
         candidates.insert(std::make_pair(score, device));
     }
 

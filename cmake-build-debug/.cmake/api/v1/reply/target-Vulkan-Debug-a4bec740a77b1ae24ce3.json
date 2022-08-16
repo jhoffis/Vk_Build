@@ -140,7 +140,9 @@
 				12,
 				13,
 				14,
-				15
+				15,
+				21,
+				23
 			]
 		}
 	],
@@ -204,7 +206,9 @@
 				12,
 				13,
 				14,
-				15
+				15,
+				21,
+				23
 			]
 		},
 		{
@@ -220,7 +224,9 @@
 				17,
 				18,
 				19,
-				20
+				20,
+				22,
+				24
 			]
 		}
 	],
@@ -279,12 +285,12 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/vk/presentation/gra_presentation.cpp",
+			"path" : "src/vk/presentation/gra_surface.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "src/vk/presentation/gra_presentation.h",
+			"path" : "src/vk/presentation/gra_surface.h",
 			"sourceGroupIndex" : 1
 		},
 		{
@@ -340,6 +346,28 @@
 		{
 			"backtrace" : 1,
 			"path" : "src/vk/setup/gra_debug.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/vk/presentation/gra_swap_chain.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/vk/presentation/gra_swap_chain.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/vk/presentation/gra_image_views.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/vk/presentation/gra_image_views.h",
 			"sourceGroupIndex" : 1
 		}
 	],
