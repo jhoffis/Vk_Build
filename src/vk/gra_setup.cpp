@@ -26,7 +26,7 @@ namespace Gra {
     VkDevice m_device;
     VkInstance m_instance;
     std::shared_ptr<VkSurfaceKHR> m_surface;
-    VkPhysicalDevice m_physicalDevice;
+    std::shared_ptr<VkPhysicalDevice> m_physicalDevice;
 
     void initVulkan() {
         auto instance = Gra::createInstance(
@@ -40,7 +40,7 @@ namespace Gra {
         m_surface = surface;
 
         auto physicalDevice = pickPhysicalDevice(instance, surface);
-        m_physicalDevice = *physicalDevice;
+        m_physicalDevice = physicalDevice;
 
         m_device = Gra::createLogicalDevice(
                 enableValidationLayers,
@@ -53,6 +53,7 @@ namespace Gra {
 
 
     void cleanup() {
+        vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
         vkDestroyDevice(m_device, nullptr);
         cleanDebug(enableValidationLayers, m_instance);
 
