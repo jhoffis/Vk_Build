@@ -12,6 +12,7 @@ const bool enableValidationLayers = true;
 #include "src/vk/setup/gra_logical_device.h"
 #include "src/vk/presentation/gra_surface.h"
 #include "src/vk/presentation/gra_swap_chain.h"
+#include "src/vk/presentation/gra_image_views.h"
 #include <vector>
 
 std::vector<const char *> m_validationLayers = {
@@ -49,10 +50,15 @@ namespace Gra {
         );
 
         Gra::createSwapChain();
+        Gra::createImageViews();
     }
 
 
     void cleanup() {
+        for (auto imageView : m_swapChainImageViews) {
+            vkDestroyImageView(m_device, imageView, nullptr);
+        }
+
         vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
         vkDestroyDevice(m_device, nullptr);
         cleanDebug(enableValidationLayers, m_instance);

@@ -156,3 +156,6 @@
 9	1953	6829036596542697	CMakeFiles/Vulkan.dir/src/vk/setup/gra_physical_device.cpp.obj	35af172e0d06d90c
 15	2131	6829036598313090	CMakeFiles/Vulkan.dir/src/vk/presentation/gra_swap_chain.cpp.obj	46ed5e4d625c5b6b
 2131	2447	6829036601446397	Vulkan.exe	dcb213701cb67459
+5	1758	6829732380992418	CMakeFiles/Vulkan.dir/src/vk/gra_setup.cpp.obj	f8d194b26ea86b2e
+9	1759	6829732381012421	CMakeFiles/Vulkan.dir/src/vk/presentation/gra_image_views.cpp.obj	482d97438a89d3fb
+1759	2284	6829732386207481	Vulkan.exe	dcb213701cb67459
