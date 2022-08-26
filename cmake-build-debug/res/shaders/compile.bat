@@ -1,2 +1,3 @@
-for /r %%i in (*.frag, *.vert) do C:/VulkanSDK/1.2.141.2/Bin/glslc %%i -o %%~ni.spv
+for /r %%i in (*.frag) do "%VULKAN_SDK%/Bin/glslc" %%i -o %%~ni_frag.spv
+for /r %%i in (*.vert) do "%VULKAN_SDK%/Bin/glslc" %%i -o %%~ni_vert.spv
 pause

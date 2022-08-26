@@ -13,6 +13,7 @@ const bool enableValidationLayers = true;
 #include "src/vk/presentation/gra_surface.h"
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/presentation/gra_image_views.h"
+#include "src/vk/pipeline/gra_pipeline.h"
 #include <vector>
 
 std::vector<const char *> m_validationLayers = {
@@ -51,6 +52,7 @@ namespace Gra {
 
         Gra::createSwapChain();
         Gra::createImageViews();
+        Gra::createGraphicsPipeline();
     }
 
 
