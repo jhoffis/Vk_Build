@@ -4,4 +4,4 @@
 
 namespace Gra {
     std::shared_ptr<VkSurfaceKHR> createSurface(std::shared_ptr<VkInstance>& instance);
-};
+}

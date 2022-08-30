@@ -1,6 +1,3 @@
-//
-// Created by jh on 8/23/2022.
-//
 
 #include "gra_shader.h"
 #include "src/vk/gra_setup.h"
@@ -20,4 +17,4 @@ namespace Gra {
 
         return shaderModule;
     }
-} // Gra
+}

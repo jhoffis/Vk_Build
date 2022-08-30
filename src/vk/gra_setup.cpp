@@ -57,6 +57,8 @@ namespace Gra {
 
 
     void cleanup() {
+        vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
+
         for (auto imageView : m_swapChainImageViews) {
             vkDestroyImageView(m_device, imageView, nullptr);
         }
