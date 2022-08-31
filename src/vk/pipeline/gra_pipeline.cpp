@@ -7,10 +7,12 @@
 #include "gra_shader.h"
 #include "src/vk/gra_setup.h"
 #include "src/vk/presentation/gra_swap_chain.h"
+#include "gra_render_passes.h"
 
 namespace Gra {
 
     VkPipelineLayout m_pipelineLayout;
+    VkPipeline m_graphicsPipeline;
 
     void createGraphicsPipeline() {
         auto vertShaderCode = readFile("res/shaders/triangle_vert.spv");
@@ -154,6 +156,35 @@ namespace Gra {
 
         if (vkCreatePipelineLayout(m_device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error("failed to create pipeline layout!");
+        }
+
+        VkGraphicsPipelineCreateInfo pipelineInfo{};
+        pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+        pipelineInfo.stageCount = 2;
+        pipelineInfo.pStages = shaderStages;
+        pipelineInfo.pVertexInputState = &vertexInputInfo;
+        pipelineInfo.pInputAssemblyState = &inputAssembly;
+        pipelineInfo.pViewportState = &viewportState;
+        pipelineInfo.pRasterizationState = &rasterizer;
+        pipelineInfo.pMultisampleState = &multisampling;
+        pipelineInfo.pDepthStencilState = nullptr; // Optional
+        pipelineInfo.pColorBlendState = &colorBlending;
+        pipelineInfo.pDynamicState = &dynamicState;
+        pipelineInfo.layout = m_pipelineLayout;
+        /*
+         * It is also possible to use other render passes with this pipeline instead of this specific instance, but they have to be compatible with renderPass
+         * https://registry.khronos.org/vulkan/specs/1.3-extensions/html/chap8.html#renderpass-compatibility
+         */
+        pipelineInfo.renderPass = m_renderPass;
+        pipelineInfo.subpass = 0; // index
+        /*
+         * Could create a new graphics pipeline by deriving from an existing pipeline:
+         */
+        pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
+        pipelineInfo.basePipelineIndex = -1; // Optional
+
+        if (vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create graphics pipeline!");
         }
 
         vkDestroyShaderModule(m_device, fragShaderModule, nullptr);

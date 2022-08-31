@@ -14,6 +14,8 @@ const bool enableValidationLayers = true;
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/presentation/gra_image_views.h"
 #include "src/vk/pipeline/gra_pipeline.h"
+#include "src/vk/pipeline/gra_render_passes.h"
+#include "src/vk/drawing/gra_framebuffers.h"
 #include <vector>
 
 std::vector<const char *> m_validationLayers = {
@@ -31,7 +33,7 @@ namespace Gra {
     std::shared_ptr<VkPhysicalDevice> m_physicalDevice;
 
     void initVulkan() {
-        auto instance = Gra::createInstance(
+        auto instance = createInstance(
                 enableValidationLayers,
                 m_validationLayers
         );
@@ -44,20 +46,28 @@ namespace Gra {
         auto physicalDevice = pickPhysicalDevice(instance, surface);
         m_physicalDevice = physicalDevice;
 
-        m_device = Gra::createLogicalDevice(
+        m_device = createLogicalDevice(
                 enableValidationLayers,
                 m_validationLayers,
                 physicalDevice
         );
 
-        Gra::createSwapChain();
-        Gra::createImageViews();
-        Gra::createGraphicsPipeline();
+        createSwapChain();
+        createImageViews();
+        createRenderPass();
+        createGraphicsPipeline();
+        createFramebuffers();
     }
 
 
     void cleanup() {
+        for (auto framebuffer : m_swapChainFramebuffers) {
+            vkDestroyFramebuffer(m_device, framebuffer, nullptr);
+        }
+
+        vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
+        vkDestroyRenderPass(m_device, m_renderPass, nullptr);
 
         for (auto imageView : m_swapChainImageViews) {
             vkDestroyImageView(m_device, imageView, nullptr);

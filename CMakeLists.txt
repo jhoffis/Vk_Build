@@ -29,7 +29,7 @@ add_executable(${PROJECT_NAME}
         src/vk/setup/gra_instance.cpp
         src/vk/setup/gra_debug.cpp
 
-        src/vk/setup/gra_queue_families.cpp.h src/vk/setup/gra_physical_device.h src/vk/setup/gra_logical_device.h src/vk/setup/gra_instance.h src/vk/setup/gra_debug.h src/vk/presentation/gra_swap_chain.cpp src/vk/presentation/gra_swap_chain.h src/vk/presentation/gra_image_views.cpp src/vk/presentation/gra_image_views.h src/vk/pipeline/gra_pipeline.cpp src/vk/pipeline/gra_pipeline.h src/vk/pipeline/gra_shader.cpp src/vk/pipeline/gra_shader.h src/vk/pipeline/gra_fixed_functions.cpp src/vk/pipeline/gra_fixed_functions.h src/vk/pipeline/gra_render_passes.cpp src/vk/pipeline/gra_render_passes.h src/file_util.h)
+        src/vk/setup/gra_queue_families.cpp.h src/vk/setup/gra_physical_device.h src/vk/setup/gra_logical_device.h src/vk/setup/gra_instance.h src/vk/setup/gra_debug.h src/vk/presentation/gra_swap_chain.cpp src/vk/presentation/gra_swap_chain.h src/vk/presentation/gra_image_views.cpp src/vk/presentation/gra_image_views.h src/vk/pipeline/gra_pipeline.cpp src/vk/pipeline/gra_pipeline.h src/vk/pipeline/gra_shader.cpp src/vk/pipeline/gra_shader.h src/vk/pipeline/gra_render_passes.cpp src/vk/pipeline/gra_render_passes.h src/file_util.h src/vk/drawing/gra_framebuffers.cpp src/vk/drawing/gra_framebuffers.h src/vk/drawing/gra_command_buffers.cpp src/vk/drawing/gra_command_buffers.h src/vk/drawing/gra_drawing.cpp src/vk/drawing/gra_drawing.h src/vk/drawing/gra_flight.cpp src/vk/drawing/gra_flight.h)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIRS})
