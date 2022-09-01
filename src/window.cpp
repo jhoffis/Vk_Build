@@ -9,15 +9,10 @@
 GLFWcursor* glfwCursorNormal, * glfwCursorCanPoint, * glfwCursorIsPoint, * glfwCursorCanHold, * glfwCursorIsHold;
 bool m_focused;
 int m_fullscreen = -1;
-GLFWwindow* m_window;
+GLFWwindow* Window::m_window;
 GLFWmonitor* m_monitor;
 bool m_previousMouseStateVisible;
 Window::CursorType m_cursorTypeSelected;
-
-
-GLFWwindow* Window::getWindow() {
-    return m_window;
-}
 
 void glfwErrors(int error_code, const char *description) {
     throw std::runtime_error(std::string("GLFW ERROR: ").append(reinterpret_cast<const char *>(error_code)).append("\n").append(description));

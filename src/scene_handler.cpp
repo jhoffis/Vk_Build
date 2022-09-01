@@ -13,15 +13,15 @@ void SceneHandler::createSceneHandler() {
 
     scenes.emplace_back(0); // feiler om scenes er const / constexpr av en eller annen grunn
 
-    glfwSetKeyCallback(Window::getWindow(), [](auto window, auto key, auto scancode, auto action, auto mods) {
+    glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
         keyInput(&scenes[currentScene], key, action);
     });
 
-    glfwSetMouseButtonCallback(Window::getWindow(), [](auto window, auto button, auto action, auto mods) {
+    glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button, auto action, auto mods) {
         mouseButtonInput(&scenes[currentScene], button, action, x, y);
     });
 
-    glfwSetCursorPosCallback(Window::getWindow(), [](auto window, auto xpos, auto ypos) {
+    glfwSetCursorPosCallback(Window::m_window, [](auto window, auto xpos, auto ypos) {
         x = xpos;
         y = ypos;
         mousePosInput(&scenes[currentScene], x, y);

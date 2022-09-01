@@ -5,7 +5,7 @@
 
 std::shared_ptr<VkSurfaceKHR> Gra::createSurface(std::shared_ptr<VkInstance>& instance) {
     VkSurfaceKHR surface;
-    if (glfwCreateWindowSurface(*instance, Window::getWindow(), nullptr, &surface) != VK_SUCCESS) {
+    if (glfwCreateWindowSurface(*instance, Window::m_window, nullptr, &surface) != VK_SUCCESS) {
         throw std::runtime_error("failed to create window surface!");
     }
     return std::make_shared<VkSurfaceKHR>(surface);

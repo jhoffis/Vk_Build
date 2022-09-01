@@ -10,7 +10,7 @@ int main() {
     static bool running = true;
     while(running)
     {
-        if (glfwWindowShouldClose(Window::getWindow())) {
+        if (glfwWindowShouldClose(Window::m_window)) {
             running = false;
             //tickThread.join();
             break;

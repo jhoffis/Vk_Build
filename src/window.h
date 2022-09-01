@@ -17,6 +17,7 @@ namespace Window {
         cursorCanHold,
         cursorIsHold
     };
+    extern GLFWwindow* m_window;
 
     inline static int WIDTH, HEIGHT;
     void createWindow(bool fullscreen, bool vsync);
@@ -27,5 +28,4 @@ namespace Window {
     void mouseStateHide(bool lock);
     void mouseStateToPrevious();
     void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
-    GLFWwindow* getWindow();
 }

@@ -1,7 +1,6 @@
 //
 // Created by jh on 8/31/2022.
 //
-#include <vector>
 #include "gra_framebuffers.h"
 #include "src/vk/presentation/gra_image_views.h"
 #include "src/vk/pipeline/gra_render_passes.h"
