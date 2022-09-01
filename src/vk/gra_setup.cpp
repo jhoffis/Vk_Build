@@ -16,6 +16,7 @@ const bool enableValidationLayers = true;
 #include "src/vk/pipeline/gra_pipeline.h"
 #include "src/vk/pipeline/gra_render_passes.h"
 #include "src/vk/drawing/gra_framebuffers.h"
+#include "src/vk/drawing/gra_command_buffers.h"
 #include <vector>
 
 std::vector<const char *> m_validationLayers = {
@@ -57,10 +58,14 @@ namespace Gra {
         createRenderPass();
         createGraphicsPipeline();
         createFramebuffers();
+        createCommandPool();
+        createCommandBuffer();
     }
 
 
     void cleanup() {
+        vkDestroyCommandPool(m_device, m_commandPool, nullptr);
+
         for (auto framebuffer : m_swapChainFramebuffers) {
             vkDestroyFramebuffer(m_device, framebuffer, nullptr);
         }
