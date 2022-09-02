@@ -1,7 +1,6 @@
 #include "window.h"
 
 #include <stdexcept>
-#include <algorithm>
 #include <stb_image.h>
 #include <filesystem>
 
@@ -12,6 +11,7 @@ int m_fullscreen = -1;
 GLFWwindow* Window::m_window;
 GLFWmonitor* m_monitor;
 bool m_previousMouseStateVisible;
+bool Window::m_framebufferResized;
 Window::CursorType m_cursorTypeSelected;
 
 void glfwErrors(int error_code, const char *description) {
@@ -174,7 +174,6 @@ void Window::switchFullscreen() {
 }
 
 void Window::createWindow(bool fullscreen, bool vsync) {
-
     // Set client size to one resolution lower than the current one
 
     if (!glfwInit()) {
@@ -209,6 +208,11 @@ void Window::createWindow(bool fullscreen, bool vsync) {
         {
             m_focused = f;
         });
+    glfwSetWindowUserPointer(m_window, &m_framebufferResized);
+    glfwSetFramebufferSizeCallback(m_window, [](auto window, int width, int height) {
+        auto framebufferResized = reinterpret_cast<bool*>(glfwGetWindowUserPointer(window));
+        *framebufferResized = true;
+    });
 
     // ICON
     const GLFWimage icon = createGLFWImage("pics/icon.png");
@@ -227,13 +231,6 @@ void Window::createWindow(bool fullscreen, bool vsync) {
         // center
     setFullscreen(fullscreen);
 }
-
-void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
-    if (glfwCreateWindowSurface(instance, m_window, nullptr, surface) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create window surface");
-    }
-}
-
 
 void Window::destroyWindow() {
     glfwDestroyWindow(m_window);

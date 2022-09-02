@@ -6,6 +6,8 @@
 #include "gra_swap_chain.h"
 #include "src/vk/gra_setup.h"
 #include "src/vk/setup/gra_queue_families.cpp.h"
+#include "gra_image_views.h"
+#include "src/vk/drawing/gra_framebuffers.h"
 
 VkSwapchainKHR Gra::m_swapChain;
 std::vector<VkImage> Gra::m_swapChainImages;
@@ -164,4 +166,33 @@ void Gra::createSwapChain() {
 
     m_swapChainImageFormat = surfaceFormat.format;
     m_swapChainExtent = extent;
+}
+
+void Gra::cleanupSwapChain() {
+    for (auto & m_swapChainFramebuffer : m_swapChainFramebuffers) {
+        vkDestroyFramebuffer(m_device, m_swapChainFramebuffer, nullptr);
+    }
+
+    for (auto & m_swapChainImageView : m_swapChainImageViews) {
+        vkDestroyImageView(m_device, m_swapChainImageView, nullptr);
+    }
+
+    vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
+}
+
+void Gra::recreateSwapChain() {
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(Window::m_window, &width, &height);
+    while (width == 0 || height == 0) {
+        glfwGetFramebufferSize(Window::m_window, &width, &height);
+        glfwWaitEvents();
+    }
+
+    vkDeviceWaitIdle(m_device);
+
+    cleanupSwapChain();
+
+    createSwapChain();
+    createImageViews();
+    createFramebuffers();
 }

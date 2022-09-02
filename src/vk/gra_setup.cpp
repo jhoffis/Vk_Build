@@ -60,7 +60,7 @@ namespace Gra {
         createGraphicsPipeline();
         createFramebuffers();
         createCommandPool();
-        createCommandBuffer();
+        createCommandBuffers();
         createSyncObjects();
     }
 
@@ -68,28 +68,21 @@ namespace Gra {
     void cleanup() {
         vkDeviceWaitIdle(m_device);
 
-        cleanupSyncObjects();
-        vkDestroyCommandPool(m_device, m_commandPool, nullptr);
-
-        for (auto framebuffer : m_swapChainFramebuffers) {
-            vkDestroyFramebuffer(m_device, framebuffer, nullptr);
-        }
+        cleanupSwapChain();
 
         vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
         vkDestroyRenderPass(m_device, m_renderPass, nullptr);
 
-        for (auto imageView : m_swapChainImageViews) {
-            vkDestroyImageView(m_device, imageView, nullptr);
-        }
+        cleanupSyncObjects();
+        vkDestroyCommandPool(m_device, m_commandPool, nullptr);
 
-        vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
         vkDestroyDevice(m_device, nullptr);
+
         cleanDebug(enableValidationLayers, m_instance);
 
         vkDestroySurfaceKHR(m_instance, *m_surface, nullptr);
         vkDestroyInstance(m_instance, nullptr);
-
     }
 
 }

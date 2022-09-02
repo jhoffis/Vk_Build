@@ -24,4 +24,6 @@ namespace Gra {
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
     bool isDeviceSuitable(VkPhysicalDevice device);
     void createSwapChain();
+    void recreateSwapChain();
+    void cleanupSwapChain();
 }

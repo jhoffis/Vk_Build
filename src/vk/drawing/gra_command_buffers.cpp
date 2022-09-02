@@ -14,7 +14,7 @@
 namespace Gra {
 
     VkCommandPool m_commandPool;
-    VkCommandBuffer m_commandBuffer;
+    std::vector<VkCommandBuffer> m_commandBuffers;
 
     void createCommandPool() {
         QueueFamilyIndices queueFamilyIndices = findQueueFamilies(*m_physicalDevice);
@@ -30,14 +30,16 @@ namespace Gra {
 
     }
 
-    void createCommandBuffer() {
+    void createCommandBuffers() {
+        m_commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.commandPool = m_commandPool;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandBufferCount = 1;
+        allocInfo.commandBufferCount = (uint32_t) m_commandBuffers.size();
 
-        if (vkAllocateCommandBuffers(m_device, &allocInfo, &m_commandBuffer) != VK_SUCCESS) {
+        if (vkAllocateCommandBuffers(m_device, &allocInfo, m_commandBuffers.data()) != VK_SUCCESS) {
             throw std::runtime_error("failed to allocate command buffers!");
         }
     }

@@ -18,6 +18,7 @@ namespace Window {
         cursorIsHold
     };
     extern GLFWwindow* m_window;
+    extern bool m_framebufferResized;
 
     inline static int WIDTH, HEIGHT;
     void createWindow(bool fullscreen, bool vsync);
