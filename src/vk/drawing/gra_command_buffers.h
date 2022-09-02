@@ -9,5 +9,6 @@ namespace Gra {
 
     void createCommandPool();
     void createCommandBuffer();
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
 }

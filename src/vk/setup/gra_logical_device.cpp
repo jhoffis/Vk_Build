@@ -8,80 +8,83 @@
 #include <stdexcept>
 #include <set>
 
-VkDevice device;
-VkQueue graphicsQueue;
-VkQueue presentQueue;
+namespace Gra {
 
-VkDevice Gra::createLogicalDevice(
-        bool enableValidationLayers,
-        std::vector<const char *>& validationLayers,
-        std::shared_ptr<VkPhysicalDevice> &physicalDevice
-) {
-    QueueFamilyIndices indices = findQueueFamilies(*physicalDevice);
+    VkQueue m_graphicsQueue;
+    VkQueue m_presentQueue;
 
-    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-    std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(), indices.presentFamily.value()};
+    VkDevice createLogicalDevice(
+            bool enableValidationLayers,
+            std::vector<const char *> &validationLayers,
+            std::shared_ptr<VkPhysicalDevice> &physicalDevice
+    ) {
+        QueueFamilyIndices indices = findQueueFamilies(*physicalDevice);
 
-    float queuePriority = 1.0f;
-    for (uint32_t queueFamily : uniqueQueueFamilies) {
-        VkDeviceQueueCreateInfo queueCreateInfo{
-                .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-                .queueFamilyIndex = queueFamily,
-                .queueCount = 1,
-                .pQueuePriorities = &queuePriority,
+        std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+        std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(), indices.presentFamily.value()};
+
+        float queuePriority = 1.0f;
+        for (uint32_t queueFamily: uniqueQueueFamilies) {
+            VkDeviceQueueCreateInfo queueCreateInfo{
+                    .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+                    .queueFamilyIndex = queueFamily,
+                    .queueCount = 1,
+                    .pQueuePriorities = &queuePriority,
+            };
+            queueCreateInfos.push_back(queueCreateInfo);
+        }
+
+        VkPhysicalDeviceFeatures deviceFeatures{};
+
+        VkDeviceCreateInfo createInfo{
+                .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+                .queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size()),
+                .pQueueCreateInfos = queueCreateInfos.data(),
+                .enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size()),
+                .ppEnabledExtensionNames = deviceExtensions.data(),
+                .pEnabledFeatures = &deviceFeatures,
         };
-        queueCreateInfos.push_back(queueCreateInfo);
+
+        if (enableValidationLayers) {
+            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+        } else {
+            createInfo.enabledLayerCount = 0;
+        }
+
+        VkDevice device;
+        if (vkCreateDevice(*physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create logical device!");
+        }
+
+        vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &m_graphicsQueue);
+        vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &m_presentQueue);
+
+        return device;
     }
 
-    VkPhysicalDeviceFeatures deviceFeatures{};
 
-    VkDeviceCreateInfo createInfo{
-            .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-            .queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size()),
-            .pQueueCreateInfos = queueCreateInfos.data(),
-            .enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size()),
-            .ppEnabledExtensionNames = deviceExtensions.data(),
-            .pEnabledFeatures = &deviceFeatures,
-    };
+    bool checkValidationLayerSupport(std::vector<const char *> &validationLayers) {
+        uint32_t layerCount;
+        vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
-    if (enableValidationLayers) {
-        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-        createInfo.ppEnabledLayerNames = validationLayers.data();
-    } else {
-        createInfo.enabledLayerCount = 0;
-    }
+        std::vector<VkLayerProperties> availableLayers(layerCount);
+        vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
-    if (vkCreateDevice(*physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create logical device!");
-    }
+        for (auto layerName: validationLayers) {
+            bool layerFound = false;
 
-    vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
-    vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
+            for (const auto &layerProperties: availableLayers) {
+                if (strcmp(layerName, layerProperties.layerName) == 0) {
+                    layerFound = true;
+                    break;
+                }
+            }
 
-    return device;
-}
-
-
-bool Gra::checkValidationLayerSupport(std::vector<const char *>& validationLayers) {
-    uint32_t layerCount;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-    std::vector<VkLayerProperties> availableLayers(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-    for (auto layerName: validationLayers) {
-        bool layerFound = false;
-
-        for (const auto &layerProperties: availableLayers) {
-            if (strcmp(layerName, layerProperties.layerName) == 0) {
-                layerFound = true;
-                break;
+            if (!layerFound) {
+                return false;
             }
         }
-
-        if (!layerFound) {
-            return false;
-        }
+        return true;
     }
-    return true;
 }

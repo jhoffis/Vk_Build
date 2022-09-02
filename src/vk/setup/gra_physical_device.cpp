@@ -62,7 +62,9 @@ auto Gra::pickPhysicalDevice(
     if (candidates.rbegin()->first > 0) {
         auto physicalDevice = candidates.rbegin()->second;
         // print name of the device of choice:
-        VkPhysicalDeviceProperties2 properties{};
+        VkPhysicalDeviceProperties2 properties{
+            .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2
+        };
         vkGetPhysicalDeviceProperties2(physicalDevice, &properties);
         std::cout << "Picked GPU: " << properties.properties.deviceName << std::endl;
 

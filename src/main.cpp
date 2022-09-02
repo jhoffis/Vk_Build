@@ -1,5 +1,6 @@
 #include <iostream>
 #include "src/vk/gra_setup.h"
+#include "src/vk/drawing/gra_drawing.h"
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
@@ -16,7 +17,7 @@ int main() {
             break;
         }
         glfwPollEvents();
-
+        Gra::drawFrame();
     }
 
     Gra::cleanup();
