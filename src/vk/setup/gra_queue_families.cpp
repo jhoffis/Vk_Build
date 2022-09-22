@@ -19,7 +19,7 @@ auto Gra::findQueueFamilies(VkPhysicalDevice device) -> QueueFamilyIndices {
 
     int i = 0;
     for (const auto &queueFamily: queueFamilies) {
-        if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+        if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) { // TODO change to VK_QUEUE_TRANSFER_BIT later. Page 172
             indices.graphicsFamily = i;
         }
 

@@ -9,6 +9,7 @@
 #include "gra_framebuffers.h"
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/pipeline/gra_pipeline.h"
+#include "src/vk/shading/gra_vertex.h"
 
 
 namespace Gra {
@@ -83,7 +84,13 @@ namespace Gra {
             scissor.extent = m_swapChainExtent;
             vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-            vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+            VkBuffer vertexBuffers[] = {m_vertexBuffer};
+            VkDeviceSize offsets[] = {0};
+            vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+            vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
         }
         vkCmdEndRenderPass(commandBuffer);
 
@@ -91,4 +98,6 @@ namespace Gra {
             throw std::runtime_error("failed to record command buffer!");
         }
     }
+
+
 } // Gra
