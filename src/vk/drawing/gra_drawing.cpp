@@ -8,6 +8,7 @@
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "gra_command_buffers.h"
 #include "src/vk/setup/gra_logical_device.h"
+#include "src/vk/shading/gra_uniform.h"
 
 namespace Gra {
 
@@ -26,7 +27,7 @@ namespace Gra {
         };
 
         VkFenceCreateInfo fenceInfo{
-                .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+                .sType =     VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
                 .flags = VK_FENCE_CREATE_SIGNALED_BIT,
         };
 
@@ -57,6 +58,9 @@ namespace Gra {
 
         vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
         recordCommandBuffer(m_commandBuffers[currentFrame], imageIndex);
+
+        updateUniformBuffer(currentFrame);
+
 
         // TODO change this to VkSubmitInfo2 ?
         VkSubmitInfo submitInfo{};

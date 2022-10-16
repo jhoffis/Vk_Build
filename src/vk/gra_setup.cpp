@@ -5,6 +5,7 @@ const bool enableValidationLayers = false;
 const bool enableValidationLayers = true;
 #endif
 
+
 #include "gra_setup.h"
 #include "src/vk/setup/gra_instance.h"
 #include "src/vk/setup/gra_debug.h"
@@ -19,7 +20,9 @@ const bool enableValidationLayers = true;
 #include "src/vk/drawing/gra_command_buffers.h"
 #include "src/vk/drawing/gra_drawing.h"
 #include "src/vk/shading/gra_vertex.h"
+#include "src/vk/shading/gra_uniform.h"
 #include <vector>
+
 
 std::vector<const char *> m_validationLayers = {
         "VK_LAYER_KHRONOS_validation"
@@ -58,11 +61,15 @@ namespace Gra {
         createSwapChain();
         createImageViews();
         createRenderPass();
+        createDescriptorSetLayout();
         createGraphicsPipeline();
         createFramebuffers();
         createCommandPool();
         createVertexBuffer();
         createIndexBuffer();
+        createUniformBuffers();
+        createDescriptorPool();
+        createDescriptorSets();
         createCommandBuffers();
         createSyncObjects();
     }
@@ -73,6 +80,7 @@ namespace Gra {
 
         cleanupSwapChain();
 
+        cleanupUniform();
         cleanupVertex();
 
         vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);

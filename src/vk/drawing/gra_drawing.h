@@ -4,6 +4,8 @@
 
 namespace Gra {
 
+    extern uint32_t currentFrame;
+
     void createSyncObjects();
     void cleanupSyncObjects();
     void drawFrame();

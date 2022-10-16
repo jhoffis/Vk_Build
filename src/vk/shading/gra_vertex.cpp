@@ -2,11 +2,11 @@
 // Created by Jens Benz on 18.09.2022.
 //
 
+
 #include <vector>
 #include "gra_vertex.h"
 #include "src/vk/gra_setup.h"
 #include "gra_memory_utils.h"
-
 
 namespace Gra {
 
@@ -54,7 +54,7 @@ namespace Gra {
            objects by using the offset parameters that we’ve seen in many functions.
            You can either implement such an allocator yourself, or use the VulkanMem-
            oryAllocator library provided by the GPUOpen initiative.
-           
+
            You should allocate multiple resources like buffers from a single memory allocation,
            but in fact you should go a step further. Driver developers recommend that you also
            store multiple buffers, like the vertex and index buffer, into a single VkBuffer
@@ -98,6 +98,7 @@ namespace Gra {
         vkFreeMemory(m_device, stagingBufferMemory, nullptr);
     }
 
+
     void cleanupVertex() {
         vkDestroyBuffer(m_device, m_indexBuffer, nullptr);
         vkFreeMemory(m_device, m_indexBufferMemory, nullptr);
@@ -105,6 +106,8 @@ namespace Gra {
         vkDestroyBuffer(m_device, m_vertexBuffer, nullptr);
         vkFreeMemory(m_device, m_vertexBufferMemory, nullptr);
     }
+
+
 }
 
 

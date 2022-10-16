@@ -10,6 +10,8 @@
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/pipeline/gra_pipeline.h"
 #include "src/vk/shading/gra_vertex.h"
+#include "gra_drawing.h"
+#include "src/vk/shading/gra_uniform.h"
 
 
 namespace Gra {
@@ -89,6 +91,8 @@ namespace Gra {
             vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
             vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+            vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSets[currentFrame], 0, nullptr);
 
             vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
         }

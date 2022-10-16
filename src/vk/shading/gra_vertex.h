@@ -1,7 +1,9 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <array>
+#include <vector>
 #include "src/window.h"
 
 namespace Gra {
@@ -45,14 +47,19 @@ namespace Gra {
     const std::vector<uint32_t> indices = {
             0, 1, 2, 2, 3, 0
     };
+    struct UniformBufferObject {
+        glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 proj;
+    };
 
     extern VkBuffer m_vertexBuffer;
     extern VkDeviceMemory m_vertexBufferMemory;
     extern VkBuffer m_indexBuffer;
     extern VkDeviceMemory m_indexBufferMemory;
 
-
     void createVertexBuffer();
     void createIndexBuffer();
+
     void cleanupVertex();
 }
