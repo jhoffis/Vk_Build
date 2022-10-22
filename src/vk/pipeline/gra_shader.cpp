@@ -1,6 +1,6 @@
-
 #include "gra_shader.h"
 #include "src/vk/gra_setup.h"
+#include <stdexcept>
 
 namespace Gra {
     VkShaderModule createShaderModule(const std::vector<char> &code) {

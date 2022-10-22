@@ -1,5 +1,6 @@
 #include "gra_image_views.h"
 #include "gra_swap_chain.h"
+#include <stdexcept>
 
 namespace Gra {
 

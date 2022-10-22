@@ -7,6 +7,8 @@
 #include "src/vk/gra_setup.h"
 #include "src/vk/drawing/gra_command_buffers.h"
 #include "src/vk/setup/gra_logical_device.h"
+#include <stdexcept>
+
 
 namespace Gra {
 

@@ -2,12 +2,15 @@
 // Created by jh on 8/12/2022.
 //
 #include <set>
-#include <limits>
+#include <algorithm>
 #include "gra_swap_chain.h"
 #include "src/vk/gra_setup.h"
 #include "src/vk/setup/gra_queue_families.cpp.h"
 #include "gra_image_views.h"
 #include "src/vk/drawing/gra_framebuffers.h"
+#include "src/file_util.h"
+#include "src/window.h"
+#include "src/scene_data.h"
 
 VkSwapchainKHR Gra::m_swapChain;
 std::vector<VkImage> Gra::m_swapChainImages;
@@ -77,7 +80,7 @@ VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &avai
 }
 
 VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities) {
-    if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
+    if (capabilities.currentExtent.width != UINT32_MAX) {
         return capabilities.currentExtent;
     } else {
         int width, height;

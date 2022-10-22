@@ -5,6 +5,7 @@
 #include "gra_render_passes.h"
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/gra_setup.h"
+#include <stdexcept>
 
 namespace Gra {
 

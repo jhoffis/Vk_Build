@@ -1,8 +1,12 @@
+#ifndef NOMINMAX
+# define NOMINMAX
+#endif
+
 #include "window.h"
 
 #include <stdexcept>
-#include <stb_image.h>
 #include <filesystem>
+#include <algorithm>
 
 
 GLFWcursor* glfwCursorNormal, * glfwCursorCanPoint, * glfwCursorIsPoint, * glfwCursorCanHold, * glfwCursorIsHold;
@@ -106,28 +110,10 @@ void Window::setCursor(CursorType cursor) {
     glfwSetCursor(m_window, glfwCursor);
 }
 
-GLFWimage createGLFWImage(const char *path) {
-    int w;
-    int h;
-    int comp;
-    std::string currPath = std::filesystem::current_path().string().append("/res/");
-    const char *realPath = reinterpret_cast<const char *>(currPath.append(path).c_str());
-    unsigned char *image = stbi_load(realPath, &w, &h, &comp, STBI_rgb_alpha);
-    // TODO free stb images
 
-    if (image == nullptr)
-        throw std::runtime_error(std::string("Failed to load texture at ").append(realPath));
-
-    GLFWimage resultImg;
-    resultImg.width = w;
-    resultImg.height = h;
-    resultImg.pixels = image;
-
-    return resultImg;
-}
 
 GLFWcursor* createCursor(const char* path, float xPercent) {
-    GLFWimage cursor = createGLFWImage(path);
+    GLFWimage cursor = Texture::createGLFWImage(path);
     return glfwCreateCursor(&cursor, (int)(cursor.width * xPercent), 0);
 }
 
@@ -215,7 +201,7 @@ void Window::createWindow(bool fullscreen, bool vsync) {
     });
 
     // ICON
-    const GLFWimage icon = createGLFWImage("pics/icon.png");
+    const GLFWimage icon = Texture::createGLFWImage("pics/icon.png");
     glfwSetWindowIcon(m_window, 1, &icon);
 
     // Cursor

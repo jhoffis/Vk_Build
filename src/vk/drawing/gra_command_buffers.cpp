@@ -1,6 +1,7 @@
 //
 // Created by jh on 8/31/2022.
 //
+#include <stdexcept>
 
 #include "gra_command_buffers.h"
 #include "src/vk/setup/gra_queue_families.cpp.h"
