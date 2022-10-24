@@ -65,6 +65,7 @@ namespace Gra {
         createGraphicsPipeline();
         createFramebuffers();
         createCommandPool();
+        Texture::createTextureImage();
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffers();
@@ -79,6 +80,8 @@ namespace Gra {
         vkDeviceWaitIdle(m_device);
 
         cleanupSwapChain();
+
+        Texture::cleanupTextures();
 
         cleanupUniform();
         cleanupVertex();

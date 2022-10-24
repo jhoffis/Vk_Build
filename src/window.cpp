@@ -201,16 +201,16 @@ void Window::createWindow(bool fullscreen, bool vsync) {
     });
 
     // ICON
-    const GLFWimage icon = Texture::createGLFWImage("pics/icon.png");
+    const GLFWimage icon = Texture::createGLFWImage("icon.png");
     glfwSetWindowIcon(m_window, 1, &icon);
 
     // Cursor
-    glfwCursorNormal = createCursor("pics/cursor.png", 0);
+    glfwCursorNormal = createCursor("cursor.png", 0);
     float xPercentCursorHand = 0.27f;
-    glfwCursorCanPoint = createCursor("pics/cursorCanPoint.png", xPercentCursorHand);
-    glfwCursorIsPoint = createCursor("pics/cursorIsPoint.png", xPercentCursorHand);
-    glfwCursorCanHold = createCursor("pics/cursorCanHold.png", xPercentCursorHand);
-    glfwCursorIsHold = createCursor("pics/cursorIsHold.png", xPercentCursorHand);
+    glfwCursorCanPoint = createCursor("cursorCanPoint.png", xPercentCursorHand);
+    glfwCursorIsPoint = createCursor("cursorIsPoint.png", xPercentCursorHand);
+    glfwCursorCanHold = createCursor("cursorCanHold.png", xPercentCursorHand);
+    glfwCursorIsHold = createCursor("cursorIsHold.png", xPercentCursorHand);
     setCursor(CursorType::cursorNormal);
     mouseStateHide(false);
 
