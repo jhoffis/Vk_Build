@@ -12,6 +12,7 @@ void tick(const SceneData* scene, auto delta)
 
 void keyInput(const SceneData* scene, int key, int action)
 {
+	
 }
 
 void mouseButtonInput(const SceneData* scene, int button, int action, int x, int y)

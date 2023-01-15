@@ -7,6 +7,7 @@
 namespace Texture {
 
     void createTextureImage();
+    void createTextureImageView();
     GLFWimage createGLFWImage(const char *path);
     void cleanupTextures();
 

@@ -2,6 +2,8 @@
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 
 
+// Lage et kattespill som er idle in essence MEN som kan fungere som et slukende tradisjonelt spill - F.eks "Mr. Erik Loves Pussy"
+
 #include <iostream>
 #include "src/vk/gra_setup.h"
 #include "src/vk/drawing/gra_drawing.h"
