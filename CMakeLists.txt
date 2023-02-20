@@ -35,6 +35,14 @@ find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} Vulkan::Vulkan)
 
+# set(ENV{VULKAN_SDK} "C:/VulkanSDK/1.3.239.0")
+# find_package(Vulkan REQUIRED)
+# target_link_libraries(target ${Vulkan_LIBRARIES})
+
+# find_package(Vulkan REQUIRED)
+# target_link_libraries(${PROJECT_NAME} ${Vulkan_LIBRARIES})
+# target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
+
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glm)
 target_link_libraries(${PROJECT_NAME} glm::glm)
 
