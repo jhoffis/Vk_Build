@@ -4,6 +4,7 @@
 #include "gra_texture.h"
 #include "gra_memory_utils.h"
 #include "src/vk/gra_setup.h"
+#include "src/vk/presentation/gra_image_views.h"
 #include <stb_image.h>
 #include <stdexcept>
 #include <filesystem>
@@ -208,20 +209,7 @@ namespace Texture {
     }
 
     void createTextureImageView() {
-        VkImageViewCreateInfo viewInfo{};
-        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        viewInfo.image = textureImage;
-        viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-        viewInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-        viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        viewInfo.subresourceRange.baseMipLevel = 0;
-        viewInfo.subresourceRange.levelCount = 1;
-        viewInfo.subresourceRange.baseArrayLayer = 0;
-        viewInfo.subresourceRange.layerCount = 1;
-
-        if (vkCreateImageView(Gra::m_device, &viewInfo, nullptr, &textureImageView) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create texture image view!");
-        }
+        textureImageView = Gra::createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB);
     }
 
     GLFWimage createGLFWImage(const char *path) {
@@ -236,6 +224,7 @@ namespace Texture {
     }
 
     void cleanupTextures() {
+        vkDestroyImageView(Gra::m_device, textureImageView, nullptr);
         vkDestroyImage(Gra::m_device, textureImage, nullptr);
         vkFreeMemory(Gra::m_device, textureImageMemory, nullptr);
     }

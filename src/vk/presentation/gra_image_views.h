@@ -6,5 +6,6 @@
 namespace Gra {
     extern std::vector<VkImageView> m_swapChainImageViews;
 
+    VkImageView createImageView(VkImage image, VkFormat format);
     void createImageViews();
 }
