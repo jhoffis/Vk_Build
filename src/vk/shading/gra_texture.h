@@ -6,6 +6,11 @@
 
 namespace Texture {
 
+    extern VkImage textureImage;
+    extern VkDeviceMemory textureImageMemory;
+    extern VkImageView textureImageView;
+    extern VkSampler textureSampler;
+
     void createTextureImage();
     void createTextureImageView();
     void createTextureSampler();
