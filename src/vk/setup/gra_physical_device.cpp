@@ -11,6 +11,40 @@
 #include <set>
 
 
+bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
+    uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+    std::set<std::string> requiredExtensions(Gra::deviceExtensions.begin(), Gra::deviceExtensions.end());
+
+    for (const auto &extension: availableExtensions) {
+        requiredExtensions.erase(extension.extensionName);
+    }
+
+    return requiredExtensions.empty();
+}
+
+
+bool isDeviceSuitable(VkPhysicalDevice device) {
+    auto indices = Gra::findQueueFamilies(device);
+
+    bool extensionsSupported = checkDeviceExtensionSupport(device);
+
+    bool swapChainAdequate;
+    if (extensionsSupported) {
+        SwapChainSupportDetails swapChainSupport = Gra::querySwapChainSupport(device);
+        swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+    }
+
+    VkPhysicalDeviceFeatures supportedFeatures;
+    vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
+
+    return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
+}
+
 
 auto rateDeviceSuitability(
         VkPhysicalDevice device,
@@ -31,7 +65,7 @@ auto rateDeviceSuitability(
 
     QueueFamilyIndices indices = Gra::findQueueFamilies(device);
     // Application can't function without geometry shaders
-    if (!deviceFeatures.geometryShader || !indices.isComplete() || !Gra::isDeviceSuitable(device))
+    if (!deviceFeatures.geometryShader || !indices.isComplete() || !isDeviceSuitable(device))
         return 0;
     return score;
 }

@@ -4,10 +4,6 @@
 #include <vector>
 #include <memory>
 
-const std::vector<const char *> deviceExtensions = {
-        VK_KHR_SWAPCHAIN_EXTENSION_NAME
-};
-
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
@@ -22,7 +18,6 @@ namespace Gra {
     extern VkExtent2D m_swapChainExtent;
 
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-    bool isDeviceSuitable(VkPhysicalDevice device);
     void createSwapChain();
     void recreateSwapChain();
     void cleanupSwapChain();

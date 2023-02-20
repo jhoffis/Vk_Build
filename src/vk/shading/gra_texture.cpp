@@ -15,6 +15,7 @@ namespace Texture {
     VkImage textureImage;
     VkDeviceMemory textureImageMemory;
     VkImageView textureImageView;
+    VkSampler textureSampler;
 
     struct ImageData {
         int w;
@@ -212,6 +213,51 @@ namespace Texture {
         textureImageView = Gra::createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB);
     }
 
+    /*
+        NN, bilinear Filtering, anisotropic filtering, addressing mode
+    */
+    void createTextureSampler()
+    {
+
+        VkPhysicalDeviceProperties properties{};
+        vkGetPhysicalDeviceProperties(*Gra::m_physicalDevice, &properties);
+
+        VkSamplerCreateInfo samplerInfo{
+            .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+            .magFilter = VK_FILTER_LINEAR, // specify how to interpolate texels that are magnified or minified
+            .minFilter = VK_FILTER_LINEAR,
+
+            .mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR,
+
+            // UVW instead of XYZ
+            .addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+            .addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+            .addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+            
+            .mipLodBias = 0.0f,
+
+            .anisotropyEnable = VK_TRUE,
+            .maxAnisotropy = properties.limits.maxSamplerAnisotropy,
+
+            // true then texels will first be compared to a value, and the result of that comparison is used in filtering operations
+            .compareEnable = VK_FALSE,
+            .compareOp = VK_COMPARE_OP_ALWAYS,
+            
+            .minLod = 0.0f,
+            .maxLod = 0.0f,
+            
+            .borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK,
+
+            // specifies which coordinate system you want to use to address texels in an image.
+            // True is 0->texHeight/Width, false is 0->1
+            .unnormalizedCoordinates = VK_FALSE,
+        };
+
+        if (vkCreateSampler(Gra::m_device, &samplerInfo, nullptr, &textureSampler) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create texture sampler!");
+        }
+    }
+
     GLFWimage createGLFWImage(const char *path) {
         auto img = loadImage(path);
 
@@ -224,6 +270,7 @@ namespace Texture {
     }
 
     void cleanupTextures() {
+        vkDestroySampler(Gra::m_device, textureSampler, nullptr);
         vkDestroyImageView(Gra::m_device, textureImageView, nullptr);
         vkDestroyImage(Gra::m_device, textureImage, nullptr);
         vkFreeMemory(Gra::m_device, textureImageMemory, nullptr);

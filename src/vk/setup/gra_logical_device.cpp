@@ -3,7 +3,7 @@
 //
 #include "gra_logical_device.h"
 #include "gra_queue_families.cpp.h"
-#include "src/vk/presentation/gra_swap_chain.h"
+#include "src/vk/setup/gra_physical_device.h"
 #include <vector>
 #include <stdexcept>
 #include <set>
@@ -34,14 +34,16 @@ namespace Gra {
             queueCreateInfos.push_back(queueCreateInfo);
         }
 
-        VkPhysicalDeviceFeatures deviceFeatures{};
+        VkPhysicalDeviceFeatures deviceFeatures{
+            .samplerAnisotropy = VK_TRUE
+        };
 
         VkDeviceCreateInfo createInfo{
                 .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
                 .queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size()),
                 .pQueueCreateInfos = queueCreateInfos.data(),
-                .enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size()),
-                .ppEnabledExtensionNames = deviceExtensions.data(),
+                .enabledExtensionCount = static_cast<uint32_t>(Gra::deviceExtensions.size()),
+                .ppEnabledExtensionNames = Gra::deviceExtensions.data(),
                 .pEnabledFeatures = &deviceFeatures,
         };
 

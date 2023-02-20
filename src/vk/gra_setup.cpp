@@ -66,6 +66,8 @@ namespace Gra {
         createFramebuffers();
         createCommandPool();
         Texture::createTextureImage();
+        Texture::createTextureImageView();
+        Texture::createTextureSampler();
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffers();

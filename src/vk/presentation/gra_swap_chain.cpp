@@ -17,23 +17,6 @@ std::vector<VkImage> Gra::m_swapChainImages;
 VkFormat Gra::m_swapChainImageFormat;
 VkExtent2D Gra::m_swapChainExtent;
 
-bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
-    uint32_t extensionCount;
-    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
-
-    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
-
-    std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
-
-    for (const auto &extension: availableExtensions) {
-        requiredExtensions.erase(extension.extensionName);
-    }
-
-    return requiredExtensions.empty();
-}
-
-
 SwapChainSupportDetails Gra::querySwapChainSupport(VkPhysicalDevice device) {
     SwapChainSupportDetails details;
     // Capabilities
@@ -98,21 +81,6 @@ VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities) {
 
         return actualExtent;
     }
-}
-
-
-bool Gra::isDeviceSuitable(VkPhysicalDevice device) {
-    auto indices = Gra::findQueueFamilies(device);
-
-    bool extensionsSupported = checkDeviceExtensionSupport(device);
-
-    bool swapChainAdequate;
-    if (extensionsSupported) {
-        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
-        swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
-    }
-
-    return indices.isComplete() && extensionsSupported && swapChainAdequate;
 }
 
 
