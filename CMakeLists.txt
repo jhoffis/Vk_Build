@@ -77,6 +77,18 @@ set(CPACK_PACKAGE_FILE_NAME
         "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${GIT_SHORT_SHA}-${CMAKE_SYSTEM_NAME}-${CMAKE_BUILD_TYPE}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
         )
 
+# shader compile
+# add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND cmd //C ${CMAKE_CURRENT_LIST_DIR}/res/shaders/compile.bat)
+# add_custom_target(compile_shaders
+#         COMMAND cmd /c ${CMAKE_CURRENT_LIST_DIR}/res/shaders/compile.bat
+# )
+# add_dependencies(${PROJECT_NAME} compile_shaders)
+
+# execute_process(
+#   COMMAND cmd /C ${CMAKE_CURRENT_LIST_DIR}/res/shaders/compile.bat
+# )
+
+
 # Copy resource folder to binary
 add_custom_target(copy_assets
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/Debug/res
