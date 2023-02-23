@@ -21,6 +21,7 @@ const bool enableValidationLayers = true;
 #include "src/vk/drawing/gra_drawing.h"
 #include "src/vk/shading/gra_vertex.h"
 #include "src/vk/shading/gra_uniform.h"
+#include "src/vk/shading/gra_depth.h"
 #include <vector>
 
 
@@ -65,6 +66,7 @@ namespace Gra {
         createGraphicsPipeline();
         createFramebuffers();
         createCommandPool();
+        createDepthResources();
         Texture::createTextureImage();
         Texture::createTextureImageView();
         Texture::createTextureSampler();

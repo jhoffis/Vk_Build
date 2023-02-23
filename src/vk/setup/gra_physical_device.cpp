@@ -4,6 +4,7 @@
 #include "gra_physical_device.h"
 #include "gra_queue_families.cpp.h"
 #include "src/vk/presentation/gra_swap_chain.h"
+#include "src/vk/gra_setup.h"
 #include <stdexcept>
 #include <vector>
 #include <map>
@@ -46,6 +47,7 @@ bool isDeviceSuitable(VkPhysicalDevice device) {
 }
 
 
+
 auto rateDeviceSuitability(
         VkPhysicalDevice device,
         std::shared_ptr<VkSurfaceKHR> &surface
@@ -70,6 +72,19 @@ auto rateDeviceSuitability(
     return score;
 }
 
+
+VkFormat Gra::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
+    for (VkFormat format : candidates) {
+        VkFormatProperties props;
+        vkGetPhysicalDeviceFormatProperties(*Gra::m_physicalDevice, format, &props);
+        if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
+            return format;
+        } else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
+            return format;
+        }
+    }
+    throw std::runtime_error("failed to find supported format!");
+}
 
 auto Gra::pickPhysicalDevice(
         std::shared_ptr<VkInstance> &instance,

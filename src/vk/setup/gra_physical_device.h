@@ -10,5 +10,6 @@ namespace Gra {
             VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };
 
+    VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
     std::shared_ptr<VkPhysicalDevice> pickPhysicalDevice(std::shared_ptr<VkInstance>& instance, std::shared_ptr<VkSurfaceKHR> &surface);
 }

@@ -21,6 +21,8 @@ add_executable(${PROJECT_NAME}
         src/scene_data.h
         src/vk/gra_setup.cpp
         src/vk/gra_setup.h
+        src/vk/shading/gra_depth.cpp
+        src/vk/shading/gra_depth.h
         src/vk/presentation/gra_surface.cpp
         src/vk/presentation/gra_surface.h
         src/vk/setup/gra_logical_device.cpp

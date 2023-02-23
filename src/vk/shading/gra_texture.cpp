@@ -210,7 +210,7 @@ namespace Texture {
     }
 
     void createTextureImageView() {
-        textureImageView = Gra::createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB);
+        textureImageView = Gra::createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
     }
 
     /*
