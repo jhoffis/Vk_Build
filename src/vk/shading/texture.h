@@ -1,5 +1,4 @@
-#ifndef VULKAN_GRA_TEXTURE_H
-#define VULKAN_GRA_TEXTURE_H
+#pragma once
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "src/window.h"
@@ -21,7 +20,7 @@ namespace Texture {
                      VkDeviceMemory &imageMemory
     );
 
-    void createTextureImage();
+    void createTextureImage(const char *name);
     void createTextureImageView();
     void createTextureSampler();
     GLFWimage createGLFWImage(const char *path);
@@ -31,5 +30,3 @@ namespace Texture {
     void cleanupTextures();
 
 } // Texture
-
-#endif //VULKAN_GRA_TEXTURE_H

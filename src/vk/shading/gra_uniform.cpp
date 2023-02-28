@@ -9,6 +9,7 @@
 #include "gra_memory_utils.h"
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/gra_setup.h"
+#include "src/vk/shading/texture.h"
 
 namespace Gra {
     std::vector<VkBuffer> m_uniformBuffers;

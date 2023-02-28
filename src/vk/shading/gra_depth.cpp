@@ -3,7 +3,7 @@
 #include "src/vk/setup/gra_physical_device.h"
 #include "src/vk/presentation/gra_image_views.h"
 #include "src/vk/presentation/gra_swap_chain.h"
-#include "gra_texture.h"
+#include "texture.h"
 #include <vector>
 
 namespace Gra {

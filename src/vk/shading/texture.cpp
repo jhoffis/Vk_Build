@@ -1,10 +1,10 @@
 //
 // Created by Jens Benz on 22.10.2022.
 //
-#include "gra_texture.h"
+#include "texture.h"
 #include "gra_memory_utils.h"
-#include "src/vk/gra_setup.h"
-#include "src/vk/presentation/gra_image_views.h"
+#include "vk/gra_setup.h"
+#include "vk/presentation/gra_image_views.h"
 #include <stb_image.h>
 #include <stdexcept>
 #include <filesystem>
@@ -191,8 +191,8 @@ namespace Texture {
         vkBindImageMemory(Gra::m_device, image, imageMemory, 0);
     }
 
-    void createTextureImage() {
-        auto texture = loadImage("texture.jpg");
+    void createTextureImage(const char *name) {
+        auto texture = loadImage(name);
         // The pixels are laid out row by row with 4 bytes per pixel in the case of STBI_rgb_alpha for a total of texWidth * texHeight * 4 values.
         VkDeviceSize imageSize = texture.w * texture.h * 4;
 
@@ -205,7 +205,9 @@ namespace Texture {
 
         void *data;
         vkMapMemory(Gra::m_device, stagingBufferMemory, 0, imageSize, 0, &data);
-        memcpy(data, texture.image, static_cast<size_t>(imageSize));
+        {
+            memcpy(data, texture.image, static_cast<size_t>(imageSize));
+        }
         vkUnmapMemory(Gra::m_device, stagingBufferMemory);
 
         stbi_image_free(texture.image);

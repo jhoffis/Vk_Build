@@ -8,7 +8,6 @@
 #include <GLFW/glfw3native.h>
 #include <string>
 #include <vulkan/vulkan.h>
-#include "src/vk/shading/gra_texture.h"
 
 namespace Window {
     enum CursorType {

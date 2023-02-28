@@ -7,21 +7,22 @@ const bool enableValidationLayers = true;
 
 
 #include "gra_setup.h"
-#include "src/vk/setup/gra_instance.h"
-#include "src/vk/setup/gra_debug.h"
-#include "src/vk/setup/gra_physical_device.h"
-#include "src/vk/setup/gra_logical_device.h"
-#include "src/vk/presentation/gra_surface.h"
-#include "src/vk/presentation/gra_swap_chain.h"
-#include "src/vk/presentation/gra_image_views.h"
-#include "src/vk/pipeline/gra_pipeline.h"
-#include "src/vk/pipeline/gra_render_passes.h"
-#include "src/vk/drawing/gra_framebuffers.h"
-#include "src/vk/drawing/gra_command_buffers.h"
-#include "src/vk/drawing/gra_drawing.h"
-#include "src/vk/shading/gra_vertex.h"
-#include "src/vk/shading/gra_uniform.h"
-#include "src/vk/shading/gra_depth.h"
+#include "vk/setup/gra_instance.h"
+#include "vk/setup/gra_debug.h"
+#include "vk/setup/gra_physical_device.h"
+#include "vk/setup/gra_logical_device.h"
+#include "vk/presentation/gra_surface.h"
+#include "vk/presentation/gra_swap_chain.h"
+#include "vk/presentation/gra_image_views.h"
+#include "vk/pipeline/gra_pipeline.h"
+#include "vk/pipeline/gra_render_passes.h"
+#include "vk/drawing/gra_framebuffers.h"
+#include "vk/drawing/gra_command_buffers.h"
+#include "vk/drawing/gra_drawing.h"
+#include "vk/shading/gra_vertex.h"
+#include "vk/shading/gra_uniform.h"
+#include "vk/shading/gra_depth.h"
+#include "vk/shading/texture.h"
 #include <vector>
 
 
@@ -67,7 +68,7 @@ namespace Gra {
         createCommandPool();
         createDepthResources();
         createFramebuffers();
-        Texture::createTextureImage();
+        Texture::createTextureImage("viking_room.png");
         Texture::createTextureImageView();
         Texture::createTextureSampler();
         createVertexBuffer();

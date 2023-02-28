@@ -31,7 +31,44 @@ add_executable(${PROJECT_NAME}
         src/vk/setup/gra_instance.cpp
         src/vk/setup/gra_debug.cpp
 
-        src/vk/setup/gra_queue_families.cpp.h src/vk/setup/gra_physical_device.h src/vk/setup/gra_logical_device.h src/vk/setup/gra_instance.h src/vk/setup/gra_debug.h src/vk/presentation/gra_swap_chain.cpp src/vk/presentation/gra_swap_chain.h src/vk/presentation/gra_image_views.cpp src/vk/presentation/gra_image_views.h src/vk/pipeline/gra_pipeline.cpp src/vk/pipeline/gra_pipeline.h src/vk/pipeline/gra_shader.cpp src/vk/pipeline/gra_shader.h src/vk/pipeline/gra_render_passes.cpp src/vk/pipeline/gra_render_passes.h src/file_util.h src/vk/drawing/gra_framebuffers.cpp src/vk/drawing/gra_framebuffers.h src/vk/drawing/gra_command_buffers.cpp src/vk/drawing/gra_command_buffers.h src/vk/drawing/gra_drawing.cpp src/vk/drawing/gra_drawing.h src/vk/drawing/gra_flight.cpp src/vk/drawing/gra_flight.h src/vk/shading/gra_vertex.cpp src/vk/shading/gra_vertex.h src/vk/shading/gra_fragment.cpp src/vk/shading/gra_fragment.h src/vk/shading/gra_memory_utils.cpp src/vk/shading/gra_memory_utils.h src/camera.cpp src/camera.h src/vk/shading/gra_uniform.cpp src/vk/shading/gra_uniform.h src/vk/shading/gra_texture.cpp src/vk/shading/gra_texture.h)
+        src/vk/setup/gra_queue_families.cpp.h 
+        src/vk/setup/gra_physical_device.h 
+        src/vk/setup/gra_logical_device.h 
+        src/vk/setup/gra_instance.h 
+        src/vk/setup/gra_debug.h
+        src/vk/presentation/gra_swap_chain.cpp 
+        src/vk/presentation/gra_swap_chain.h
+        src/vk/presentation/gra_image_views.cpp
+        src/vk/presentation/gra_image_views.h
+        src/vk/pipeline/gra_pipeline.cpp 
+        src/vk/pipeline/gra_pipeline.h 
+        src/vk/pipeline/gra_shader.cpp
+        src/vk/pipeline/gra_shader.h
+        src/vk/pipeline/gra_render_passes.cpp
+        src/vk/pipeline/gra_render_passes.h 
+        src/file_util.h 
+        src/vk/drawing/gra_framebuffers.cpp 
+        src/vk/drawing/gra_framebuffers.h
+        src/vk/drawing/gra_command_buffers.cpp 
+        src/vk/drawing/gra_command_buffers.h
+        src/vk/drawing/gra_drawing.cpp 
+        src/vk/drawing/gra_drawing.h 
+        src/vk/drawing/gra_flight.cpp 
+        src/vk/drawing/gra_flight.h
+        src/vk/shading/gra_vertex.cpp 
+        src/vk/shading/gra_vertex.h 
+        src/vk/shading/gra_fragment.cpp 
+        src/vk/shading/gra_fragment.h 
+        src/vk/shading/gra_memory_utils.cpp 
+        src/vk/shading/gra_memory_utils.h 
+        src/camera.cpp 
+        src/camera.h src/vk/shading/gra_uniform.cpp 
+        src/vk/shading/gra_uniform.h 
+        src/vk/shading/texture.cpp 
+        src/vk/shading/texture.h
+        src/vk/shading/model.cpp 
+        src/vk/shading/model.h
+)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
@@ -50,6 +87,8 @@ target_link_libraries(${PROJECT_NAME} glm::glm)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glm)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/stb)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/tiny_obj)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 #target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glfw-3.3.2.bin.WIN64/lib-mingw-w64/libglfw3dll.a)
 #target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glfw-3.3.2.bin.WIN64/lib-mingw-w64/libglfw3.a)

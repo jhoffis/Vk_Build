@@ -3,6 +3,7 @@
 #endif
 
 #include "window.h"
+#include "src/vk/shading/texture.h"
 
 #include <stdexcept>
 #include <filesystem>
