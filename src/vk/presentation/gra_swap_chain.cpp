@@ -8,6 +8,7 @@
 #include "src/vk/setup/gra_queue_families.cpp.h"
 #include "gra_image_views.h"
 #include "src/vk/drawing/gra_framebuffers.h"
+#include "src/vk/shading/gra_depth.h"
 #include "src/file_util.h"
 #include "src/window.h"
 #include "src/scene_data.h"
@@ -140,6 +141,8 @@ void Gra::createSwapChain() {
 }
 
 void Gra::cleanupSwapChain() {
+    destroyDepth(m_device);
+
     for (auto & m_swapChainFramebuffer : m_swapChainFramebuffers) {
         vkDestroyFramebuffer(m_device, m_swapChainFramebuffer, nullptr);
     }
@@ -165,5 +168,6 @@ void Gra::recreateSwapChain() {
 
     createSwapChain();
     createImageViews();
+    createDepthResources();
     createFramebuffers();
 }

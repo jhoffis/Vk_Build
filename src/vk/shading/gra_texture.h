@@ -25,6 +25,9 @@ namespace Texture {
     void createTextureImageView();
     void createTextureSampler();
     GLFWimage createGLFWImage(const char *path);
+
+    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+
     void cleanupTextures();
 
 } // Texture

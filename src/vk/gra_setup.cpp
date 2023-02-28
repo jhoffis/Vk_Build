@@ -64,9 +64,9 @@ namespace Gra {
         createRenderPass();
         createDescriptorSetLayout();
         createGraphicsPipeline();
-        createFramebuffers();
         createCommandPool();
         createDepthResources();
+        createFramebuffers();
         Texture::createTextureImage();
         Texture::createTextureImageView();
         Texture::createTextureSampler();

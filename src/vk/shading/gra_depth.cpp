@@ -1,9 +1,9 @@
-#include "gra_fragment.h"
+#include "gra_depth.h"
 #include "src/vk/gra_setup.h"
 #include "src/vk/setup/gra_physical_device.h"
 #include "src/vk/presentation/gra_image_views.h"
 #include "src/vk/presentation/gra_swap_chain.h"
-#include "src/vk/shading/gra_texture.h"
+#include "gra_texture.h"
 #include <vector>
 
 namespace Gra {
@@ -18,10 +18,6 @@ namespace Gra {
             VK_IMAGE_TILING_OPTIMAL,
             VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
         );
-    }
-
-    bool hasStencilComponent(VkFormat format) {
-        return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
     }
 
     /*
@@ -45,5 +41,14 @@ namespace Gra {
             depthImageMemory
         );
         depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+
+        Texture::transitionImageLayout(depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+    }
+
+    void destroyDepth(VkDevice device)
+    {
+        vkDestroyImageView(device, depthImageView, nullptr);
+        vkDestroyImage(device, depthImage, nullptr);
+        vkFreeMemory(device, depthImageMemory, nullptr);
     }
 } // Gra
