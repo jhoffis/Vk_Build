@@ -33,6 +33,7 @@ namespace Gra {
         Texture::createImage(
             Gra::m_swapChainExtent.width, 
             Gra::m_swapChainExtent.height, 
+            1,
             depthFormat,
             VK_IMAGE_TILING_OPTIMAL, 
             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
@@ -40,9 +41,9 @@ namespace Gra {
             depthImage, 
             depthImageMemory
         );
-        depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+        depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 
-        Texture::transitionImageLayout(depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+        Texture::transitionImageLayout(depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, 1);
     }
 
     void destroyDepth(VkDevice device)

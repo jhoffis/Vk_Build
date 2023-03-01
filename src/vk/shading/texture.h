@@ -12,6 +12,7 @@ namespace Texture {
 
     void createImage(uint32_t width,
                      uint32_t height,
+                     uint32_t mipLevels, 
                      VkFormat format,
                      VkImageTiling tiling,
                      VkImageUsageFlags usage,
@@ -25,8 +26,14 @@ namespace Texture {
     void createTextureSampler();
     GLFWimage createGLFWImage(const char *path);
 
-    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-
+    void transitionImageLayout(
+        VkImage image, 
+        VkFormat format, 
+        VkImageLayout oldLayout, 
+        VkImageLayout newLayout, 
+        uint32_t mipLevels
+    );
+    
     void cleanupTextures();
 
 } // Texture

@@ -6,7 +6,7 @@ namespace Gra {
 
     std::vector<VkImageView> m_swapChainImageViews;
 
-    VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags ascpectFlags) {
+    VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags ascpectFlags, uint32_t mipLevels) {
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.image = image;
@@ -14,7 +14,7 @@ namespace Gra {
         viewInfo.format = format;
         viewInfo.subresourceRange.aspectMask = ascpectFlags;
         viewInfo.subresourceRange.baseMipLevel = 0;
-        viewInfo.subresourceRange.levelCount = 1;
+        viewInfo.subresourceRange.levelCount = mipLevels;
         viewInfo.subresourceRange.baseArrayLayer = 0;
         viewInfo.subresourceRange.layerCount = 1;
 
@@ -30,7 +30,7 @@ namespace Gra {
         m_swapChainImageViews.resize(Gra::m_swapChainImages.size());
 
         for (uint32_t i = 0; i < m_swapChainImages.size(); i++) {
-            m_swapChainImageViews[i] = createImageView(m_swapChainImages[i], m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+            m_swapChainImageViews[i] = createImageView(m_swapChainImages[i], m_swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
         }
     }
 }
