@@ -1,8 +1,10 @@
 #pragma once
+#define GLM_ENABLE_EXPERIMENTAL
 
 #include "src/window.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/hash.hpp>
 #include <array>
 #include <vector>
 
@@ -42,7 +44,14 @@ namespace Gra {
 
             return attributeDescriptions;
         }
+
+        bool operator==(const Vertex& other) const {
+            return pos == other.pos && color == other.color && texCoord == other.texCoord;
+        }
     };
+
+    extern std::vector<Vertex> Gvertices;
+    extern std::vector<uint32_t> Gindices;
 
     // const std::vector<Vertex> vertices = {
     //     {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
@@ -76,4 +85,16 @@ namespace Gra {
     void createIndexBuffer();
 
     void cleanupVertex();
+}
+
+
+
+namespace std {
+    template<> struct hash<Gra::Vertex> {
+        size_t operator()(Gra::Vertex const& vertex) const {
+            return ((hash<glm::vec3>()(vertex.pos) ^
+                   (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^
+                   (hash<glm::vec2>()(vertex.texCoord) << 1);
+        }
+    };
 }

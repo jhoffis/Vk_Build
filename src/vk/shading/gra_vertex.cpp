@@ -10,6 +10,9 @@
 
 namespace Gra {
 
+    std::vector<Vertex> Gvertices;
+    std::vector<uint32_t> Gindices;
+
     VkBuffer m_vertexBuffer;
     VkDeviceMemory m_vertexBufferMemory;
     VkBuffer m_indexBuffer;
@@ -17,7 +20,7 @@ namespace Gra {
 
     void createVertexBuffer() {
 
-        VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+        VkDeviceSize bufferSize = sizeof(Gvertices[0]) * Gvertices.size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -29,7 +32,7 @@ namespace Gra {
         void *data;
         vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0,
                     &data);
-        memcpy(data, vertices.data(), (size_t) bufferSize);
+        memcpy(data, Gvertices.data(), (size_t) bufferSize);
         vkUnmapMemory(m_device, stagingBufferMemory);
 
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT |
@@ -72,7 +75,7 @@ namespace Gra {
     void createIndexBuffer() {
         // The bufferSize is now equal to the
         // number of indices times the size of the index type, either uint16_t or uint32_t.
-        VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+        VkDeviceSize bufferSize = sizeof(Gindices[0]) * Gindices.size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -84,7 +87,7 @@ namespace Gra {
         void *data;
         vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0,
                     &data);
-        memcpy(data, indices.data(), (size_t) bufferSize);
+        memcpy(data, Gindices.data(), (size_t) bufferSize);
         vkUnmapMemory(m_device, stagingBufferMemory);
 
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT |

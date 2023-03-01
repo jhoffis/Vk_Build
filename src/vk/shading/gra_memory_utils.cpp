@@ -57,7 +57,6 @@ namespace Gra {
         }
 
         vkBindBufferMemory(m_device, buffer, bufferMemory, 0);
-
     }
 
     VkCommandBuffer beginSingleTimeCommands() {

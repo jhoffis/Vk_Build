@@ -7,7 +7,7 @@
 #include "vk/presentation/gra_image_views.h"
 #include <stb_image.h>
 #include <stdexcept>
-#include <filesystem>
+#include "paths.h"
 
 
 namespace Texture {
@@ -137,13 +137,11 @@ namespace Texture {
 
     auto loadImage(const char *name) {
         ImageData img{};
-        std::string currPath = std::filesystem::current_path().string().append("/res/pics/");
-        const char *realPath = reinterpret_cast<const char *>(currPath.append(name).c_str());
-        img.image = stbi_load(realPath, &img.w, &img.h, &img.comp, STBI_rgb_alpha);
+        img.image = stbi_load(Paths::pics(name).c_str(), &img.w, &img.h, &img.comp, STBI_rgb_alpha);
         // TODO free stb images
 
         if (img.image == nullptr)
-            throw std::runtime_error(std::string("Failed to load texture at ").append(realPath));
+            throw std::runtime_error(std::string("Failed to load texture at ").append(name));
 
         return img;
     }

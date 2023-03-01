@@ -19,10 +19,11 @@ const bool enableValidationLayers = true;
 #include "vk/drawing/gra_framebuffers.h"
 #include "vk/drawing/gra_command_buffers.h"
 #include "vk/drawing/gra_drawing.h"
-#include "vk/shading/gra_vertex.h"
 #include "vk/shading/gra_uniform.h"
 #include "vk/shading/gra_depth.h"
+#include "vk/shading/gra_vertex.h"
 #include "vk/shading/texture.h"
+#include "vk/shading/model.h"
 #include <vector>
 
 
@@ -71,6 +72,7 @@ namespace Gra {
         Texture::createTextureImage("viking_room.png");
         Texture::createTextureImageView();
         Texture::createTextureSampler();
+        Model::loadModel("viking_room.obj");
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffers();

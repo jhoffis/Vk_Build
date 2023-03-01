@@ -15,6 +15,8 @@ add_executable(${PROJECT_NAME}
         src/main.cpp
         src/window.cpp
         src/window.h
+        "src/paths.cpp"
+        "src/paths.h"
         src/scene_handler.cpp
         src/scene_handler.h
         src/scene_data.cpp
