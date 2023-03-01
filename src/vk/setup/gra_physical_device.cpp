@@ -10,6 +10,7 @@
 #include <map>
 #include <iostream>
 #include <set>
+#include "vk/pipeline/gra_multisampling.h"
 
 
 bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
@@ -62,6 +63,7 @@ auto rateDeviceSuitability(
     if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
         score += 1000;
     }
+    score += Gra::getMaxUsableSampleCount(&device);
     // Maximum possible size of textures affects graphics quality
     score += deviceProperties.limits.maxImageDimension2D;
 
@@ -86,10 +88,10 @@ VkFormat Gra::findSupportedFormat(const std::vector<VkFormat>& candidates, VkIma
     throw std::runtime_error("failed to find supported format!");
 }
 
-auto Gra::pickPhysicalDevice(
+std::shared_ptr<VkPhysicalDevice> Gra::pickPhysicalDevice(
         std::shared_ptr<VkInstance> &instance,
         std::shared_ptr<VkSurfaceKHR> &surface
-) -> std::shared_ptr<VkPhysicalDevice> {
+) {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(*instance, &deviceCount, nullptr);
 
@@ -115,6 +117,7 @@ auto Gra::pickPhysicalDevice(
             .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2
         };
         vkGetPhysicalDeviceProperties2(physicalDevice, &properties);
+        Gra::setMaxUsableSampleCount(&physicalDevice);
         std::cout << "Picked GPU: " << properties.properties.deviceName << std::endl;
 
         return std::make_shared<VkPhysicalDevice>(physicalDevice);

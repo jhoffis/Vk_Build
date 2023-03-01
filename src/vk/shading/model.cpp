@@ -52,7 +52,7 @@ namespace Model {
                 Gra::Gindices.push_back(uniqueVertices[vertex]);
             }
         }
-        std::cout << Gra::Gvertices.size() << std::endl;
+        std::cout << name << " num vertices: " << Gra::Gvertices.size() << std::endl;
         // return &mesh;
     }
 }
