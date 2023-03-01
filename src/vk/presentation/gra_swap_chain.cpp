@@ -1,17 +1,18 @@
 //
 // Created by jh on 8/12/2022.
 //
+#include "gra_swap_chain.h"
 #include <set>
 #include <algorithm>
-#include "gra_swap_chain.h"
-#include "src/vk/gra_setup.h"
-#include "src/vk/setup/gra_queue_families.cpp.h"
 #include "gra_image_views.h"
-#include "src/vk/drawing/gra_framebuffers.h"
-#include "src/vk/shading/gra_depth.h"
-#include "src/file_util.h"
-#include "src/window.h"
-#include "src/scene_data.h"
+#include "vk/gra_setup.h"
+#include "vk/pipeline/gra_multisampling.h"
+#include "vk/setup/gra_queue_families.cpp.h"
+#include "vk/drawing/gra_framebuffers.h"
+#include "vk/shading/gra_depth.h"
+#include "file_util.h"
+#include "window.h"
+#include "scene_data.h"
 
 VkSwapchainKHR Gra::m_swapChain;
 std::vector<VkImage> Gra::m_swapChainImages;
@@ -141,6 +142,7 @@ void Gra::createSwapChain() {
 }
 
 void Gra::cleanupSwapChain() {
+    destroyColorResources(m_device);
     destroyDepth(m_device);
 
     for (auto & m_swapChainFramebuffer : m_swapChainFramebuffers) {
@@ -168,6 +170,7 @@ void Gra::recreateSwapChain() {
 
     createSwapChain();
     createImageViews();
+    createColorResources();
     createDepthResources();
     createFramebuffers();
 }

@@ -4,6 +4,7 @@
 #include "gra_framebuffers.h"
 #include "src/vk/presentation/gra_image_views.h"
 #include "src/vk/pipeline/gra_render_passes.h"
+#include "src/vk/pipeline/gra_multisampling.h"
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/shading/gra_depth.h"
 #include <stdexcept>
@@ -17,9 +18,10 @@ namespace Gra {
         m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
 
         for (size_t i = 0; i < m_swapChainImageViews.size(); i++) {
-            std::array<VkImageView, 2> attachments = {
-                m_swapChainImageViews[i],
-                depthImageView
+            std::array<VkImageView, 3> attachments = {
+                colorImageView,
+                depthImageView,
+                m_swapChainImageViews[i]
             };
 
             VkFramebufferCreateInfo framebufferInfo{};

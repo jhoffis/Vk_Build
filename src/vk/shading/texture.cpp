@@ -253,6 +253,7 @@ namespace Texture {
     void createImage(uint32_t width,
                      uint32_t height,
                      uint32_t mipLevels, 
+                     VkSampleCountFlagBits numSamples,
                      VkFormat format,
                      VkImageTiling tiling,
                      VkImageUsageFlags usage,
@@ -272,7 +273,7 @@ namespace Texture {
         imageInfo.tiling = tiling;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         imageInfo.usage = usage;
-        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageInfo.samples = numSamples;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         if (vkCreateImage(Gra::m_device, &imageInfo, nullptr, &image) != VK_SUCCESS) {
@@ -316,9 +317,15 @@ namespace Texture {
 
         stbi_image_free(texture.image);
 
-        createImage(texture.w, texture.h, texture.mipLevels, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
+        createImage(texture.w, 
+                    texture.h, 
+                    texture.mipLevels, 
+                    VK_SAMPLE_COUNT_1_BIT, 
+                    VK_FORMAT_R8G8B8A8_SRGB, 
+                    VK_IMAGE_TILING_OPTIMAL,
                     VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                    textureImage, textureImageMemory);
+                    textureImage, 
+                    textureImageMemory);
 
         // The next step is to copy the staging buffer to the texture image. This involves two steps:
 

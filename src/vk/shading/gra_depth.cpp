@@ -3,6 +3,7 @@
 #include "src/vk/setup/gra_physical_device.h"
 #include "src/vk/presentation/gra_image_views.h"
 #include "src/vk/presentation/gra_swap_chain.h"
+#include "src/vk/pipeline/gra_multisampling.h"
 #include "texture.h"
 #include <vector>
 
@@ -34,6 +35,7 @@ namespace Gra {
             Gra::m_swapChainExtent.width, 
             Gra::m_swapChainExtent.height, 
             1,
+            Gra::msaaSamples,
             depthFormat,
             VK_IMAGE_TILING_OPTIMAL, 
             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 

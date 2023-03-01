@@ -16,6 +16,7 @@ const bool enableValidationLayers = true;
 #include "vk/presentation/gra_image_views.h"
 #include "vk/pipeline/gra_pipeline.h"
 #include "vk/pipeline/gra_render_passes.h"
+#include "vk/pipeline/gra_multisampling.h"
 #include "vk/drawing/gra_framebuffers.h"
 #include "vk/drawing/gra_command_buffers.h"
 #include "vk/drawing/gra_drawing.h"
@@ -67,6 +68,7 @@ namespace Gra {
         createDescriptorSetLayout();
         createGraphicsPipeline();
         createCommandPool();
+        createColorResources();
         createDepthResources();
         createFramebuffers();
         Texture::createTextureImage("viking_room.png");

@@ -13,6 +13,7 @@ namespace Texture {
     void createImage(uint32_t width,
                      uint32_t height,
                      uint32_t mipLevels, 
+                     VkSampleCountFlagBits numSamples,
                      VkFormat format,
                      VkImageTiling tiling,
                      VkImageUsageFlags usage,

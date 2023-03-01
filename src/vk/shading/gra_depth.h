@@ -1,6 +1,6 @@
 #pragma once
 
-#include "src/window.h"
+#include "window.h"
 
 namespace Gra {
 

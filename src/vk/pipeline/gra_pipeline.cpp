@@ -7,6 +7,7 @@
 #include "gra_shader.h"
 #include "src/vk/gra_setup.h"
 #include "src/vk/presentation/gra_swap_chain.h"
+#include "src/vk/pipeline/gra_multisampling.h"
 #include "gra_render_passes.h"
 #include "src/vk/shading/gra_vertex.h"
 #include "src/vk/shading/gra_uniform.h"
@@ -115,7 +116,7 @@ namespace Gra {
         VkPipelineMultisampleStateCreateInfo multisampling{};
         multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
         multisampling.sampleShadingEnable = VK_FALSE;
-        multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+        multisampling.rasterizationSamples = msaaSamples;
         multisampling.minSampleShading = 1.0f; // Optional
         multisampling.pSampleMask = nullptr; // Optional
         multisampling.alphaToCoverageEnable = VK_FALSE; // Optional
