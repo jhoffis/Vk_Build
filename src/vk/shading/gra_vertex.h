@@ -1,5 +1,4 @@
 #pragma once
-#define GLM_ENABLE_EXPERIMENTAL
 
 #include "src/window.h"
 #include <glm/glm.hpp>
@@ -44,31 +43,12 @@ namespace Gra {
 
             return attributeDescriptions;
         }
-
+        
+        // For hashing and removing duplicate vertices
         bool operator==(const Vertex& other) const {
             return pos == other.pos && color == other.color && texCoord == other.texCoord;
         }
     };
-
-    // extern std::vector<Vertex> Gvertices;
-    // extern std::vector<uint32_t> Gindices;
-
-    // const std::vector<Vertex> vertices = {
-    //     {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-    //     {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-    //     {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-    //     {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
-
-    //     {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-    //     {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-    //     {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-    //     {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
-    // };
-    // // TODO lag en check på int størrelse i forhold til attributeDescriptions[1].format osv fordi om du definerer feil int størrelse så vil den ikke klage men heller ikke fungere!
-    // const std::vector<uint32_t> indices = {
-    //     0, 1, 2, 2, 3, 0,
-    //     4, 5, 6, 6, 7, 4
-    // };
 
     struct UniformBufferObject {
         alignas(16) glm::mat4 model;
@@ -83,7 +63,7 @@ namespace Gra {
 }
 
 
-
+// For hashing and removing duplicate vertices
 namespace std {
     template<> struct hash<Gra::Vertex> {
         size_t operator()(Gra::Vertex const& vertex) const {
