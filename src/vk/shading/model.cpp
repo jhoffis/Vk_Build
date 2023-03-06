@@ -14,7 +14,7 @@ namespace Model {
     const uint32_t WIDTH = 800;
     const uint32_t HEIGHT = 600;
 
-    void loadModel(const char *name) {
+    Mesh loadModel(const char *name) {
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> materials;
@@ -24,7 +24,7 @@ namespace Model {
             throw std::runtime_error(err);
         }
 
-        // auto mesh = Mesh{};
+        auto mesh = Mesh{};
 
         std::unordered_map<Gra::Vertex, uint32_t> uniqueVertices{};
 
@@ -46,13 +46,17 @@ namespace Model {
                 vertex.color = {1.0f, 1.0f, 1.0f};
 
                 if (uniqueVertices.count(vertex) == 0) {
-                    uniqueVertices[vertex] = static_cast<uint32_t>(Gra::Gvertices.size());
-                    Gra::Gvertices.push_back(vertex);
+                    uniqueVertices[vertex] = static_cast<uint32_t>(mesh.vertices.size());
+                    mesh.vertices.push_back(vertex);
                 }
-                Gra::Gindices.push_back(uniqueVertices[vertex]);
+                mesh.indices.push_back(uniqueVertices[vertex]);
             }
         }
-        std::cout << name << " num vertices: " << Gra::Gvertices.size() << std::endl;
-        // return &mesh;
+        std::cout << name << " num vertices: " << mesh.vertices.size() << std::endl;
+
+        mesh.vertexBuffer = Gra::createVertexBuffer(mesh.vertices);
+        mesh.indexBuffer = Gra::createIndexBuffer(mesh.indices);
+
+        return mesh;
     }
 }

@@ -57,7 +57,7 @@ namespace Gra {
         vkResetFences(m_device, 1, &m_inFlightFences[currentFrame]);
 
         vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
-        recordCommandBuffer(m_commandBuffers[currentFrame], imageIndex);
+        recordCommandBuffer(m_commandBuffers[currentFrame], imageIndex, mesh);
 
         updateUniformBuffer(currentFrame);
 

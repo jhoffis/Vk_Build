@@ -10,17 +10,19 @@
 
 namespace Gra {
 
-    std::vector<Vertex> Gvertices;
-    std::vector<uint32_t> Gindices;
+    // std::vector<Vertex> Gvertices;
+    // std::vector<uint32_t> Gindices;
 
-    VkBuffer m_vertexBuffer;
-    VkDeviceMemory m_vertexBufferMemory;
-    VkBuffer m_indexBuffer;
-    VkDeviceMemory m_indexBufferMemory;
+    // VkBuffer m_vertexBuffer;
+    // VkBuffer m_indexBuffer;
+    struct VertexBuff {
+        VkBuffer buffer;
+        VkDeviceMemory deviceMemory;
+    };
+    std::vector<VertexBuff> m_bufferMemory;
 
-    void createVertexBuffer() {
-
-        VkDeviceSize bufferSize = sizeof(Gvertices[0]) * Gvertices.size();
+    VkBuffer createVertexBuffer(std::vector<Vertex> vertices) {
+        VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -32,15 +34,21 @@ namespace Gra {
         void *data;
         vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0,
                     &data);
-        memcpy(data, Gvertices.data(), (size_t) bufferSize);
+        memcpy(data, vertices.data(), (size_t) bufferSize);
         vkUnmapMemory(m_device, stagingBufferMemory);
 
+        VkBuffer vertexBuffer{};
+        VkDeviceMemory vertexBufferMemory{};
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT |
                                  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_vertexBuffer,
-                     m_vertexBufferMemory);
+                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer,
+                     vertexBufferMemory);
+        m_bufferMemory.push_back(VertexBuff{
+            .buffer = vertexBuffer,
+            .deviceMemory = vertexBufferMemory
+        });
 
-        copyBuffer(stagingBuffer, m_vertexBuffer, bufferSize);
+        copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
 
         vkDestroyBuffer(m_device, stagingBuffer, nullptr);
         vkFreeMemory(m_device, stagingBufferMemory, nullptr);
@@ -70,12 +78,14 @@ namespace Gra {
            This is known as aliasing and some Vulkan functions have explicit flags to specify
            that you want to do this.
          */
+
+        return vertexBuffer;
     }
 
-    void createIndexBuffer() {
+    VkBuffer createIndexBuffer(std::vector<uint32_t> indices) {
         // The bufferSize is now equal to the
         // number of indices times the size of the index type, either uint16_t or uint32_t.
-        VkDeviceSize bufferSize = sizeof(Gindices[0]) * Gindices.size();
+        VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -87,30 +97,34 @@ namespace Gra {
         void *data;
         vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0,
                     &data);
-        memcpy(data, Gindices.data(), (size_t) bufferSize);
+        memcpy(data, indices.data(), (size_t) bufferSize);
         vkUnmapMemory(m_device, stagingBufferMemory);
 
+        VkBuffer indexBuffer{};
+        VkDeviceMemory indexBufferMemory{};
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT |
                                  VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_indexBuffer,
-                     m_indexBufferMemory);
+                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer,
+                     indexBufferMemory);
+        m_bufferMemory.push_back(VertexBuff{
+            .buffer = indexBuffer,
+            .deviceMemory = indexBufferMemory
+        });
 
-        copyBuffer(stagingBuffer, m_indexBuffer, bufferSize);
+        copyBuffer(stagingBuffer, indexBuffer, bufferSize);
 
         vkDestroyBuffer(m_device, stagingBuffer, nullptr);
         vkFreeMemory(m_device, stagingBufferMemory, nullptr);
+        return indexBuffer;
     }
 
 
     void cleanupVertex() {
-        vkDestroyBuffer(m_device, m_indexBuffer, nullptr);
-        vkFreeMemory(m_device, m_indexBufferMemory, nullptr);
-
-        vkDestroyBuffer(m_device, m_vertexBuffer, nullptr);
-        vkFreeMemory(m_device, m_vertexBufferMemory, nullptr);
+        for (auto & mem : m_bufferMemory) {
+            vkDestroyBuffer(m_device, mem.buffer, nullptr);
+            vkFreeMemory(m_device, mem.deviceMemory, nullptr);
+        }
     }
-
-
 }
 
 

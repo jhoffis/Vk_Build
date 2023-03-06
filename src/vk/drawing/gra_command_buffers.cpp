@@ -10,7 +10,6 @@
 #include "gra_framebuffers.h"
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/pipeline/gra_pipeline.h"
-#include "src/vk/shading/gra_vertex.h"
 #include "gra_drawing.h"
 #include "src/vk/shading/gra_uniform.h"
 
@@ -48,7 +47,7 @@ namespace Gra {
         }
     }
 
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, Model::Mesh mesh) {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = 0; // Optional
@@ -91,15 +90,15 @@ namespace Gra {
             scissor.extent = m_swapChainExtent;
             vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-            VkBuffer vertexBuffers[] = {m_vertexBuffer};
+            VkBuffer vertexBuffers[] = {mesh.vertexBuffer};
             VkDeviceSize offsets[] = {0};
             vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-            vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdBindIndexBuffer(commandBuffer, mesh.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
             vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSets[currentFrame], 0, nullptr);
 
-            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(Gindices.size()), 1, 0, 0, 0);
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(mesh.indices.size()), 1, 0, 0, 0);
         }
         vkCmdEndRenderPass(commandBuffer);
 

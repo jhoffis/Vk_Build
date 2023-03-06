@@ -50,8 +50,8 @@ namespace Gra {
         }
     };
 
-    extern std::vector<Vertex> Gvertices;
-    extern std::vector<uint32_t> Gindices;
+    // extern std::vector<Vertex> Gvertices;
+    // extern std::vector<uint32_t> Gindices;
 
     // const std::vector<Vertex> vertices = {
     //     {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
@@ -76,13 +76,8 @@ namespace Gra {
         alignas(16) glm::mat4 proj;
     };
 
-    extern VkBuffer m_vertexBuffer;
-    extern VkDeviceMemory m_vertexBufferMemory;
-    extern VkBuffer m_indexBuffer;
-    extern VkDeviceMemory m_indexBufferMemory;
-
-    void createVertexBuffer();
-    void createIndexBuffer();
+    VkBuffer createVertexBuffer(std::vector<Vertex> vertices);
+    VkBuffer createIndexBuffer(std::vector<uint32_t> indices);
 
     void cleanupVertex();
 }
