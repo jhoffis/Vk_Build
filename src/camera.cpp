@@ -11,8 +11,6 @@ namespace Camera {
 
     void updateView(Cam *camera)
     {
-
-        // glm::normalize
         camera->view = glm::lookAt(camera->position, camera->position + camera->rotation, camera->upOrientation);
     }
 
@@ -21,11 +19,11 @@ namespace Camera {
         camera->projection = glm::perspective(glm::radians(camera->fov), camera->aspect, camera->near, camera->far);
     }
 
-    void updateMovement(Cam *camera)
+    /*
+    Returns whether one should update the view or not.
+    */
+    constexpr bool updateMovement(Cam *camera, float x, float z)
     {
-        float x = glm::sin(glm::radians(camera->rotation.y)) * 1;
-        float z = glm::cos(glm::radians(camera->rotation.y)) * 1;
-
         // Forward and backwards + side to side
         auto moveX = (x * camera->moveLongitudinal) + (z * camera->moveSideways);
         auto moveZ = (z * camera->moveLongitudinal) - (x * camera->moveSideways);
@@ -45,7 +43,14 @@ namespace Camera {
             change = true;
         }
 
-        if (change)
+        return change;
+    }
+
+    void updateMovement(Cam *camera)
+    {
+        float x = glm::sin(glm::radians(camera->rotation.y)) * 1;
+        float z = glm::cos(glm::radians(camera->rotation.y)) * 1;
+        if (updateMovement(camera, x, z))
             updateView(camera);
     }
 
