@@ -160,6 +160,11 @@ void Window::switchFullscreen() {
     setFullscreen(m_fullscreen == 0);
 }
 
+bool Window::shouldClose()
+{
+    return glfwWindowShouldClose(Window::m_window);
+}
+
 void Window::createWindow(bool fullscreen, bool vsync) {
     // Set client size to one resolution lower than the current one
 

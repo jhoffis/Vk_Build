@@ -21,4 +21,5 @@ namespace Camera {
     void updateView(Cam* camera);
     void updateProjection(Cam* camera);
     void updateMovement(Cam *camera);
+    constexpr void inputMovement(Cam *camera, int keycode, bool pressed);
 } // Camera

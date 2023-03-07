@@ -13,22 +13,45 @@
 #include "src/vk/gra_setup.h"
 #include <iostream>
 #include "src/vk/drawing/gra_drawing.h"
+#include "camera.h"
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
 
     Window::createWindow(false, false);
     Gra::initVulkan();
+    
+    static Camera::Cam camera;
 
-    static bool running = true;
-    while(running)
+    static size_t x = 0;
+    static size_t y = 0;
+
+    // scenes.emplace_back(0); // feiler om scenes er const / constexpr av en eller annen grunn
+
+    glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
+        Camera::inputMovement(&camera, key, action != GLFW_RELEASE);
+    });
+
+    glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button, auto action, auto mods) {
+        // mouseButtonInput(&scenes[currentScene], button, action, x, y);
+    });
+
+    glfwSetCursorPosCallback(Window::m_window, [](auto window, auto xpos, auto ypos) {
+        // x = xpos;
+        // y = ypos;
+        // mousePosInput(&scenes[currentScene], x, y);
+    });
+
+    for(;;)
     {
-        if (glfwWindowShouldClose(Window::m_window)) {
-            running = false;
+        if (Window::shouldClose()) {
             //tickThread.join();
             break;
         }
         glfwPollEvents();
+        
+        Camera::updateMovement(&camera);
+
         Gra::drawFrame();
     }
 

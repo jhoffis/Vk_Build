@@ -29,6 +29,7 @@ namespace Window {
     void switchFullscreen();
     void mouseStateHide(bool lock);
     void mouseStateToPrevious();
+    bool shouldClose();
 }
 
 #endif //VULKAN_WINDOW_H

@@ -1,30 +1,41 @@
 #include "scene_handler.h"
 #include "scene_data.h"
-
+#include "window.h"
+// #include "camera.h"
 #include <vector>
 #include <iostream>
 
-int currentScene = 0;
-std::vector<SceneData> scenes;
+// int currentScene = 0;
+// std::vector<SceneData> scenes;
+
+// Camera currentCamera;
+
+/*
+I would recommend a scenegraph. Basically a hierarchy of nodes(which contains translation/rotation vectors, 
+or just simply a transform matrix), on to which you can attach entities(visual/audial stuff like models, 
+sounds, particlesystems etc), and then create objects by inheriting a common class for it, 
+which in turn control the node/entity system.
+*/
+
 
 void SceneHandler::createSceneHandler() {
     static size_t x = 0;
     static size_t y = 0;
 
-    scenes.emplace_back(0); // feiler om scenes er const / constexpr av en eller annen grunn
+    // scenes.emplace_back(0); // feiler om scenes er const / constexpr av en eller annen grunn
 
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
-        keyInput(&scenes[currentScene], key, action);
+        // keyInput(&scenes[currentScene], key, action);
     });
 
     glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button, auto action, auto mods) {
-        mouseButtonInput(&scenes[currentScene], button, action, x, y);
+        // mouseButtonInput(&scenes[currentScene], button, action, x, y);
     });
 
     glfwSetCursorPosCallback(Window::m_window, [](auto window, auto xpos, auto ypos) {
-        x = xpos;
-        y = ypos;
-        mousePosInput(&scenes[currentScene], x, y);
+        // x = xpos;
+        // y = ypos;
+        // mousePosInput(&scenes[currentScene], x, y);
     });
 }
 
