@@ -30,7 +30,7 @@ namespace Camera {
         auto moveX = (x * camera->moveLongitudinal) + (z * camera->moveSideways);
         auto moveZ = (z * camera->moveLongitudinal) - (x * camera->moveSideways);
         auto moveY = camera->movePerpendicular;
-        
+
         bool change = false;
         if (moveX != 0) {
             camera->position.x += moveX;
@@ -49,7 +49,7 @@ namespace Camera {
             updateView(camera);
     }
 
-    void inputMovement(Cam *camera, int keycode, bool pressed) {
+    constexpr void inputMovement(Cam *camera, int keycode, bool pressed) {
         switch (keycode)
         {
         case GLFW_KEY_W:
