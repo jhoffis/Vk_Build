@@ -1,6 +1,7 @@
 #pragma once
 
-#include "src/window.h"
+#include "window.h"
+#include "camera.h"
 
 namespace Gra {
 
@@ -8,6 +9,6 @@ namespace Gra {
 
     void createSyncObjects();
     void cleanupSyncObjects();
-    void drawFrame();
+    void drawFrame(std::shared_ptr<Camera::Cam> camera);
 
 }

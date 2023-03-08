@@ -5,24 +5,33 @@
 #include "camera.h"
 
 #include <GLFW/glfw3.h>
-
+#include <iostream>
 
 namespace Camera {
 
-    void updateView(Cam *camera)
+    void updateView(Cam* camera)
     {
-        camera->view = glm::lookAt(camera->position, camera->position + camera->rotation, camera->upOrientation);
+        auto eye = glm::vec3(camera->position.x, camera->position.y, camera->position.z);
+        auto center = glm::vec3(camera->position + glm::normalize(camera->rotation));
+        auto up = glm::vec3(camera->upOrientation);
+        camera->view = glm::lookAt(eye, center, up);
     }
 
-    void updateProjection(Cam *camera)
-    {
-        camera->projection = glm::perspective(glm::radians(camera->fov), camera->aspect, camera->near, camera->far);
+    void updateProjection(std::shared_ptr<Cam>& camera)
+    { 
+        float fov = camera->fov;
+        float aspect = camera->aspect;
+        float nearPlane = camera->nearPlane;
+        float farPlane = camera->farPlane;
+        auto proj = glm::perspective(glm::radians(fov), aspect, nearPlane, farPlane);
+        proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
+        camera->projection = proj;
     }
 
     /*
     Returns whether one should update the view or not.
     */
-    constexpr bool updateMovement(Cam *camera, float x, float z)
+    bool updateMovement(std::shared_ptr<Cam>& camera, float x, float z)
     {
         // Forward and backwards + side to side
         auto moveX = (x * camera->moveLongitudinal) + (z * camera->moveSideways);
@@ -46,15 +55,17 @@ namespace Camera {
         return change;
     }
 
-    void updateMovement(Cam *camera)
+    void updateMovement(std::shared_ptr<Cam>& camera)
     {
         float x = glm::sin(glm::radians(camera->rotation.y)) * 1;
         float z = glm::cos(glm::radians(camera->rotation.y)) * 1;
-        if (updateMovement(camera, x, z))
-            updateView(camera);
+        if (updateMovement(camera, x, z)) {
+            // camera->view = updateView(&(*camera));
+            std::cout << "x: " << camera->position.x << "z: " << camera->position.z << std::endl;
+        }
     }
 
-    constexpr void inputMovement(Cam *camera, int keycode, bool pressed) {
+    void inputMovementReal(std::shared_ptr<Cam>& camera, int keycode, bool pressed) {
         switch (keycode)
         {
         case GLFW_KEY_W:
@@ -91,6 +102,9 @@ namespace Camera {
         default:
             break;
         }
+    }
+    void inputMovement(std::shared_ptr<Cam>& camera, int keycode, bool pressed) {
+        inputMovementReal(camera, keycode, pressed);
     }
 
 } // Camera

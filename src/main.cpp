@@ -15,13 +15,25 @@
 #include "src/vk/drawing/gra_drawing.h"
 #include "camera.h"
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
 
+int main() {
     Window::createWindow(false, false);
     Gra::initVulkan();
-    
-    static Camera::Cam camera;
+
+    Camera::Cam cam{};
+    cam.fov = 80.0f;
+    cam.aspect = 2.0f;
+    cam.nearPlane = 0.1f;
+    cam.farPlane = 1000.0f;
+    cam.position = glm::vec3(2.0f, 2.0f, 2.0f);
+    cam.rotation = glm::vec3(-2.0f, -2.0f, -2.0f);
+    cam.upOrientation = glm::vec3(0.0f, 0.0f, 1.0f);
+    std::cout << "x: " << cam.rotation.x << "z: " << cam.rotation.z << std::endl;
+    Camera::updateView(&cam);
+    std::cout << "x: " << cam.rotation.x << "z: " << cam.rotation.z << std::endl;
+    cam.projection = glm::mat4{};
+    auto camera = std::make_shared<Camera::Cam>(cam);
+    Camera::updateProjection(camera);
 
     static size_t x = 0;
     static size_t y = 0;
@@ -29,7 +41,7 @@ int main() {
     // scenes.emplace_back(0); // feiler om scenes er const / constexpr av en eller annen grunn
 
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
-        Camera::inputMovement(&camera, key, action != GLFW_RELEASE);
+        // Camera::inputMovement(camera, key, action != GLFW_RELEASE);
     });
 
     glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button, auto action, auto mods) {
@@ -50,9 +62,9 @@ int main() {
         }
         glfwPollEvents();
         
-        Camera::updateMovement(&camera);
+        Camera::updateMovement(camera);
 
-        Gra::drawFrame();
+        Gra::drawFrame(camera);
     }
 
     Gra::cleanup();

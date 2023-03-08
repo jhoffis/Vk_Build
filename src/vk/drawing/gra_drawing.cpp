@@ -2,13 +2,13 @@
 // Created by jh on 8/31/2022.
 //
 
-#include <stdexcept>
 #include "gra_drawing.h"
-#include "src/vk/gra_setup.h"
-#include "src/vk/presentation/gra_swap_chain.h"
+#include <stdexcept>
+#include "vk/gra_setup.h"
+#include "vk/presentation/gra_swap_chain.h"
 #include "gra_command_buffers.h"
-#include "src/vk/setup/gra_logical_device.h"
-#include "src/vk/shading/gra_uniform.h"
+#include "vk/setup/gra_logical_device.h"
+#include "vk/shading/gra_uniform.h"
 
 namespace Gra {
 
@@ -41,7 +41,7 @@ namespace Gra {
         }
     }
 
-    void drawFrame() {
+    void drawFrame(std::shared_ptr<Camera::Cam> camera) {
         vkWaitForFences(m_device, 1, &m_inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
@@ -59,7 +59,7 @@ namespace Gra {
         vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
         recordCommandBuffer(m_commandBuffers[currentFrame], imageIndex, mesh);
 
-        updateUniformBuffer(currentFrame);
+        updateUniformBuffer(currentFrame, camera->view, camera->projection);
 
 
         // TODO change this to VkSubmitInfo2 ?

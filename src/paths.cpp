@@ -4,7 +4,7 @@
 namespace Paths {
     
     std::string load(const char *dir, const char *name) {
-        return std::filesystem::current_path().append(dir).append(name).string();
+        return std::filesystem::current_path().string().append(dir).append(name);
     }
 
     std::string pics(const char *name) {
