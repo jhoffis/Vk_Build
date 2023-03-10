@@ -7,9 +7,6 @@
 #define GLFW_INCLUDE_VULKAN
 #define GLFW_EXPOSE_NATIVE_WIN32
 
-
-// Lage et kattespill som er idle in essence MEN som kan fungere som et slukende tradisjonelt spill - F.eks "Mr. Erik Loves Pussy"
-
 #include "src/vk/gra_setup.h"
 #include <iostream>
 #include "src/vk/drawing/gra_drawing.h"
@@ -25,14 +22,13 @@ int main() {
     cam.aspect = 2.0f;
     cam.nearPlane = 0.1f;
     cam.farPlane = 1000.0f;
-    cam.position = glm::vec3(2.0f, 2.0f, 2.0f);
-    cam.rotation = glm::vec3(-2.0f, -2.0f, -2.0f);
-    cam.upOrientation = glm::vec3(0.0f, 0.0f, 1.0f);
-    std::cout << "x: " << cam.rotation.x << "z: " << cam.rotation.z << std::endl;
-    Camera::updateView(&cam);
-    std::cout << "x: " << cam.rotation.x << "z: " << cam.rotation.z << std::endl;
-    cam.projection = glm::mat4{};
-    auto camera = std::make_shared<Camera::Cam>(cam);
+    cam.position = std::make_shared<glm::vec3>(glm::vec3(2.0f, 2.0f, 2.0f));
+    cam.rotation = std::make_shared<glm::vec3>(glm::vec3(-2.0f, -2.0f, -2.0f));
+    cam.upOrientation = std::make_shared<glm::vec3>(glm::vec3(0.0f, 0.0f, 1.0f));
+    static auto camera = std::make_shared<Camera::Cam>(cam);
+    std::cout << "x: " << cam.rotation->x << "z: " << cam.rotation->z << std::endl;
+    Camera::updateView(camera);
+    std::cout << "x: " << cam.rotation->x << "z: " << cam.rotation->z << std::endl;
     Camera::updateProjection(camera);
 
     static size_t x = 0;
@@ -41,7 +37,7 @@ int main() {
     // scenes.emplace_back(0); // feiler om scenes er const / constexpr av en eller annen grunn
 
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
-        // Camera::inputMovement(camera, key, action != GLFW_RELEASE);
+        Camera::inputMovement(camera, key, action != GLFW_RELEASE);
     });
 
     glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button, auto action, auto mods) {
