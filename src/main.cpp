@@ -23,7 +23,7 @@ int main() {
     cam.nearPlane = 0.1f;
     cam.farPlane = 1000.0f;
     cam.position = std::make_shared<glm::vec3>(glm::vec3(2.0f, 2.0f, 2.0f));
-    cam.rotation = std::make_shared<glm::vec3>(glm::vec3(-2.0f, -2.0f, -2.0f));
+    cam.rotation = std::make_shared<glm::vec3>(glm::vec3(2.0f, 2.0f, 2.0f));
     cam.upOrientation = std::make_shared<glm::vec3>(glm::vec3(0.0f, 0.0f, 1.0f));
     static auto camera = std::make_shared<Camera::Cam>(cam);
     std::cout << "x: " << cam.rotation->x << "z: " << cam.rotation->z << std::endl;

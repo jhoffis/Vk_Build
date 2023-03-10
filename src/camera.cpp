@@ -9,15 +9,28 @@
 
 namespace Camera {
 
+    const float movespd = .01;
+
     void updateView(std::shared_ptr<Cam>& camera)
     {
-        auto eye = glm::vec3(camera->position->x, camera->position->y, camera->position->z);
-        auto center = glm::vec3(*camera->position + *camera->rotation);
-        auto up = glm::vec3(*camera->upOrientation);
+        // auto eye = glm::vec3(camera->position->x, camera->position->y, camera->position->z);
+        // auto center = glm::vec3(*camera->position + *camera->rotation);
+        // auto up = glm::vec3(*camera->upOrientation);
         // auto eye = glm::vec3(2.0f, 2.0f, 2.0f);
         // auto center = glm::vec3(0.0f, 0.0f, 0.0f);
         // auto up = glm::vec3(0.0f, 0.0f, 1.0f);
-        camera->view = std::make_shared<glm::mat4>(glm::lookAt(eye, center, up));
+        // camera->view = std::make_shared<glm::mat4>(glm::lookAt(eye, center, up));
+
+
+        auto translationMat = glm::translate(glm::mat4(1.0f), -glm::vec3(*camera->position));
+
+        const glm::vec3& rotation = *camera->rotation;
+        auto rotXMat = glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+        auto rotYMat = glm::rotate(glm::mat4(1.0f), rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+        auto rotZMat = glm::rotate(glm::mat4(1.0f), rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+        auto rotMat = rotZMat * rotYMat * rotXMat;
+
+        camera->view = std::make_shared<glm::mat4>(translationMat * rotMat);
     }
 
     void updateProjection(std::shared_ptr<Cam>& camera)
@@ -39,7 +52,7 @@ namespace Camera {
         // Forward and backwards + side to side
         auto moveX = (x * camera->moveLongitudinal) + (z * camera->moveSideways);
         auto moveZ = (z * camera->moveLongitudinal) - (x * camera->moveSideways);
-        auto moveY = camera->movePerpendicular * .01f;
+        auto moveY = camera->movePerpendicular;
 
         bool change = false;
         if (moveX != 0) {
@@ -60,11 +73,11 @@ namespace Camera {
 
     void updateMovement(std::shared_ptr<Cam>& camera)
     {
-        float x = glm::sin(glm::radians(camera->rotation->y)) * .01f;
-        float z = glm::cos(glm::radians(camera->rotation->y)) * .01f;
+        float x = glm::sin(glm::radians(camera->rotation->y));
+        float z = glm::cos(glm::radians(camera->rotation->y));
         if (updateMovement(camera, x, z)) {
             updateView(camera);
-            std::cout << "x: " << camera->position->x << "z: " << camera->position->z << std::endl;
+            std::cout << "x: " << camera->position->x << " y: " << camera->position->y << " z: " << camera->position->z << std::endl;
         }
     }
 
@@ -73,32 +86,32 @@ namespace Camera {
         {
         case GLFW_KEY_W:
             if (camera->fwd != pressed)
-                camera->moveLongitudinal += pressed ? 1 : -1;
+                camera->moveLongitudinal += (pressed ? -1 : 1) * movespd;
             camera->fwd = pressed;
             break;
         case GLFW_KEY_A:
             if (camera->lft != pressed)
-                camera->moveSideways += pressed ? 1 : -1;
+                camera->moveSideways += (pressed ? -1 : 1) * movespd;
             camera->lft = pressed;
             break;
         case GLFW_KEY_S:
             if (camera->bck != pressed)
-                camera->moveLongitudinal += pressed ? -1 : 1;
+                camera->moveLongitudinal += (pressed ? 1 : -1) * movespd;
             camera->bck = pressed;
             break;
         case GLFW_KEY_D:
             if (camera->rgt != pressed)
-                camera->moveSideways += pressed ? -1 : 1;
+                camera->moveSideways += (pressed ? 1 : -1) * movespd;
             camera->rgt = pressed;
             break;
         case GLFW_KEY_SPACE:
             if (camera->up != pressed)
-                camera->movePerpendicular += pressed ? 1 : -1;
+                camera->movePerpendicular += (pressed ? 1 : -1) * movespd;
             camera->up = pressed;
             break;
         case GLFW_KEY_LEFT_SHIFT:
             if (camera->dwn != pressed)
-                camera->movePerpendicular += pressed ? -1 : 1;
+                camera->movePerpendicular += (pressed ? -1 : 1) * movespd;
             camera->dwn = pressed;
             break;
         

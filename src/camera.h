@@ -8,13 +8,18 @@ namespace Camera
 {
 
     struct Cam {
-        bool fwd = false, bck = false, lft = false, rgt = false, up = false, dwn = false; // for remembering movement between key presses
+        bool fwd = false, 
+             bck = false, 
+             lft = false, 
+             rgt = false, 
+             up = false, 
+             dwn = false; // for remembering movement between key presses
         float fov, aspect, nearPlane, farPlane,
               moveLongitudinal = 0, moveSideways = 0, movePerpendicular = 0;
 
         std::shared_ptr<glm::vec3> position, rotation, upOrientation;
 
-// oppdateres samtidig med position og rotation slik at det ikke gjøres hver frame men mindre enn hver frame.
+        // oppdateres samtidig med position og rotation slik at det ikke gjøres hver frame men mindre enn hver frame.
         std::shared_ptr<glm::mat4> view, projection;
     };
 
