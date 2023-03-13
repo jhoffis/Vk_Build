@@ -11,25 +11,25 @@
 #include <iostream>
 #include "src/vk/drawing/gra_drawing.h"
 #include "camera.h"
+#include <thread>
 
 
 int main() {
     Window::createWindow(false, false);
     Gra::initVulkan();
 
-    Camera::Cam cam{};
+    static Camera::Cam cam{};
     cam.fov = 80.0f;
     cam.aspect = 2.0f;
     cam.nearPlane = 0.1f;
     cam.farPlane = 1000.0f;
-    cam.position = std::make_shared<glm::vec3>(glm::vec3(2.0f, 2.0f, 2.0f));
-    cam.rotation = std::make_shared<glm::vec3>(glm::vec3(2.0f, 2.0f, 2.0f));
-    cam.upOrientation = std::make_shared<glm::vec3>(glm::vec3(0.0f, 0.0f, 1.0f));
-    static auto camera = std::make_shared<Camera::Cam>(cam);
-    std::cout << "x: " << cam.rotation->x << "z: " << cam.rotation->z << std::endl;
-    Camera::updateView(camera);
-    std::cout << "x: " << cam.rotation->x << "z: " << cam.rotation->z << std::endl;
-    Camera::updateProjection(camera);
+    cam.position = glm::vec3(2.0f, 2.0f, 2.0f);
+    cam.rotation = glm::vec3(1.0f, 1.0f, 1.0f);
+    cam.upOrientation = glm::vec3(0.0f, 1.0f, 0.0f);
+    std::cout << "x: " << cam.rotation.x << "z: " << cam.rotation.z << std::endl;
+    cam.updateView();
+    std::cout << "x: " << cam.rotation.x << "z: " << cam.rotation.z << std::endl;
+    cam.updateProjection();
 
     static size_t x = 0;
     static size_t y = 0;
@@ -37,18 +37,19 @@ int main() {
     // scenes.emplace_back(0); // feiler om scenes er const / constexpr av en eller annen grunn
 
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
-        Camera::inputMovement(camera, key, action != GLFW_RELEASE);
+        cam.inputMovement(key, action != GLFW_RELEASE);
     });
 
     glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button, auto action, auto mods) {
-        // mouseButtonInput(&scenes[currentScene], button, action, x, y);
     });
 
     glfwSetCursorPosCallback(Window::m_window, [](auto window, auto xpos, auto ypos) {
-        // x = xpos;
-        // y = ypos;
-        // mousePosInput(&scenes[currentScene], x, y);
+        x = xpos;
+        y = ypos;
+        cam.inputMouse(static_cast<float>(xpos), static_cast<float>(ypos));
     });
+
+    glfwSetInputMode(Window::m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     for(;;)
     {
@@ -58,9 +59,11 @@ int main() {
         }
         glfwPollEvents();
         
-        Camera::updateMovement(camera);
+        cam.updateMovement();
+        cam.updateView();
 
-        Gra::drawFrame(camera);
+        Gra::drawFrame(cam);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
     Gra::cleanup();

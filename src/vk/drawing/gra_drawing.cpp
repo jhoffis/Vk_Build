@@ -41,7 +41,7 @@ namespace Gra {
         }
     }
 
-    void drawFrame(std::shared_ptr<Camera::Cam> camera) {
+    void drawFrame(Camera::Cam &camera) {
         vkWaitForFences(m_device, 1, &m_inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
@@ -59,7 +59,7 @@ namespace Gra {
         vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
         recordCommandBuffer(m_commandBuffers[currentFrame], imageIndex, mesh);
 
-        updateUniformBuffer(currentFrame, *camera->view, *camera->projection);
+        updateUniformBuffer(currentFrame, camera.view, camera.projection);
 
 
         // TODO change this to VkSubmitInfo2 ?

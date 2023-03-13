@@ -9,6 +9,6 @@ namespace Gra {
 
     void createSyncObjects();
     void cleanupSyncObjects();
-    void drawFrame(std::shared_ptr<Camera::Cam> camera);
+    void drawFrame(Camera::Cam &camera);
 
 }
