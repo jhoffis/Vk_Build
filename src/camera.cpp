@@ -37,7 +37,7 @@ namespace Camera {
         // float camX = sin(glfwGetTime()) * radius;
         // float camZ = cos(glfwGetTime()) * radius;
         // view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-        // view = glm::lookAt(position, position + rotation, upOrientation);
+        view = std::make_shared<glm::mat4>(glm::lookAt(*position, *position + *rotation, *upOrientation));
         
 
         // glm::mat4 rotM = glm::mat4(1.0f);
@@ -62,7 +62,7 @@ namespace Camera {
     { 
         auto proj = glm::perspective(glm::radians(fov), aspect, nearPlane, farPlane);
         proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
-        projection = proj;
+        projection = std::make_shared<glm::mat4>(proj);
     }
 
     /*
@@ -89,17 +89,19 @@ namespace Camera {
         // float z = glm::cos(glm::radians(rotation.y));
         bool change = false;
         if (moveLongitudinal != 0) {
-            position -= rotation * (movespd/100.0f) * moveLongitudinal;
+            *position -= *rotation * moveLongitudinal;
             change = true;
         }
         if (moveSideways != 0) {
-            auto diff = glm::normalize(glm::cross(rotation, upOrientation)) * movespd * moveSideways;
-            position += diff;
+            auto diff = glm::normalize(glm::cross(*rotation, *upOrientation)) * moveSideways;
+            *position += diff;
             change = true;
         }
         if (change) {
             updateView();
-            std::cout << "x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
+            std::cout << "x: " << position->x << " y: " << position->y << " z: " << position->z << std::endl;
+            std::cout << "rx: " << rotation->x << " ry: " << rotation->y << " z: " << rotation->z << std::endl;
+
         }
     }
 
@@ -108,7 +110,7 @@ namespace Camera {
         {
         case GLFW_KEY_W:
             if (movementFlags.test(0) != pressed) {
-                moveLongitudinal += (pressed ? -1 : 1);
+                moveLongitudinal += (pressed ? 1 : -1);
                 movementFlags[0] = pressed;
             }
             break;
@@ -120,7 +122,7 @@ namespace Camera {
             break;
         case GLFW_KEY_S:
             if (movementFlags.test(2) != pressed) {
-                moveLongitudinal += (pressed ? 1 : -1);
+                moveLongitudinal += (pressed ? -1 : 1);
                 movementFlags[2] = pressed;
             }
             break;
@@ -156,11 +158,11 @@ namespace Camera {
 		lastMouseX = x;
 		lastMouseY = y;
 
-		rotation.x = fmod(rotation.x-dy, 360.0f);
-		rotation.y = fmod(rotation.y+dx, 360.0f);
+		rotation->x = fmod(rotation->x-dy, 360.0f);
+		rotation->y = fmod(rotation->y+dx, 360.0f);
         updateView();
 
-        std::cout << "x: " << rotation.x << " y: " << rotation.y << " z: " << rotation.z << std::endl;
+        std::cout << "x: " << rotation->x << " y: " << rotation->y << " z: " << rotation->z << std::endl;
 		// System.out.println("rot: " + rotation.toString());
 
         // if (firstMouse)

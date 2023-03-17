@@ -23,12 +23,12 @@ int main() {
     cam.aspect = 2.0f;
     cam.nearPlane = 0.1f;
     cam.farPlane = 1000.0f;
-    cam.position = glm::vec3(2.0f, 2.0f, 2.0f);
-    cam.rotation = glm::vec3(1.0f, 1.0f, 1.0f);
-    cam.upOrientation = glm::vec3(0.0f, 1.0f, 0.0f);
-    std::cout << "x: " << cam.rotation.x << "z: " << cam.rotation.z << std::endl;
+    cam.position = std::make_shared<glm::vec3>(glm::vec3(-7.0f, -7.0f, -6.0f));
+    cam.rotation = std::make_shared<glm::vec3>(glm::vec3(1.0f, 1.0f, 1.0f));
+    cam.upOrientation = std::make_shared<glm::vec3>(glm::vec3(0.0f, 1.0f, 0.0f));
+    std::cout << "x: " << cam.rotation->x << "z: " << cam.rotation->z << std::endl;
     cam.updateView();
-    std::cout << "x: " << cam.rotation.x << "z: " << cam.rotation.z << std::endl;
+    std::cout << "x: " << cam.rotation->x << "z: " << cam.rotation->z << std::endl;
     cam.updateProjection();
 
     static size_t x = 0;
@@ -44,12 +44,12 @@ int main() {
     });
 
     glfwSetCursorPosCallback(Window::m_window, [](auto window, auto xpos, auto ypos) {
-        x = xpos;
-        y = ypos;
+        // x = xpos;
+        // y = ypos;
         cam.inputMouse(static_cast<float>(xpos), static_cast<float>(ypos));
     });
 
-    glfwSetInputMode(Window::m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // glfwSetInputMode(Window::m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     for(;;)
     {
@@ -64,6 +64,9 @@ int main() {
 
         Gra::drawFrame(cam);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+// når man holder ned wasd så endrer rotation seg til 2,2,2 men ellers 0,0,0
+        std::cout << "rx: " << cam.rotation->x << " ry: " << cam.rotation->y << " rz: " << cam.rotation->z << std::endl;
     }
 
     Gra::cleanup();
