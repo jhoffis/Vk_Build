@@ -18,7 +18,7 @@
 int main() {
 
     Math::Mat mat{};
-    std::cout << mat.elements[0] << std::endl;
+    std::cout << mat.toString() << std::endl;
 
 //    Window::createWindow(false, false);
 //    Gra::initVulkan();

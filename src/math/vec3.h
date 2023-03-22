@@ -1,3 +1,4 @@
+#include <string>
 
 namespace Math {
 
@@ -7,5 +8,7 @@ namespace Math {
         double z{0.0};
 
         constexpr void operator+(const Vec3& other);
+
+        std::string toString();
     };
 }

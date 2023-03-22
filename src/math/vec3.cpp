@@ -1,7 +1,13 @@
 #include "vec3.h"
 
-constexpr void Math::Vec3::operator+(const Vec3 &other) {
-    x += other.x;
-    y += other.y;
-    z += other.z;
+namespace Math {
+    constexpr void Vec3::operator+(const Vec3 &other) {
+        x += other.x;
+        y += other.y;
+        z += other.z;
+    }
+
+    std::string Vec3::toString() {
+        return  "[" + std::to_string(x) + ", " + std::to_string(x) + ", " + std::to_string(x) + "]";
+    }
 }

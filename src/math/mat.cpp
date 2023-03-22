@@ -1,14 +1,16 @@
 #include "mat.h"
 
-constexpr void Math::Mat::identity() {
-    for (double & element : elements)
-        element = 0;
-    elements[0] = 1;
-    elements[SIZE+1] = 1;
-    elements[2*SIZE+2] = 1;
-    elements[3*SIZE+3] = 1;
-}
-
-constexpr Math::Mat::Mat() {
-    identity();
+namespace Math {
+    std::string Mat::toString() {
+        std::string str = "[";
+        for (auto i = 0; i < SIZE * SIZE; i++) {
+            if (i != 0) {
+                str.append(", ");
+                if (i % 4 == 0)
+                    str.append("\n");
+            }
+            str.append(std::to_string(elements[i]));
+        }
+        return str.append("]");
+    }
 }
