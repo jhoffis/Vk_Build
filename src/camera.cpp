@@ -11,7 +11,7 @@
 namespace Camera {
 
     const bool flipY = true;
-    const float movespd = .0015;
+    const float movespd = .0035;
 
     void Cam::updateView()
     {
@@ -37,8 +37,15 @@ namespace Camera {
         // float camX = sin(glfwGetTime()) * radius;
         // float camZ = cos(glfwGetTime()) * radius;
         // view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-        view = std::make_shared<glm::mat4>(glm::lookAt(*position, *position + *rotation, *upOrientation));
-        
+		glm::vec3 translation = *position;
+		// if (flipY) {
+			translation.y *= -1.0f;
+		// }
+		// auto transM = glm::translate(glm::mat4(1.0f), translation);
+        // auto mat = glm::mat4
+        view = std::make_shared<glm::mat4>(glm::lookAt(translation, translation + *rotation, *upOrientation));
+        // 	translation.y *= -1.0f;
+
 
         // glm::mat4 rotM = glm::mat4(1.0f);
 		// glm::mat4 transM;
@@ -47,11 +54,6 @@ namespace Camera {
 		// rotM = glm::rotate(rotM, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 		// rotM = glm::rotate(rotM, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
-		// glm::vec3 translation = position;
-		// if (flipY) {
-		// 	translation.y *= -1.0f;
-		// }
-		// transM = glm::translate(glm::mat4(1.0f), translation);
 
         // view = rotM * transM;
 
@@ -89,18 +91,22 @@ namespace Camera {
         // float z = glm::cos(glm::radians(rotation.y));
         bool change = false;
         if (moveLongitudinal != 0) {
-            *position -= *rotation * moveLongitudinal;
+            *position += *rotation * moveLongitudinal * movespd;
             change = true;
         }
         if (moveSideways != 0) {
-            auto diff = glm::normalize(glm::cross(*rotation, *upOrientation)) * moveSideways;
+            auto diff = glm::normalize(glm::cross(*rotation, *upOrientation)) * moveSideways * (10.0f*movespd);
             *position += diff;
+            change = true;
+        }
+        if (movePerpendicular != 0) {
+            position->y += movePerpendicular * (15.0f*movespd);
             change = true;
         }
         if (change) {
             updateView();
             std::cout << "x: " << position->x << " y: " << position->y << " z: " << position->z << std::endl;
-            std::cout << "rx: " << rotation->x << " ry: " << rotation->y << " z: " << rotation->z << std::endl;
+            std::cout << "rx: " << rotation->x << " ry: " << rotation->y << " rz: " << rotation->z << std::endl;
 
         }
     }

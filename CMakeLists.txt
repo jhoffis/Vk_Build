@@ -25,6 +25,11 @@ add_executable(${PROJECT_NAME}
         src/camera.cpp 
         src/camera.h 
 
+        src/math/mat.cpp
+        src/math/mat.h
+        src/math/vec3.cpp
+        src/math/vec3.h
+
         src/vk/gra_setup.cpp
         src/vk/gra_setup.h
 
@@ -67,10 +72,8 @@ add_executable(${PROJECT_NAME}
         src/vk/shading/gra_depth.cpp
         src/vk/shading/gra_depth.h
         src/vk/shading/gra_vertex.cpp 
-        src/vk/shading/gra_vertex.h 
-        src/vk/shading/gra_fragment.cpp 
-        src/vk/shading/gra_fragment.h 
-        src/vk/shading/gra_memory_utils.cpp 
+        src/vk/shading/gra_vertex.h
+        src/vk/shading/gra_memory_utils.cpp
         src/vk/shading/gra_memory_utils.h 
         src/vk/shading/gra_uniform.cpp 
         src/vk/shading/gra_uniform.h 
