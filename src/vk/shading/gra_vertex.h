@@ -1,18 +1,18 @@
 #pragma once
 
 #include "src/window.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/hash.hpp>
+#include "math/vec3.h"
+#include "math/vec2.h"
+#include "math/mat.h"
 #include <array>
 #include <vector>
 
 namespace Gra {
 
     struct Vertex {
-        glm::vec3 pos;
-        glm::vec3 color;
-        glm::vec2 texCoord;
+        Math::Vec3 pos;
+        Math::Vec3 color;
+        Math::Vec2 texCoord;
 
         static VkVertexInputBindingDescription getBindingDescription() {
             VkVertexInputBindingDescription bindingDescription{
@@ -51,9 +51,9 @@ namespace Gra {
     };
 
     struct UniformBufferObject {
-        alignas(16) glm::mat4 model;
-        alignas(16) glm::mat4 view;
-        alignas(16) glm::mat4 proj;
+        alignas(16) Math::Mat model;
+        alignas(16) Math::Mat view;
+        alignas(16) Math::Mat proj;
     };
 
     VkBuffer createVertexBuffer(std::vector<Vertex> vertices);
@@ -65,11 +65,12 @@ namespace Gra {
 
 // For hashing and removing duplicate vertices
 namespace std {
+
     template<> struct hash<Gra::Vertex> {
         size_t operator()(Gra::Vertex const& vertex) const {
-            return ((hash<glm::vec3>()(vertex.pos) ^
-                   (hash<glm::vec3>()(vertex.color) << 1)) >> 1) ^
-                   (hash<glm::vec2>()(vertex.texCoord) << 1);
+            return ((vertex.pos.hash() ^
+                   (vertex.color.hash() << 1)) >> 1) ^
+                   (vertex.texCoord.hash() << 1);
         }
     };
 }

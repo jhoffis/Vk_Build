@@ -81,7 +81,7 @@ add_executable(${PROJECT_NAME}
         src/vk/shading/texture.h
         src/vk/shading/model.cpp 
         src/vk/shading/model.h
-)
+        src/math/vec2.cpp src/math/vec2.h src/math/hash.h)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
@@ -95,10 +95,10 @@ target_link_libraries(${PROJECT_NAME} Vulkan::Vulkan)
 # target_link_libraries(${PROJECT_NAME} ${Vulkan_LIBRARIES})
 # target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
 
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glm)
-target_link_libraries(${PROJECT_NAME} glm::glm)
+#add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glm)
+#target_link_libraries(${PROJECT_NAME} glm::glm)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glm)
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glm)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/stb)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/tiny_obj)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)

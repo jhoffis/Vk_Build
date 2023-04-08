@@ -37,14 +37,14 @@ namespace Camera {
         // float camX = sin(glfwGetTime()) * radius;
         // float camZ = cos(glfwGetTime()) * radius;
         // view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-		glm::vec3 translation = *position;
-		// if (flipY) {
-			translation.y *= -1.0f;
-		// }
-		// auto transM = glm::translate(glm::mat4(1.0f), translation);
-        // auto mat = glm::mat4
-        view = std::make_shared<glm::mat4>(glm::lookAt(translation, translation + *rotation, *upOrientation));
-        // 	translation.y *= -1.0f;
+//		glm::vec3 translation = *position;
+//		// if (flipY) {
+//			translation.y *= -1.0f;
+//		// }
+//		// auto transM = glm::translate(glm::mat4(1.0f), translation);
+//        // auto mat = glm::mat4
+//        view = std::make_shared<glm::mat4>(glm::lookAt(translation, translation + *rotation, *upOrientation));
+//        // 	translation.y *= -1.0f;
 
 
         // glm::mat4 rotM = glm::mat4(1.0f);
@@ -62,9 +62,9 @@ namespace Camera {
 
     void Cam::updateProjection()
     { 
-        auto proj = glm::perspective(glm::radians(fov), aspect, nearPlane, farPlane);
-        proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
-        projection = std::make_shared<glm::mat4>(proj);
+//        auto proj = glm::perspective(glm::radians(fov), aspect, nearPlane, farPlane);
+//        proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
+//        projection = std::make_shared<glm::mat4>(proj);
     }
 
     /*
@@ -88,27 +88,27 @@ namespace Camera {
     void  Cam::updateMovement()
     {
         // float x = glm::sin(glm::radians(rotation.y));
-        // float z = glm::cos(glm::radians(rotation.y));
-        bool change = false;
-        if (moveLongitudinal != 0) {
-            *position += *rotation * moveLongitudinal * movespd;
-            change = true;
-        }
-        if (moveSideways != 0) {
-            auto diff = glm::normalize(glm::cross(*rotation, *upOrientation)) * moveSideways * (10.0f*movespd);
-            *position += diff;
-            change = true;
-        }
-        if (movePerpendicular != 0) {
-            position->y += movePerpendicular * (15.0f*movespd);
-            change = true;
-        }
-        if (change) {
-            updateView();
-            std::cout << "x: " << position->x << " y: " << position->y << " z: " << position->z << std::endl;
-            std::cout << "rx: " << rotation->x << " ry: " << rotation->y << " rz: " << rotation->z << std::endl;
+//        // float z = glm::cos(glm::radians(rotation.y));
+//        bool change = false;
+//        if (moveLongitudinal != 0) {
+//            *position += *rotation * moveLongitudinal * movespd;
+//            change = true;
+//        }
+//        if (moveSideways != 0) {
+//            auto diff = glm::normalize(glm::cross(*rotation, *upOrientation)) * moveSideways * (10.0f*movespd);
+//            *position += diff;
+//            change = true;
+//        }
+//        if (movePerpendicular != 0) {
+//            position->y += movePerpendicular * (15.0f*movespd);
+//            change = true;
+//        }
+//        if (change) {
+//            updateView();
+//            std::cout << "x: " << position->x << " y: " << position->y << " z: " << position->z << std::endl;
+//            std::cout << "rx: " << rotation->x << " ry: " << rotation->y << " rz: " << rotation->z << std::endl;
 
-        }
+//        }
     }
 
     void Cam::inputMovement(int keycode, bool pressed) {
@@ -158,17 +158,17 @@ namespace Camera {
 
     void Cam::inputMouse(float x, float y)
     {
-        float dx = (x - lastMouseX) * mouseSensitivity;
-        float dy = (y - lastMouseY) * mouseSensitivity;
-
-		lastMouseX = x;
-		lastMouseY = y;
-
-		rotation->x = fmod(rotation->x-dy, 360.0f);
-		rotation->y = fmod(rotation->y+dx, 360.0f);
-        updateView();
-
-        std::cout << "x: " << rotation->x << " y: " << rotation->y << " z: " << rotation->z << std::endl;
+//        float dx = (x - lastMouseX) * mouseSensitivity;
+//        float dy = (y - lastMouseY) * mouseSensitivity;
+//
+//		lastMouseX = x;
+//		lastMouseY = y;
+//
+//		rotation->x = fmod(rotation->x-dy, 360.0f);
+//		rotation->y = fmod(rotation->y+dx, 360.0f);
+//        updateView();
+//
+//        std::cout << "x: " << rotation->x << " y: " << rotation->y << " z: " << rotation->z << std::endl;
 		// System.out.println("rot: " + rotation.toString());
 
         // if (firstMouse)

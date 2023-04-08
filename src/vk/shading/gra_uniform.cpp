@@ -5,11 +5,12 @@
 
 #include "gra_uniform.h"
 #include "gra_vertex.h"
-#include "src/vk/drawing/gra_command_buffers.h"
 #include "gra_memory_utils.h"
-#include "src/vk/presentation/gra_swap_chain.h"
-#include "src/vk/gra_setup.h"
-#include "src/vk/shading/texture.h"
+#include "vk/drawing/gra_command_buffers.h"
+#include "vk/presentation/gra_swap_chain.h"
+#include "vk/gra_setup.h"
+#include "vk/shading/texture.h"
+#include "math/mat.h"
 
 namespace Gra {
     std::vector<VkBuffer> m_uniformBuffers;
@@ -30,7 +31,7 @@ namespace Gra {
         }
     }
 
-    void updateUniformBuffer(uint32_t currentImage, glm::mat4 view, glm::mat4 projection) {
+    void updateUniformBuffer(uint32_t currentImage, Math::Mat view, Math::Mat projection) {
         static auto startTime = std::chrono::high_resolution_clock::now();
 
         // auto currentTime = std::chrono::high_resolution_clock::now();
@@ -38,7 +39,7 @@ namespace Gra {
 
         UniformBufferObject ubo{};
         // ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.model = glm::mat4(1);
+        ubo.model = Math::Mat{};
 
         // ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         // auto workingView = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));

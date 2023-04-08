@@ -13,6 +13,7 @@
 #include "camera.h"
 #include <thread>
 #include "math/mat.h"
+#include "math/vec3.h"
 
 
 int main() {
@@ -20,8 +21,20 @@ int main() {
     Math::Mat mat{};
     std::cout << mat.toString() << std::endl;
 
-//    Window::createWindow(false, false);
-//    Gra::initVulkan();
+    Math::Vec3 v1{
+        .x = 4.0f,
+        .z = 2.2f
+    };
+    Math::Vec3 v2{
+        .x = 1.0f,
+        .y = 6.9f,
+        .z = 2.2f
+    };
+    v1 += v2;
+    std::cout << v1.toString() << std::endl;
+
+    Window::createWindow(false, false);
+    Gra::initVulkan();
 //
 //    static Camera::Cam cam{};
 //    cam.fov = 80.0f;

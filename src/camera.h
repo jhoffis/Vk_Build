@@ -1,9 +1,9 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <memory>
 #include <bitset>
+#include "math/vec3.h"
+#include "math/mat.h"
 
 namespace Camera
 {
@@ -26,12 +26,12 @@ namespace Camera
         float yaw{ 0.0f };
         float pitch{ 0.0f };
 
-        std::shared_ptr<glm::vec3> position;
-        std::shared_ptr<glm::vec3> rotation;
-        std::shared_ptr<glm::vec3> upOrientation;
+        std::shared_ptr<Math::Vec3> position;
+        std::shared_ptr<Math::Vec3> rotation;
+        std::shared_ptr<Math::Vec3> upOrientation;
         // oppdateres samtidig med position og rotation slik at det ikke gjøres hver frame men mindre enn hver frame.
-        std::shared_ptr<glm::mat4> view; // identity matrix
-        std::shared_ptr<glm::mat4> projection; // identity matrix
+        std::shared_ptr<Math::Mat> view; // identity matrix
+        std::shared_ptr<Math::Mat> projection; // identity matrix
         
         void updateView();
         void updateProjection();

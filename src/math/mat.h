@@ -7,6 +7,16 @@ namespace Math {
         static constexpr int SIZE = 4;
         double elements[SIZE*SIZE]{};
 
+        constexpr void operator+=(const Mat& other) {
+            for (auto i = 0; i < SIZE * SIZE; i++)
+                elements[i] += other.elements[i];
+        }
+
+        constexpr void operator*=(const double &scalar) {
+            for (auto i = 0; i < SIZE * SIZE; i++)
+                elements[i] *= scalar;
+        }
+
         constexpr void identity() {
             for (auto &element: elements)
                 element = 0;
@@ -15,6 +25,7 @@ namespace Math {
             elements[2 * SIZE + 2] = 1;
             elements[3 * SIZE + 3] = 1;
         }
+
         constexpr Mat() {
             identity();
         }
