@@ -26,12 +26,12 @@ namespace Camera
         float yaw{ 0.0f };
         float pitch{ 0.0f };
 
-        std::shared_ptr<Math::Vec3> position;
-        std::shared_ptr<Math::Vec3> rotation;
-        std::shared_ptr<Math::Vec3> upOrientation;
+        Math::Vec3 position{};
+        Math::Vec3 rotation{};
+        Math::Vec3 upOrientation{};
         // oppdateres samtidig med position og rotation slik at det ikke gjøres hver frame men mindre enn hver frame.
-        std::shared_ptr<Math::Mat> view; // identity matrix
-        std::shared_ptr<Math::Mat> projection; // identity matrix
+        Math::Mat view{};
+        Math::Mat projection{};
         
         void updateView();
         void updateProjection();

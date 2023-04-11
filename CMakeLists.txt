@@ -81,7 +81,7 @@ add_executable(${PROJECT_NAME}
         src/vk/shading/texture.h
         src/vk/shading/model.cpp 
         src/vk/shading/model.h
-        src/math/vec2.cpp src/math/vec2.h src/math/hash.h)
+        src/math/vec2.cpp src/math/vec2.h src/math/hash.h src/player/VillagerStats.cpp src/player/VillagerStats.h)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})

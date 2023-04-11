@@ -35,19 +35,19 @@ int main() {
 
     Window::createWindow(false, false);
     Gra::initVulkan();
-//
-//    static Camera::Cam cam{};
-//    cam.fov = 80.0f;
-//    cam.aspect = 2.0f;
-//    cam.nearPlane = 0.1f;
-//    cam.farPlane = 1000.0f;
-//    cam.position = std::make_shared<glm::vec3>(glm::vec3(-0.0f, -0.0f, -0.0f));
+
+    static Camera::Cam cam{};
+    cam.fov = 80.0f;
+    cam.aspect = 2.0f;
+    cam.nearPlane = 0.1f;
+    cam.farPlane = 1000.0f;
+//    cam.position = Math::Vec3(-0.0f, -0.0f, -0.0f);
 //    cam.rotation = std::make_shared<glm::vec3>(glm::vec3(glm::radians(-90.001f), 10.0f, 0.01f));
 //    cam.upOrientation = std::make_shared<glm::vec3>(glm::vec3(0.0f, 1.0f, 0.0f));
-//    std::cout << "x: " << cam.rotation->x << "z: " << cam.rotation->z << std::endl;
-//    cam.updateView();
-//    std::cout << "x: " << cam.rotation->x << "z: " << cam.rotation->z << std::endl;
-//    cam.updateProjection();
+    std::cout << "x: " << cam.rotation.x << "z: " << cam.rotation.z << std::endl;
+    cam.updateView();
+    std::cout << "x: " << cam.rotation.x << "z: " << cam.rotation.z << std::endl;
+    cam.updateProjection();
 //
 //    static size_t x = 0;
 //    static size_t y = 0;
@@ -69,25 +69,25 @@ int main() {
 //
 //    // glfwSetInputMode(Window::m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 //
-//    for(;;)
-//    {
-//        if (Window::shouldClose()) {
-//            //tickThread.join();
-//            break;
-//        }
-//        glfwPollEvents();
-//
-//        cam.updateMovement();
-//        cam.updateView();
-//
-//        Gra::drawFrame(cam);
-//        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//
-//// når man holder ned wasd så endrer rotation seg til 2,2,2 men ellers 0,0,0
-//        std::cout << "rx: " << cam.rotation->x << " ry: " << cam.rotation->y << " rz: " << cam.rotation->z << std::endl;
-//    }
-//
-//    Gra::cleanup();
-//    Window::destroyWindow();
+    for(;;)
+    {
+        if (Window::shouldClose()) {
+            //tickThread.join();
+            break;
+        }
+        glfwPollEvents();
+
+        cam.updateMovement();
+        cam.updateView();
+
+        Gra::drawFrame(cam);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+// når man holder ned wasd så endrer rotation seg til 2,2,2 men ellers 0,0,0
+        std::cout << "rx: " << cam.rotation.x << " ry: " << cam.rotation.y << " rz: " << cam.rotation.z << std::endl;
+    }
+
+    Gra::cleanup();
+    Window::destroyWindow();
     return 0;
 }
