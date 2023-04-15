@@ -145,6 +145,6 @@ set(CPACK_PACKAGE_FILE_NAME
 
 # Copy resource folder to binary
 add_custom_target(copy_assets
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/Debug/res
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/res
 )
 add_dependencies(${PROJECT_NAME} copy_assets)

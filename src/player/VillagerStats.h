@@ -23,21 +23,15 @@ const uint64_t
 //    organ       = 0b0100'000,
 //    butt        = 0b1000'000,
 //    feet        = 0b0001'0000'000
-
-    // at least five of each of these to represent a spectrum that takes up less space than a 16-bit float
-    // open:
-    // conscientious:
-    // extraverted:
-    // disagreeable:
-    // agreeable:
-    // neurotic:
-
     ;
 
+// one vill cant have more than 1 kb of data.
 struct VillagerStats {
     // thought, want, personality, feelings. allergi, gutbiome, iq
     // save events or things in memory when you're happy or sad enough.
-    uint64_t personality{0};
+    uint32_t personality{0};
+    int8_t openness{}, conscientiousness{}, agreeableness{}, extraversion{}, neuroticism{};
+    uint8_t iq{};
 
 };
 

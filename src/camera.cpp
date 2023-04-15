@@ -60,8 +60,29 @@ namespace Camera {
 		// viewPos = glm::vec4(position, 0.0f) * glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f);
     }
 
+    /**
+	 * 1.0f 0.0f 0.0f 0.0f 0.0f 1.0f 0.0f 0.0f 0.0f 0.0f -((far + near) / range)
+	 * -((2 * far * near) / range) 0.0f 0.0f -1.0f 0.0f
+	 *
+	 * @param aspect width / height
+	 */
+//    void Cam::perspectiveProjection(float fov, float aspect, float near, float far) {
+//
+//
+//        return result;
+//    }
+
     void Cam::updateProjection()
-    { 
+    {
+        auto tanFOV = std::tan((fov / 2.0) * 3.14 / 180.0);
+        auto range = farPlane - nearPlane;
+
+        projection.set(0, 0, 1.0f / (aspect * tanFOV));
+        projection.set(1, 1, 1.0f / tanFOV);
+        projection.set(2, 2, -((farPlane + nearPlane) / range));
+        projection.set(2, 3, -1.0f);
+        projection.set(3, 2, -((2 * farPlane * nearPlane) / range));
+        projection.set(3, 3, 0.0f);
 //        auto proj = glm::perspective(glm::radians(fov), aspect, nearPlane, farPlane);
 //        proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
 //        projection = std::make_shared<glm::mat4>(proj);

@@ -84,7 +84,7 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 // når man holder ned wasd så endrer rotation seg til 2,2,2 men ellers 0,0,0
-        std::cout << "rx: " << cam.rotation.x << " ry: " << cam.rotation.y << " rz: " << cam.rotation.z << std::endl;
+//        std::cout << "rx: " << cam.rotation.x << " ry: " << cam.rotation.y << " rz: " << cam.rotation.z << std::endl;
     }
 
     Gra::cleanup();

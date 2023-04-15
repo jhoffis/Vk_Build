@@ -13,8 +13,12 @@ namespace Math {
         }
 
         constexpr void operator*=(const double &scalar) {
-            for (auto i = 0; i < SIZE * SIZE; i++)
-                elements[i] *= scalar;
+            for (double & element : elements)
+                element *= scalar;
+        }
+
+        constexpr void set(int x, int y, double value) {
+            elements[y*SIZE + x] = value;
         }
 
         constexpr void identity() {
