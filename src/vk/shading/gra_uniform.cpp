@@ -2,6 +2,7 @@
 // Created by Jens Benz on 08.10.2022.
 //
 #include <chrono>
+#include <cstring>
 
 #include "gra_uniform.h"
 #include "gra_vertex.h"

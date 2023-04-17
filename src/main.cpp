@@ -3,9 +3,11 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_ENABLE_EXPERIMENTAL
 
-#define VK_USE_PLATFORM_WIN32_KHR
+#ifdef _WIN32
+	#define VK_USE_PLATFORM_WIN32_KHR
+	#define GLFW_EXPOSE_NATIVE_WIN32
+#endif
 #define GLFW_INCLUDE_VULKAN
-#define GLFW_EXPOSE_NATIVE_WIN32
 
 #include "src/vk/gra_setup.h"
 #include <iostream>
@@ -15,9 +17,7 @@
 #include "math/mat.h"
 #include "math/vec3.h"
 
-
 int main() {
-
     Math::Mat mat{};
     std::cout << mat.toString() << std::endl;
 

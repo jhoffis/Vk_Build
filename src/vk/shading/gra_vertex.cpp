@@ -2,11 +2,11 @@
 // Created by Jens Benz on 18.09.2022.
 //
 
-
 #include <vector>
 #include "gra_vertex.h"
 #include "src/vk/gra_setup.h"
 #include "gra_memory_utils.h"
+#include <cstring>
 
 namespace Gra {
 

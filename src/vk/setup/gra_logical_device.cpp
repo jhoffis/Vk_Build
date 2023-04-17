@@ -7,6 +7,7 @@
 #include <vector>
 #include <stdexcept>
 #include <set>
+#include <cstring>
 
 namespace Gra {
 
