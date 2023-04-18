@@ -37,7 +37,7 @@ int main() {
     Gra::initVulkan();
 
     static Camera::Cam cam{};
-    cam.fov = 80.0f;
+/*    cam.fov = 80.0f;
     cam.aspect = 2.0f;
     cam.nearPlane = 0.1f;
     cam.farPlane = 1000.0f;
@@ -48,6 +48,7 @@ int main() {
     cam.updateView();
     std::cout << "x: " << cam.rotation.x << "z: " << cam.rotation.z << std::endl;
     cam.updateProjection();
+    */
 //
 //    static size_t x = 0;
 //    static size_t y = 0;
@@ -78,7 +79,7 @@ int main() {
         glfwPollEvents();
 
         cam.updateMovement();
-        cam.updateView();
+//        cam.updateView();
 
         Gra::drawFrame(cam);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));

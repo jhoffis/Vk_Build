@@ -32,7 +32,7 @@ namespace Gra {
         }
     }
 
-    void updateUniformBuffer(uint32_t currentImage, Math::Mat view, Math::Mat projection) {
+    void updateUniformBuffer(uint32_t currentImage) {
         static auto startTime = std::chrono::high_resolution_clock::now();
 
         // auto currentTime = std::chrono::high_resolution_clock::now();
@@ -44,10 +44,10 @@ namespace Gra {
 
         // ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         // auto workingView = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.view = view;
+        ubo.view = Math::Mat{};
 
         // ubo.proj = glm::perspective(glm::radians(120.0f), m_swapChainExtent.width / (float) m_swapChainExtent.height, 0.1f, 10000.0f);
-        ubo.proj = projection;
+        ubo.proj = Math::Mat{};
 
         void* data;
         vkMapMemory(m_device, m_uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);

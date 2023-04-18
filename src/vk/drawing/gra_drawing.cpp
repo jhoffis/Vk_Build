@@ -59,7 +59,7 @@ namespace Gra {
         vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
         recordCommandBuffer(m_commandBuffers[currentFrame], imageIndex, mesh);
 
-        updateUniformBuffer(currentFrame, camera.view, camera.projection);
+        updateUniformBuffer(currentFrame);
 
 
         // TODO change this to VkSubmitInfo2 ?
