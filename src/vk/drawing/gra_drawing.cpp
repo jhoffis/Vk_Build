@@ -41,7 +41,7 @@ namespace Gra {
         }
     }
 
-    void drawFrame(Camera::Cam &camera) {
+    void drawFrame(Camera::Cam &camera, Model::Mesh mesh) {
         vkWaitForFences(m_device, 1, &m_inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;

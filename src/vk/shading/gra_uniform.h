@@ -1,9 +1,10 @@
 #pragma once
 
 #include <cstdint>
-#include "src/window.h"
+#include "window.h"
 #include "math/mat.h"
 #include <vector>
+#include "vk/shading/texture.h"
 
 namespace Gra {
     extern VkDescriptorSetLayout m_descriptorSetLayout;
@@ -14,6 +15,6 @@ namespace Gra {
     void createDescriptorSetLayout();
 
     void createDescriptorPool();
-    void createDescriptorSets();
+    void createDescriptorSets(Texture::TexData);
     void cleanupUniform();
 }

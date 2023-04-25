@@ -23,7 +23,6 @@ const bool enableValidationLayers = true;
 #include "vk/shading/gra_uniform.h"
 #include "vk/shading/gra_depth.h"
 #include "vk/shading/gra_vertex.h"
-#include "vk/shading/texture.h"
 #include <vector>
 
 
@@ -36,7 +35,6 @@ std::vector<const char *> m_validationLayers = {
  * Base
  */
 namespace Gra {
-    Model::Mesh mesh;
     VkDevice m_device;
     VkInstance m_instance;
     std::shared_ptr<VkSurfaceKHR> m_surface;
@@ -71,13 +69,13 @@ namespace Gra {
         createColorResources();
         createDepthResources();
         createFramebuffers();
-        Texture::createTextureImage("viking_room.png");
-        Texture::createTextureImageView();
-        Texture::createTextureSampler();
-        mesh = Model::loadModel("viking_room.obj");
+    }
+
+
+    void initRest(Texture::TexData tex) {
         createUniformBuffers();
         createDescriptorPool();
-        createDescriptorSets();
+        createDescriptorSets(tex);
         createCommandBuffers();
         createSyncObjects();
     }

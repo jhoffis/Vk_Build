@@ -14,11 +14,9 @@
 
 namespace Texture {
 
-    VkImage textureImage;
-    VkDeviceMemory textureImageMemory;
-    VkImageView textureImageView;
     VkSampler textureSampler;
-    uint32_t mipLevels;
+    uint32_t m_mipLevels;
+    std::vector<TexData> m_textures{};
 
     struct ImageData {
         int w;
@@ -295,9 +293,9 @@ namespace Texture {
         vkBindImageMemory(Gra::m_device, image, imageMemory, 0);
     }
 
-    void createTextureImage(const char *name) {
+    TexData createTextureImage(const char *name) {
         auto texture = loadImage(name);
-        mipLevels = texture.mipLevels;
+        m_mipLevels = texture.mipLevels;
         // The pixels are laid out row by row with 4 bytes per pixel in the case of STBI_rgb_alpha for a total of texWidth * texHeight * 4 values.
         VkDeviceSize imageSize = texture.w * texture.h * 4;
 
@@ -317,6 +315,8 @@ namespace Texture {
 
         stbi_image_free(texture.image);
 
+        TexData texData{};
+
         createImage(texture.w, 
                     texture.h, 
                     texture.mipLevels, 
@@ -324,26 +324,30 @@ namespace Texture {
                     VK_FORMAT_R8G8B8A8_SRGB, 
                     VK_IMAGE_TILING_OPTIMAL,
                     VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                    textureImage, 
-                    textureImageMemory);
+                    texData.textureImage,
+                    texData.textureImageMemory);
 
         // The next step is to copy the staging buffer to the texture image. This involves two steps:
 
-        transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, texture.mipLevels);
+        transitionImageLayout(texData.textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, texture.mipLevels);
 
-        copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texture.w), static_cast<uint32_t>(texture.h));
+        copyBufferToImage(stagingBuffer, texData.textureImage, static_cast<uint32_t>(texture.w), static_cast<uint32_t>(texture.h));
 
         // To be able to start sampling from the texture image in the shader, we need one last transition to prepare it for shader access:
-        // transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, texture.mipLevels);
+        // transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, texture.m_mipLevels);
 
         vkDestroyBuffer(Gra::m_device, stagingBuffer, nullptr);
         vkFreeMemory(Gra::m_device, stagingBufferMemory, nullptr);
 
-        generateMipmaps(textureImage, VK_FORMAT_R8G8B8A8_SRGB, texture.w, texture.h, texture.mipLevels);
-    }
+        generateMipmaps(texData.textureImage, VK_FORMAT_R8G8B8A8_SRGB, texture.w, texture.h, texture.mipLevels);
 
-    void createTextureImageView() {
-        textureImageView = Gra::createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
+        /*
+         * Create Texture Image View which does not need to be allocated on the GPU. Think of an image view as a fancy pointer into the pixel data of a VkImage
+         */
+        texData.textureImageView = Gra::createImageView(texData.textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, m_mipLevels);
+
+        m_textures.push_back(texData);
+        return texData;
     }
 
     /*
@@ -376,8 +380,8 @@ namespace Texture {
             .compareEnable = VK_FALSE,
             .compareOp = VK_COMPARE_OP_ALWAYS,
             
-            .minLod = 0, // test static_cast<float>(mipLevels / 2),
-            .maxLod = static_cast<float>(mipLevels),
+            .minLod = 0, // test static_cast<float>(m_mipLevels / 2),
+            .maxLod = static_cast<float>(m_mipLevels),
             
             .borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK,
 
@@ -404,9 +408,11 @@ namespace Texture {
 
     void cleanupTextures() {
         vkDestroySampler(Gra::m_device, textureSampler, nullptr);
-        vkDestroyImageView(Gra::m_device, textureImageView, nullptr);
-        vkDestroyImage(Gra::m_device, textureImage, nullptr);
-        vkFreeMemory(Gra::m_device, textureImageMemory, nullptr);
+        for (auto tex : m_textures) {
+            vkDestroyImageView(Gra::m_device, tex.textureImageView, nullptr);
+            vkDestroyImage(Gra::m_device, tex.textureImage, nullptr);
+            vkFreeMemory(Gra::m_device, tex.textureImageMemory, nullptr);
+        }
     }
 
 } // Texture

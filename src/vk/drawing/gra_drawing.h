@@ -2,6 +2,7 @@
 
 #include "window.h"
 #include "camera.h"
+#include "vk/shading/model.h"
 
 namespace Gra {
 
@@ -9,6 +10,6 @@ namespace Gra {
 
     void createSyncObjects();
     void cleanupSyncObjects();
-    void drawFrame(Camera::Cam &camera);
+    void drawFrame(Camera::Cam &camera, Model::Mesh mesh);
 
 }

@@ -5,10 +5,13 @@
 
 namespace Texture {
 
-    extern VkImage textureImage;
-    extern VkDeviceMemory textureImageMemory;
-    extern VkImageView textureImageView;
     extern VkSampler textureSampler;
+
+    struct TexData {
+        VkImage textureImage;
+        VkDeviceMemory textureImageMemory;
+        VkImageView textureImageView;
+    };
 
     void createImage(uint32_t width,
                      uint32_t height,
@@ -22,8 +25,7 @@ namespace Texture {
                      VkDeviceMemory &imageMemory
     );
 
-    void createTextureImage(const char *name);
-    void createTextureImageView();
+    TexData createTextureImage(const char *name);
     void createTextureSampler();
     GLFWimage createGLFWImage(const char *path);
 

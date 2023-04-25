@@ -8,9 +8,7 @@
 #include "gra_vertex.h"
 #include "gra_memory_utils.h"
 #include "vk/drawing/gra_command_buffers.h"
-#include "vk/presentation/gra_swap_chain.h"
 #include "vk/gra_setup.h"
-#include "vk/shading/texture.h"
 #include "math/mat.h"
 
 namespace Gra {
@@ -103,7 +101,7 @@ namespace Gra {
         }
     }
 
-    void createDescriptorSets() {
+    void createDescriptorSets(Texture::TexData tex) {
         std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, m_descriptorSetLayout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -124,7 +122,7 @@ namespace Gra {
 
             VkDescriptorImageInfo imageInfo{};
             imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.imageView = Texture::textureImageView;
+            imageInfo.imageView = tex.textureImageView;
             imageInfo.sampler = Texture::textureSampler;
 
             std::array<VkWriteDescriptorSet, 2> descriptorWrites{};

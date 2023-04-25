@@ -16,6 +16,7 @@
 #include <thread>
 #include "math/mat.h"
 #include "math/vec3.h"
+#include "vk/shading/texture.h"
 
 int main() {
     Math::Mat mat{};
@@ -35,6 +36,10 @@ int main() {
 
     Window::createWindow(false, false);
     Gra::initVulkan();
+    auto tex = Texture::createTextureImage("viking_room.png");
+    Texture::createTextureSampler();
+    Model::Mesh mesh = Model::loadModel("viking_room.obj");
+    Gra::initRest(tex);
 
     static Camera::Cam cam{};
 /*    cam.fov = 80.0f;
@@ -81,7 +86,7 @@ int main() {
         cam.updateMovement();
 //        cam.updateView();
 
-        Gra::drawFrame(cam);
+        Gra::drawFrame(cam, mesh);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 // når man holder ned wasd så endrer rotation seg til 2,2,2 men ellers 0,0,0
