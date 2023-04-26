@@ -50,12 +50,6 @@ namespace Gra {
         }
     };
 
-    struct UniformBufferObject {
-        alignas(16) Math::Mat model;
-        alignas(16) Math::Mat view;
-        alignas(16) Math::Mat proj;
-    };
-
     VkBuffer createVertexBuffer(std::vector<Vertex> vertices);
     VkBuffer createIndexBuffer(std::vector<uint32_t> indices);
 

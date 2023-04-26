@@ -63,7 +63,6 @@ namespace Gra {
         createSwapChain();
         createImageViews();
         createRenderPass();
-        createDescriptorSetLayout();
         createGraphicsPipeline();
         createCommandPool();
         createColorResources();
@@ -75,7 +74,6 @@ namespace Gra {
     void initRest(Texture::TexData tex) {
         createUniformBuffers();
         createDescriptorPool();
-        createDescriptorSets(tex);
         createCommandBuffers();
         createSyncObjects();
     }

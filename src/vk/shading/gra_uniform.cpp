@@ -15,7 +15,7 @@ namespace Gra {
     std::vector<VkBuffer> m_uniformBuffers;
     std::vector<VkDeviceMemory> m_uniformBuffersMemory;
 
-    VkDescriptorSetLayout m_descriptorSetLayout;
+//    VkDescriptorSetLayout m_descriptorSetLayout;
     VkDescriptorPool m_descriptorPool;
     std::vector<VkDescriptorSet> m_descriptorSets;
 
@@ -54,7 +54,7 @@ namespace Gra {
     }
 
 
-    void createDescriptorSetLayout() {
+    void createDescriptorSetLayout(Uniform& uniform) {
         VkDescriptorSetLayoutBinding uboLayoutBinding{};
         uboLayoutBinding.binding = 0;
         uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -78,7 +78,7 @@ namespace Gra {
         layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
         layoutInfo.pBindings = bindings.data();
 
-        if (vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &m_descriptorSetLayout) != VK_SUCCESS) {
+        if (vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &uniform.descriptorSetLayout) != VK_SUCCESS) {
             throw std::runtime_error("failed to create descriptor set layout!");
         }
     }
@@ -101,8 +101,8 @@ namespace Gra {
         }
     }
 
-    void createDescriptorSets(Texture::TexData tex) {
-        std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, m_descriptorSetLayout);
+    void createDescriptorSets(Texture::TexData tex, Uniform& uniform) {
+        std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, uniform.descriptorSetLayout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
         allocInfo.descriptorPool = m_descriptorPool;
@@ -147,14 +147,16 @@ namespace Gra {
         }
     }
 
-    void cleanupUniform() {
+    void cleanupUniform(std::vector<Uniform> uniforms) {
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroyBuffer(m_device, m_uniformBuffers[i], nullptr);
             vkFreeMemory(m_device, m_uniformBuffersMemory[i], nullptr);
         }
 
         vkDestroyDescriptorPool(m_device, m_descriptorPool, nullptr);
-        vkDestroyDescriptorSetLayout(m_device, m_descriptorSetLayout, nullptr);
+        for(auto uniform : uniforms) {
+            vkDestroyDescriptorSetLayout(m_device, uniform.descriptorSetLayout, nullptr);
+        }
     }
 
 } // Gra

@@ -7,14 +7,24 @@
 #include "vk/shading/texture.h"
 
 namespace Gra {
-    extern VkDescriptorSetLayout m_descriptorSetLayout;
-    extern std::vector<VkDescriptorSet> m_descriptorSets;
+
+    struct Uniform {
+        VkDescriptorSetLayout descriptorSetLayout;
+        std::vector<VkDescriptorSet> descriptorSets;
+        VkDescriptorPool descriptorPool;
+    };
+
+    struct UniformBufferObject {
+        alignas(16) Math::Mat model;
+        alignas(16) Math::Mat view;
+        alignas(16) Math::Mat proj;
+    };
 
     void createUniformBuffers();
     void updateUniformBuffer(uint32_t currentImage);
-    void createDescriptorSetLayout();
 
+    void createDescriptorSetLayout(Uniform& uniform);
     void createDescriptorPool();
-    void createDescriptorSets(Texture::TexData);
+    void createDescriptorSets(Texture::TexData, Uniform& uniform);
     void cleanupUniform();
 }
