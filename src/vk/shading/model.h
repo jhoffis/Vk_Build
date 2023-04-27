@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "gra_vertex.h"
+#include "texture.h"
 
 namespace Model {
 
@@ -12,4 +13,5 @@ namespace Model {
     };
 
     Mesh loadModel(const char *name);
+    Mesh createSprite();
 }

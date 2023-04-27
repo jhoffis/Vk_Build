@@ -19,6 +19,7 @@ void main() {
 //    vec4(1,0,0,0) *
 //    ubo.model *
     vec4(inPosition, 1.0);
+    gl_Position.z = 0.0;
     fragColor = inColor;
     fragTexCoord = inTexCoord;
 }

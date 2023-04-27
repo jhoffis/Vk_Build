@@ -13,7 +13,7 @@ namespace Gra {
 
 
     void initVulkan();
-    void initRest(Texture::TexData tex);
+    void initRest();
     void cleanup();
 
 }

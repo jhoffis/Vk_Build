@@ -8,10 +8,15 @@
 
 namespace Gra {
 
+//    extern std::vector<VkDescriptorSet> m_descriptorSets;
+
     struct Uniform {
-        VkDescriptorSetLayout descriptorSetLayout;
-        std::vector<VkDescriptorSet> descriptorSets;
-        VkDescriptorPool descriptorPool;
+        std::vector<VkBuffer> uniformBuffers{}; // Buffer and buffersizes
+        std::vector<VkDeviceMemory> uniformBuffersMemory{}; // actual memory allocated on the vram
+
+        VkDescriptorSetLayout descriptorSetLayout{};
+        std::vector<VkDescriptorSet> descriptorSets{};
+        VkDescriptorPool descriptorPool{};
     };
 
     struct UniformBufferObject {
@@ -20,11 +25,11 @@ namespace Gra {
         alignas(16) Math::Mat proj;
     };
 
-    void createUniformBuffers();
-    void updateUniformBuffer(uint32_t currentImage);
+    void createUniformBuffers(Uniform &uniform);
+    void updateUniformBuffer(Uniform &uniform, uint32_t currentImage);
 
     void createDescriptorSetLayout(Uniform& uniform);
-    void createDescriptorPool();
-    void createDescriptorSets(Texture::TexData, Uniform& uniform);
-    void cleanupUniform();
+    void createDescriptorPool(Uniform& uniform);
+    void createDescriptorSets(const Texture::TexData &tex, Uniform& uniform);
+    void cleanupUniform(const Uniform &uniform);
 }

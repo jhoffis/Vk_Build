@@ -12,25 +12,25 @@
 #include "math/mat.h"
 
 namespace Gra {
-    std::vector<VkBuffer> m_uniformBuffers;
-    std::vector<VkDeviceMemory> m_uniformBuffersMemory;
 
-//    VkDescriptorSetLayout m_descriptorSetLayout;
-    VkDescriptorPool m_descriptorPool;
-    std::vector<VkDescriptorSet> m_descriptorSets;
-
-    void createUniformBuffers() {
+    void createUniformBuffers(Uniform &uniform) {
         VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
-        m_uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-        m_uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+        uniform.uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+        uniform.uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_uniformBuffers[i], m_uniformBuffersMemory[i]);
+            createBuffer(
+                    bufferSize,
+                    VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                    uniform.uniformBuffers[i],
+                    uniform.uniformBuffersMemory[i]
+            );
         }
     }
 
-    void updateUniformBuffer(uint32_t currentImage) {
+    void updateUniformBuffer(Uniform &uniform, uint32_t currentImage) {
         static auto startTime = std::chrono::high_resolution_clock::now();
 
         // auto currentTime = std::chrono::high_resolution_clock::now();
@@ -47,14 +47,14 @@ namespace Gra {
         // ubo.proj = glm::perspective(glm::radians(120.0f), m_swapChainExtent.width / (float) m_swapChainExtent.height, 0.1f, 10000.0f);
         ubo.proj = Math::Mat{};
 
-        void* data;
-        vkMapMemory(m_device, m_uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
+        void *data;
+        vkMapMemory(m_device, uniform.uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
         memcpy(data, &ubo, sizeof(ubo));
-        vkUnmapMemory(m_device, m_uniformBuffersMemory[currentImage]);
+        vkUnmapMemory(m_device, uniform.uniformBuffersMemory[currentImage]);
     }
 
 
-    void createDescriptorSetLayout(Uniform& uniform) {
+    void createDescriptorSetLayout(Uniform &uniform) {
         VkDescriptorSetLayoutBinding uboLayoutBinding{};
         uboLayoutBinding.binding = 0;
         uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -64,11 +64,11 @@ namespace Gra {
 
         // This descriptor makes it possible for shaders to access an image resource through a sampler object
         VkDescriptorSetLayoutBinding samplerLayoutBinding{
-            .binding = 1,
-            .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-            .descriptorCount = 1,
-            .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT, // fragment shader.  It is possible to use texture sampling in the vertex shader, for example to dynamically deform a grid of vertices by a heightmap
-            .pImmutableSamplers = nullptr,
+                .binding = 1,
+                .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                .descriptorCount = 1,
+                .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT, // fragment shader.  It is possible to use texture sampling in the vertex shader, for example to dynamically deform a grid of vertices by a heightmap
+                .pImmutableSamplers = nullptr,
         };
 
         std::array<VkDescriptorSetLayoutBinding, 2> bindings = {uboLayoutBinding, samplerLayoutBinding};
@@ -83,7 +83,7 @@ namespace Gra {
         }
     }
 
-    void createDescriptorPool() {
+    void createDescriptorPool(Uniform &uniform) {
         std::array<VkDescriptorPoolSize, 2> poolSizes{};
         poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
@@ -96,27 +96,27 @@ namespace Gra {
         poolInfo.pPoolSizes = poolSizes.data();
         poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
-        if (vkCreateDescriptorPool(m_device, &poolInfo, nullptr, &m_descriptorPool) != VK_SUCCESS) {
+        if (vkCreateDescriptorPool(m_device, &poolInfo, nullptr, &uniform.descriptorPool) != VK_SUCCESS) {
             throw std::runtime_error("failed to create descriptor pool!");
         }
     }
 
-    void createDescriptorSets(Texture::TexData tex, Uniform& uniform) {
+    void createDescriptorSets(const Texture::TexData &tex, Uniform &uniform) {
         std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, uniform.descriptorSetLayout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.descriptorPool = m_descriptorPool;
+        allocInfo.descriptorPool = uniform.descriptorPool;
         allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
         allocInfo.pSetLayouts = layouts.data();
 
-        m_descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
-        if (vkAllocateDescriptorSets(m_device, &allocInfo, m_descriptorSets.data()) != VK_SUCCESS) {
+        uniform.descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+        if (vkAllocateDescriptorSets(m_device, &allocInfo, uniform.descriptorSets.data()) != VK_SUCCESS) {
             throw std::runtime_error("failed to allocate descriptor sets!");
         }
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             VkDescriptorBufferInfo bufferInfo{};
-            bufferInfo.buffer = m_uniformBuffers[i];
+            bufferInfo.buffer = uniform.uniformBuffers[i];
             bufferInfo.offset = 0;
             bufferInfo.range = sizeof(UniformBufferObject);
 
@@ -128,7 +128,7 @@ namespace Gra {
             std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
             descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            descriptorWrites[0].dstSet = m_descriptorSets[i];
+            descriptorWrites[0].dstSet = uniform.descriptorSets[i];
             descriptorWrites[0].dstBinding = 0;
             descriptorWrites[0].dstArrayElement = 0;
             descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -136,27 +136,25 @@ namespace Gra {
             descriptorWrites[0].pBufferInfo = &bufferInfo;
 
             descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            descriptorWrites[1].dstSet = m_descriptorSets[i];
+            descriptorWrites[1].dstSet = uniform.descriptorSets[i];
             descriptorWrites[1].dstBinding = 1;
             descriptorWrites[1].dstArrayElement = 0;
             descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
             descriptorWrites[1].descriptorCount = 1;
             descriptorWrites[1].pImageInfo = &imageInfo;
 
-            vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+            vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0,
+                                   nullptr);
         }
     }
 
-    void cleanupUniform(std::vector<Uniform> uniforms) {
+    void cleanupUniform(const Uniform &uniform) {
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            vkDestroyBuffer(m_device, m_uniformBuffers[i], nullptr);
-            vkFreeMemory(m_device, m_uniformBuffersMemory[i], nullptr);
+            vkDestroyBuffer(m_device, uniform.uniformBuffers[i], nullptr);
+            vkFreeMemory(m_device, uniform.uniformBuffersMemory[i], nullptr);
         }
-
-        vkDestroyDescriptorPool(m_device, m_descriptorPool, nullptr);
-        for(auto uniform : uniforms) {
-            vkDestroyDescriptorSetLayout(m_device, uniform.descriptorSetLayout, nullptr);
-        }
+        vkDestroyDescriptorSetLayout(Gra::m_device, uniform.descriptorSetLayout, nullptr);
+        vkDestroyDescriptorPool(Gra::m_device, uniform.descriptorPool, nullptr);
     }
 
 } // Gra

@@ -9,10 +9,7 @@
 #include "src/vk/pipeline/gra_render_passes.h"
 #include "gra_framebuffers.h"
 #include "src/vk/presentation/gra_swap_chain.h"
-#include "src/vk/pipeline/gra_pipeline.h"
 #include "gra_drawing.h"
-#include "src/vk/shading/gra_uniform.h"
-
 
 namespace Gra {
 
@@ -47,7 +44,7 @@ namespace Gra {
         }
     }
 
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, Model::Mesh mesh) {
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, Model::Mesh &mesh, Shader::ShaderData &shader) {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = 0; // Optional
@@ -74,15 +71,15 @@ namespace Gra {
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
         {
-            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+            shader.bindPipeline(commandBuffer);
 
             VkViewport viewport{};
             viewport.x = 0.0f;
             viewport.y = 0.0f;
             viewport.width = static_cast<float>(m_swapChainExtent.width);
             viewport.height = static_cast<float>(m_swapChainExtent.height);
-            viewport.minDepth = 0.0f;
-            viewport.maxDepth = 1.0f;
+            viewport.minDepth = -10.0f;
+            viewport.maxDepth = 10.0f;
             vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
             VkRect2D scissor{};
@@ -96,7 +93,15 @@ namespace Gra {
 
             vkCmdBindIndexBuffer(commandBuffer, mesh.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-            vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSets[currentFrame], 0, nullptr);
+            vkCmdBindDescriptorSets(commandBuffer,
+                                    VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                    shader.pipeline.pipelineLayout,
+                                    0,
+                                    1,
+                                    &shader.ubo.descriptorSets[currentFrame],
+                                    0,
+                                    nullptr
+            );
 
             vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(mesh.indices.size()), 1, 0, 0, 0);
         }

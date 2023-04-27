@@ -3,6 +3,7 @@
 #include <vector>
 #include "window.h"
 #include "vk/shading/model.h"
+#include "vk/shading/shader.h"
 
 namespace Gra {
 
@@ -13,6 +14,6 @@ namespace Gra {
 
     void createCommandPool();
     void createCommandBuffers();
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, Model::Mesh mesh);
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, Model::Mesh &mesh, Shader::ShaderData &shader);
 
 }

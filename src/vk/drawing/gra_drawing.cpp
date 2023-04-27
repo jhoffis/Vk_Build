@@ -41,7 +41,7 @@ namespace Gra {
         }
     }
 
-    void drawFrame(Camera::Cam &camera, Model::Mesh mesh) {
+    void drawFrame(Camera::Cam &camera, Model::Mesh meshes[], Shader::ShaderData &shader) {
         vkWaitForFences(m_device, 1, &m_inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
         uint32_t imageIndex;
@@ -57,9 +57,10 @@ namespace Gra {
         vkResetFences(m_device, 1, &m_inFlightFences[currentFrame]);
 
         vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
-        recordCommandBuffer(m_commandBuffers[currentFrame], imageIndex, mesh);
+        recordCommandBuffer(m_commandBuffers[currentFrame], imageIndex, meshes[0], shader);
+//        recordCommandBuffer(m_commandBuffers[currentFrame], imageIndex, meshes[1], shader);
 
-        updateUniformBuffer(currentFrame);
+        updateUniformBuffer(shader.ubo, currentFrame);
 
 
         // TODO change this to VkSubmitInfo2 ?

@@ -63,7 +63,6 @@ namespace Gra {
         createSwapChain();
         createImageViews();
         createRenderPass();
-        createGraphicsPipeline();
         createCommandPool();
         createColorResources();
         createDepthResources();
@@ -71,9 +70,7 @@ namespace Gra {
     }
 
 
-    void initRest(Texture::TexData tex) {
-        createUniformBuffers();
-        createDescriptorPool();
+    void initRest() {
         createCommandBuffers();
         createSyncObjects();
     }
@@ -86,11 +83,9 @@ namespace Gra {
 
         Texture::cleanupTextures();
 
-        cleanupUniform();
         cleanupVertex();
 
-        vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
-        vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
+        Shader::cleanup();
         vkDestroyRenderPass(m_device, m_renderPass, nullptr);
 
         cleanupSyncObjects();

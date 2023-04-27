@@ -7,19 +7,28 @@
 
 
 #include "gra_uniform.h"
+#include "vk/pipeline/gra_pipeline.h"
+#include "vk/gra_setup.h"
+#include <vector>
 
-class Shader {
+namespace Shader {
 
-private:
-    Gra::Uniform ubo{};
+    struct ShaderData {
 
-    // Det er vel kanskje greit å deklarere en ny struct for hver shader? Kanskje... hm. nja hva om jeg ønsker å ha shader editing hotreloading?
+        Gra::Uniform ubo{};
+        Gra::Pipeline pipeline{};
 
-    Shader(Texture::TexData tex) {
-        createDescriptorSetLayout(ubo);
-        createDescriptorSets(tex, ubo);
-    }
-};
+        // Det er vel kanskje greit å deklarere en ny struct for hver shader? Kanskje... hm. nja hva om jeg ønsker å ha shader editing hotreloading?
 
+        void bindPipeline(VkCommandBuffer commandBuffer) const {
+            vkCmdBindPipeline(commandBuffer,
+                              VK_PIPELINE_BIND_POINT_GRAPHICS,
+                              pipeline.graphicsPipeline
+            );
+        }
+    };
 
+    ShaderData create(const Texture::TexData &tex);
+    void cleanup();
+}
 #endif //VULKAN_SHADER_H

@@ -14,10 +14,9 @@
 
 namespace Gra {
 
-    VkPipelineLayout m_pipelineLayout;
-    VkPipeline m_graphicsPipeline;
+    Pipeline createGraphicsPipeline(const Gra::Uniform& uniform) {
+        Pipeline resPipeline{};
 
-    void createGraphicsPipeline() {
         auto vertShaderCode = readFile("res/shaders/triangle_vert.spv");
         auto fragShaderCode = readFile("res/shaders/triangle_frag.spv");
 
@@ -168,11 +167,11 @@ namespace Gra {
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = 1;
-        pipelineLayoutInfo.pSetLayouts = &m_descriptorSetLayout;
+        pipelineLayoutInfo.pSetLayouts = &uniform.descriptorSetLayout;
         pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
         pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
-        if (vkCreatePipelineLayout(m_device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS) {
+        if (vkCreatePipelineLayout(m_device, &pipelineLayoutInfo, nullptr, &resPipeline.pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error("failed to create pipeline layout!");
         }
 
@@ -188,7 +187,7 @@ namespace Gra {
         pipelineInfo.pDepthStencilState = &depthStencil; // Optional
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
-        pipelineInfo.layout = m_pipelineLayout;
+        pipelineInfo.layout = resPipeline.pipelineLayout;
 
         /*
          * It is also possible to use other render passes with this pipeline instead of this specific instance, but they have to be compatible with renderPass
@@ -202,12 +201,14 @@ namespace Gra {
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
         pipelineInfo.basePipelineIndex = -1; // Optional
 
-        if (vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline) != VK_SUCCESS) {
+        if (vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &resPipeline.graphicsPipeline) != VK_SUCCESS) {
             throw std::runtime_error("failed to create graphics pipeline!");
         }
 
         vkDestroyShaderModule(m_device, fragShaderModule, nullptr);
         vkDestroyShaderModule(m_device, vertShaderModule, nullptr);
+
+        return resPipeline;
     }
 } // Gra
 

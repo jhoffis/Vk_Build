@@ -1,11 +1,14 @@
 #pragma once
 
 #include "src/window.h"
+#include "vk/shading/gra_uniform.h"
 
 namespace Gra {
 
-    extern VkPipelineLayout m_pipelineLayout;
-    extern VkPipeline m_graphicsPipeline;;
+    struct Pipeline {
+        VkPipelineLayout pipelineLayout;
+        VkPipeline graphicsPipeline;
+    };
 
-    void createGraphicsPipeline();
+    Pipeline createGraphicsPipeline(const Gra::Uniform& uniform);
 }

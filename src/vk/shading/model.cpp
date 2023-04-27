@@ -11,9 +11,6 @@
 namespace Model {
 
 
-    const uint32_t WIDTH = 800;
-    const uint32_t HEIGHT = 600;
-
     Mesh loadModel(const char *name) {
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
@@ -59,4 +56,30 @@ namespace Model {
 
         return mesh;
     }
+
+
+
+    Mesh createSprite() {
+        const std::vector<Gra::Vertex> vertices = {
+                {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+                {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+                {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+                {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+        };
+
+        const std::vector<uint32_t> indices = {
+                0, 1, 2, 2, 3, 0
+        };
+
+
+        Mesh mesh{};
+        mesh.vertices = vertices;
+        mesh.indices = indices;
+        mesh.vertexBuffer = Gra::createVertexBuffer(vertices);
+        mesh.indexBuffer = Gra::createIndexBuffer(indices);
+
+        return mesh;
+    }
+
+
 }
