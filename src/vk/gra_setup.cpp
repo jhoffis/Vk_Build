@@ -62,8 +62,8 @@ namespace Gra {
         createSwapChain();
         createImageViews();
         createRenderPass();
-        createDescriptorSetLayout();
-        createGraphicsPipeline();
+        m_descriptorSetLayout = createDescriptorSetLayout();
+        m_graphicsPipeline = createGraphicsPipeline(m_descriptorSetLayout);
         createCommandPool();
         createDepthResources();
         createFramebuffers();

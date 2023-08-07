@@ -8,6 +8,9 @@ set(CMAKE_CXX_STANDARD 23)
 # when compiling with PCH enabled
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+#set(VULKAN_SDK "C:/VulkanSDK/1.3.250.1")
+#set(Vulkan_INCLUDE_DIR "${VULKAN_SDK}/Include")
+#set(Vulkan_LIBRARY "${VULKAN_SDK}/Lib")
 
 file(COPY ${CMAKE_SOURCE_DIR}/res DESTINATION ${PROJECT_BINARY_DIR})
 
@@ -31,7 +34,10 @@ add_executable(${PROJECT_NAME}
         src/vk/setup/gra_instance.cpp
         src/vk/setup/gra_debug.cpp
 
-        src/vk/setup/gra_queue_families.cpp.h src/vk/setup/gra_physical_device.h src/vk/setup/gra_logical_device.h src/vk/setup/gra_instance.h src/vk/setup/gra_debug.h src/vk/presentation/gra_swap_chain.cpp src/vk/presentation/gra_swap_chain.h src/vk/presentation/gra_image_views.cpp src/vk/presentation/gra_image_views.h src/vk/pipeline/gra_pipeline.cpp src/vk/pipeline/gra_pipeline.h src/vk/pipeline/gra_shader.cpp src/vk/pipeline/gra_shader.h src/vk/pipeline/gra_render_passes.cpp src/vk/pipeline/gra_render_passes.h src/file_util.h src/vk/drawing/gra_framebuffers.cpp src/vk/drawing/gra_framebuffers.h src/vk/drawing/gra_command_buffers.cpp src/vk/drawing/gra_command_buffers.h src/vk/drawing/gra_drawing.cpp src/vk/drawing/gra_drawing.h src/vk/drawing/gra_flight.cpp src/vk/drawing/gra_flight.h src/vk/shading/gra_vertex.cpp src/vk/shading/gra_vertex.h src/vk/shading/gra_fragment.cpp src/vk/shading/gra_fragment.h src/vk/shading/gra_memory_utils.cpp src/vk/shading/gra_memory_utils.h src/camera.cpp src/camera.h src/vk/shading/gra_uniform.cpp src/vk/shading/gra_uniform.h src/vk/shading/gra_texture.cpp src/vk/shading/gra_texture.h)
+        src/vk/setup/gra_queue_families.cpp.h src/vk/setup/gra_physical_device.h src/vk/setup/gra_logical_device.h src/vk/setup/gra_instance.h src/vk/setup/gra_debug.h src/vk/presentation/gra_swap_chain.cpp src/vk/presentation/gra_swap_chain.h src/vk/presentation/gra_image_views.cpp src/vk/presentation/gra_image_views.h src/vk/pipeline/gra_pipeline.cpp src/vk/pipeline/gra_pipeline.h src/vk/pipeline/gra_shader.cpp src/vk/pipeline/gra_shader.h src/vk/pipeline/gra_render_passes.cpp src/vk/pipeline/gra_render_passes.h src/file_util.h src/vk/drawing/gra_framebuffers.cpp src/vk/drawing/gra_framebuffers.h src/vk/drawing/gra_command_buffers.cpp src/vk/drawing/gra_command_buffers.h src/vk/drawing/gra_drawing.cpp src/vk/drawing/gra_drawing.h src/vk/drawing/gra_flight.cpp src/vk/drawing/gra_flight.h src/vk/shading/gra_vertex.cpp src/vk/shading/gra_vertex.h src/vk/shading/gra_fragment.cpp src/vk/shading/gra_fragment.h src/vk/shading/gra_memory_utils.cpp src/vk/shading/gra_memory_utils.h src/camera.cpp src/camera.h src/vk/shading/gra_uniform.cpp src/vk/shading/gra_uniform.h src/vk/shading/gra_texture.cpp src/vk/shading/gra_texture.h
+        src/gra/Model.cpp
+        src/gra/Model.h
+)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
@@ -45,11 +51,13 @@ target_link_libraries(${PROJECT_NAME} Vulkan::Vulkan)
 # target_link_libraries(${PROJECT_NAME} ${Vulkan_LIBRARIES})
 # target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
 
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glm)
-target_link_libraries(${PROJECT_NAME} glm::glm)
+#add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glm)
+#target_link_libraries(${PROJECT_NAME} glm::glm)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glm)
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glm)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/stb)
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/tiny_obj)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 #target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glfw-3.3.2.bin.WIN64/lib-mingw-w64/libglfw3dll.a)
 #target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glfw-3.3.2.bin.WIN64/lib-mingw-w64/libglfw3.a)
@@ -77,7 +85,7 @@ endif()
 # track a build to a specific GIT SHA
 set(CPACK_PACKAGE_FILE_NAME
         "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${GIT_SHORT_SHA}-${CMAKE_SYSTEM_NAME}-${CMAKE_BUILD_TYPE}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
-        )
+)
 
 # shader compile
 # add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND cmd //C ${CMAKE_CURRENT_LIST_DIR}/res/shaders/compile.bat)
@@ -93,6 +101,6 @@ set(CPACK_PACKAGE_FILE_NAME
 
 # Copy resource folder to binary
 add_custom_target(copy_assets
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/Debug/res
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/res
 )
 add_dependencies(${PROJECT_NAME} copy_assets)

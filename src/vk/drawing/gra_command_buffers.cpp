@@ -18,7 +18,7 @@
 namespace Gra {
 
     VkCommandPool m_commandPool;
-    std::vector<VkCommandBuffer> m_commandBuffers;
+    std::vector<std::vector<VkCommandBuffer>> m_commandBuffers;
 
     void createCommandPool() {
         QueueFamilyIndices queueFamilyIndices = findQueueFamilies(*m_physicalDevice);
@@ -36,19 +36,29 @@ namespace Gra {
 
     void createCommandBuffers() {
         m_commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+        uint32_t size = 2;
+        std::vector<VkCommandBuffer> tempCommandBuffers{2*size};
 
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.commandPool = m_commandPool;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandBufferCount = (uint32_t) m_commandBuffers.size();
+        allocInfo.commandBufferCount = (uint32_t) tempCommandBuffers.size();
 
-        if (vkAllocateCommandBuffers(m_device, &allocInfo, m_commandBuffers.data()) != VK_SUCCESS) {
+        if (vkAllocateCommandBuffers(m_device, &allocInfo, tempCommandBuffers.data()) != VK_SUCCESS) {
             throw std::runtime_error("failed to allocate command buffers!");
         }
+
+        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            m_commandBuffers[i].resize(size);
+            for (int a = 0; a < size; a++) {
+                m_commandBuffers[i][a] = tempCommandBuffers[a + i*size];
+            }
+        }
+
     }
 
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, float i) {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = 0; // Optional
@@ -67,7 +77,7 @@ namespace Gra {
 
         // Note that the order of clearValues should be identical to the order of your attachments.
         std::array<VkClearValue, 2> clearValues{};
-        clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+        clearValues[0].color = {{i, 0.0f, 0.0f, 1.0f}};
         clearValues[1].depthStencil = {1.0f, 0};
 
         renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());

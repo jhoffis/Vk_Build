@@ -5,7 +5,7 @@
 namespace Gra {
 
     extern VkPipelineLayout m_pipelineLayout;
-    extern VkPipeline m_graphicsPipeline;;
+    extern VkPipeline m_graphicsPipeline;
 
-    void createGraphicsPipeline();
+    VkPipeline createGraphicsPipeline(VkDescriptorSetLayout descriptorSetLayout);
 }

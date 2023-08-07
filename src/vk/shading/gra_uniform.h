@@ -9,8 +9,8 @@ namespace Gra {
     extern std::vector<VkDescriptorSet> m_descriptorSets;
 
     void createUniformBuffers();
-    void updateUniformBuffer(uint32_t currentImage);
-    void createDescriptorSetLayout();
+    void updateUniformBuffer(uint32_t currentImage, float x, uint32_t offset);
+    VkDescriptorSetLayout createDescriptorSetLayout();
 
     void createDescriptorPool();
     void createDescriptorSets();

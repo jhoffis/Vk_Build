@@ -56,11 +56,14 @@ namespace Gra {
         // Only reset the fence if we are submitting work. To not deadlock on the fence
         vkResetFences(m_device, 1, &m_inFlightFences[currentFrame]);
 
-        vkResetCommandBuffer(m_commandBuffers[currentFrame], 0);
-        recordCommandBuffer(m_commandBuffers[currentFrame], imageIndex);
-
-        updateUniformBuffer(currentFrame);
-
+        float i = 0.0f;
+        for (auto commandBuffer : m_commandBuffers[currentFrame]) {
+            vkResetCommandBuffer(commandBuffer, 0);
+            recordCommandBuffer(commandBuffer, imageIndex, i);
+            i++;
+        }
+        updateUniformBuffer(currentFrame, 0.0f, 0);
+        updateUniformBuffer(currentFrame, 1.0f, 1);
 
         // TODO change this to VkSubmitInfo2 ?
         VkSubmitInfo submitInfo{};
@@ -72,8 +75,8 @@ namespace Gra {
         submitInfo.pWaitSemaphores = waitSemaphores;
         submitInfo.pWaitDstStageMask = waitStages;
 
-        submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &m_commandBuffers[currentFrame];
+        submitInfo.commandBufferCount = m_commandBuffers[currentFrame].size();
+        submitInfo.pCommandBuffers = m_commandBuffers[currentFrame].data();
 
         VkSemaphore signalSemaphores[] = {m_renderFinishedSemaphores[currentFrame]};
         submitInfo.signalSemaphoreCount = 1;

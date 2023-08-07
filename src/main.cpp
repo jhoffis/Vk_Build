@@ -8,12 +8,15 @@
 #include <iostream>
 #include "src/vk/gra_setup.h"
 #include "src/vk/drawing/gra_drawing.h"
+#include "gra/Model.h"
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
 
     Window::createWindow(false, false);
     Gra::initVulkan();
+
+    Model testModel{};
 
     static bool running = true;
     while(running)
@@ -27,6 +30,7 @@ int main() {
         Gra::drawFrame();
     }
 
+    testModel.destroy();
     Gra::cleanup();
     Window::destroyWindow();
     return 0;
