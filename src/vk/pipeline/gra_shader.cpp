@@ -1,10 +1,10 @@
 #include "gra_shader.h"
-#include "src/vk/gra_setup.h"
+#include "vk/gra_setup.h"
 #include <stdexcept>
+#include "file_util.h"
 
-namespace Gra {
+namespace Shader {
     VkShaderModule createShaderModule(const std::vector<char> &code) {
-
         VkShaderModuleCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
         createInfo.codeSize = code.size();
@@ -17,4 +17,5 @@ namespace Gra {
 
         return shaderModule;
     }
+
 }

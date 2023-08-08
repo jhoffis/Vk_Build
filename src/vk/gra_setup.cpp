@@ -63,7 +63,7 @@ namespace Gra {
         createImageViews();
         createRenderPass();
         m_descriptorSetLayout = createDescriptorSetLayout();
-        m_graphicsPipeline = createGraphicsPipeline(m_descriptorSetLayout);
+        Raster::m_pipeline = Raster::createGraphicsPipeline(m_descriptorSetLayout, "triangle");
         createCommandPool();
         createDepthResources();
         createFramebuffers();
@@ -73,7 +73,7 @@ namespace Gra {
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffers();
-        createDescriptorPool();
+        m_descriptorPool = createDescriptorPool();
         createDescriptorSets();
         createCommandBuffers();
         createSyncObjects();
@@ -90,8 +90,7 @@ namespace Gra {
         cleanupUniform();
         cleanupVertex();
 
-        vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
-        vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
+        Raster::destroyPipeline(Raster::m_pipeline);
         vkDestroyRenderPass(m_device, m_renderPass, nullptr);
 
         cleanupSyncObjects();

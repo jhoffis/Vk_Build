@@ -3,7 +3,7 @@
 //
 
 #include "gra_pipeline.h"
-#include "src/file_util.h"
+#include "file_util.h"
 #include "gra_shader.h"
 #include "src/vk/gra_setup.h"
 #include "src/vk/presentation/gra_swap_chain.h"
@@ -11,17 +11,16 @@
 #include "src/vk/shading/gra_vertex.h"
 #include "src/vk/shading/gra_uniform.h"
 
-namespace Gra {
+namespace Raster {
 
-    VkPipelineLayout m_pipelineLayout;
-    VkPipeline m_graphicsPipeline;
+    Pipeline m_pipeline;
 
-    VkPipeline createGraphicsPipeline(VkDescriptorSetLayout descriptorSetLayout) {
-        auto vertShaderCode = readFile("res/shaders/triangle_vert.spv");
-        auto fragShaderCode = readFile("res/shaders/triangle_frag.spv");
+    Pipeline createGraphicsPipeline(VkDescriptorSetLayout descriptorSetLayout, const std::string &shaderName) {
+        auto vertShaderCode = readFile("res/shaders/" + shaderName + "_vert.spv");
+        auto fragShaderCode = readFile("res/shaders/" + shaderName + "_frag.spv");
 
-        VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
-        VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+        VkShaderModule vertShaderModule = Shader::createShaderModule(vertShaderCode);
+        VkShaderModule fragShaderModule = Shader::createShaderModule(fragShaderCode);
 
         VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
         vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -54,8 +53,8 @@ namespace Gra {
          * Vertex input
          */
 
-        auto bindingDescription = Vertex::getBindingDescription();
-        auto attributeDescriptions = Vertex::getAttributeDescriptions();
+        auto bindingDescription = Gra::Vertex::getBindingDescription();
+        auto attributeDescriptions = Gra::Vertex::getAttributeDescriptions();
 
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -78,14 +77,14 @@ namespace Gra {
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
-        viewport.width = (float) m_swapChainExtent.width;
-        viewport.height = (float) m_swapChainExtent.height;
+        viewport.width = (float) Gra::m_swapChainExtent.width;
+        viewport.height = (float) Gra::m_swapChainExtent.height;
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
 
         VkRect2D scissor{};
         scissor.offset = {0, 0};
-        scissor.extent = m_swapChainExtent;
+        scissor.extent = Gra::m_swapChainExtent;
 
         /*
          * Viewport state
@@ -140,7 +139,9 @@ namespace Gra {
          * Color blending
          */
         VkPipelineColorBlendAttachmentState colorBlendAttachment{};
-        colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+        colorBlendAttachment.colorWriteMask =
+                VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT |
+                VK_COLOR_COMPONENT_A_BIT;
         colorBlendAttachment.blendEnable = VK_FALSE;
         colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE; // Optional
         colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO; // Optional
@@ -161,7 +162,7 @@ namespace Gra {
         colorBlending.blendConstants[3] = 0.0f; // Optional
 
         /*
-         * Pipeline layout
+         * Raster layout
          */
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -170,7 +171,8 @@ namespace Gra {
         pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
         pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
-        if (vkCreatePipelineLayout(m_device, &pipelineLayoutInfo, nullptr, &m_pipelineLayout) != VK_SUCCESS) {
+        VkPipelineLayout pipelineLayout{};
+        if (vkCreatePipelineLayout(Gra::m_device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error("failed to create pipeline layout!");
         }
 
@@ -186,13 +188,13 @@ namespace Gra {
         pipelineInfo.pDepthStencilState = &depthStencil; // Optional
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
-        pipelineInfo.layout = m_pipelineLayout;
+        pipelineInfo.layout = pipelineLayout;
 
         /*
          * It is also possible to use other render passes with this pipeline instead of this specific instance, but they have to be compatible with renderPass
          * https://registry.khronos.org/vulkan/specs/1.3-extensions/html/chap8.html#renderpass-compatibility
          */
-        pipelineInfo.renderPass = m_renderPass;
+        pipelineInfo.renderPass = Gra::m_renderPass;
         pipelineInfo.subpass = 0; // index
         /*
          * Could create a new graphics pipeline by deriving from an existing pipeline:
@@ -201,14 +203,23 @@ namespace Gra {
         pipelineInfo.basePipelineIndex = -1; // Optional
 
         VkPipeline graphicsPipeline{};
-        if (vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+        if (vkCreateGraphicsPipelines(Gra::m_device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) !=
+            VK_SUCCESS) {
             throw std::runtime_error("failed to create graphics pipeline!");
         }
 
-        vkDestroyShaderModule(m_device, fragShaderModule, nullptr);
-        vkDestroyShaderModule(m_device, vertShaderModule, nullptr);
+        vkDestroyShaderModule(Gra::m_device, fragShaderModule, nullptr);
+        vkDestroyShaderModule(Gra::m_device, vertShaderModule, nullptr);
 
-        return graphicsPipeline;
+        return {
+                .pipelineLayout = pipelineLayout,
+                .graphicsPipeline = graphicsPipeline,
+        };
+    }
+
+    void destroyPipeline(Pipeline &pipeline) {
+        vkDestroyPipeline(Gra::m_device, pipeline.graphicsPipeline, nullptr);
+        vkDestroyPipelineLayout(Gra::m_device, pipeline.pipelineLayout, nullptr);
     }
 } // Gra
 

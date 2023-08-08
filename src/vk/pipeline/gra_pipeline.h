@@ -2,10 +2,16 @@
 
 #include "src/window.h"
 
-namespace Gra {
+namespace Raster {
 
-    extern VkPipelineLayout m_pipelineLayout;
-    extern VkPipeline m_graphicsPipeline;
+    struct Pipeline {
+        VkPipelineLayout pipelineLayout;
+        VkPipeline graphicsPipeline;
+    };
 
-    VkPipeline createGraphicsPipeline(VkDescriptorSetLayout descriptorSetLayout);
+    extern Pipeline m_pipeline;
+
+    Pipeline createGraphicsPipeline(VkDescriptorSetLayout descriptorSetLayout, const std::string &shaderName);
+
+    void destroyPipeline(Pipeline &pipeline);
 }

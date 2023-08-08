@@ -3,6 +3,6 @@
 #include <vector>
 #include "src/window.h"
 
-namespace Gra {
-    VkShaderModule createShaderModule(const std::vector<char>& code);
+namespace Shader {
+    VkShaderModule createShaderModule(const std::vector<char> &code);
 }
