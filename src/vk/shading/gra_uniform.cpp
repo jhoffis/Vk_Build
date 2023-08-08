@@ -130,7 +130,7 @@ namespace Gra {
             std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
             descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            descriptorWrites[0].dstSet = m_descriptorSets[i];
+            descriptorWrites[0].dstSet = descriptorSets[i];
             descriptorWrites[0].dstBinding = 0;
             descriptorWrites[0].dstArrayElement = 0;
             descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -138,7 +138,7 @@ namespace Gra {
             descriptorWrites[0].pBufferInfo = &bufferInfo;
 
             descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            descriptorWrites[1].dstSet = m_descriptorSets[i];
+            descriptorWrites[1].dstSet = descriptorSets[i];
             descriptorWrites[1].dstBinding = 1;
             descriptorWrites[1].dstArrayElement = 0;
             descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -147,6 +147,8 @@ namespace Gra {
 
             vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
         }
+
+        return descriptorSets;
     }
 
     void cleanupUniform() {

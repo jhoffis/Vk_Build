@@ -74,7 +74,7 @@ namespace Gra {
         createIndexBuffer();
         createUniformBuffers();
         m_descriptorPool = createDescriptorPool();
-        createDescriptorSets();
+        m_descriptorSets = createDescriptorSets(m_descriptorPool);
         createCommandBuffers();
         createSyncObjects();
     }

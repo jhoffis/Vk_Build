@@ -15,6 +15,7 @@ Model::Model() {
 }
 
 void Model::destroy() {
+    vkDestroyDescriptorPool(Gra::m_device, descriptorPool, nullptr);
     Raster::destroyPipeline(pipeline);
     vkDestroyDescriptorSetLayout(Gra::m_device, descriptorSetLayout, nullptr);
 }
