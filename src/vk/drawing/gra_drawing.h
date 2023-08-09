@@ -2,9 +2,9 @@
 
 #include "src/window.h"
 
-namespace Gra {
+namespace Drawing {
 
-    extern uint32_t currentFrame;
+    extern uint32_t currSwapFrame;
 
     void createSyncObjects();
     void cleanupSyncObjects();

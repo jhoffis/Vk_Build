@@ -76,7 +76,7 @@ namespace Gra {
         m_descriptorPool = createDescriptorPool();
         m_descriptorSets = createDescriptorSets(m_descriptorPool);
         createCommandBuffers();
-        createSyncObjects();
+        Drawing::createSyncObjects();
     }
 
 
@@ -93,7 +93,7 @@ namespace Gra {
         Raster::destroyPipeline(Raster::m_pipeline);
         vkDestroyRenderPass(m_device, m_renderPass, nullptr);
 
-        cleanupSyncObjects();
+        Drawing::cleanupSyncObjects();
         vkDestroyCommandPool(m_device, m_commandPool, nullptr);
 
         vkDestroyDevice(m_device, nullptr);

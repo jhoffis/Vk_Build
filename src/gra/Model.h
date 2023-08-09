@@ -14,7 +14,7 @@
 class Model {
 
 private:
-    VkDescriptorPool descriptorPool;
+    VkDescriptorPool pool;
     VkDescriptorSetLayout descriptorSetLayout;
     std::vector<VkDescriptorSet> descriptorSets{};
 
@@ -23,7 +23,7 @@ private:
 public:
     Model();
     void destroy();
-
+    void drawRenderPass(VkCommandBuffer commandBuffer);
 };
 
 

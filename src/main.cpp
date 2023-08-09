@@ -27,7 +27,7 @@ int main() {
             break;
         }
         glfwPollEvents();
-        Gra::drawFrame();
+        Drawing::drawFrame();
     }
 
     testModel.destroy();

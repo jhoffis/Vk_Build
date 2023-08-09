@@ -6,6 +6,7 @@
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/gra_setup.h"
 #include "src/vk/shading/gra_depth.h"
+#include "vk/drawing/gra_framebuffers.h"
 #include <stdexcept>
 #include <array>
 
@@ -86,5 +87,24 @@ namespace Gra {
         if (vkCreateRenderPass(m_device, &renderPassInfo, nullptr, &m_renderPass) != VK_SUCCESS) {
             throw std::runtime_error("failed to create render pass!");
         }
+    }
+
+    void beginRenderPass(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+        VkRenderPassBeginInfo renderPassInfo{};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassInfo.renderPass = m_renderPass;
+        renderPassInfo.framebuffer = m_swapChainFramebuffers[imageIndex];
+        renderPassInfo.renderArea.offset = {0, 0};
+        renderPassInfo.renderArea.extent = m_swapChainExtent;
+
+        // Note that the order of clearValues should be identical to the order of your attachments.
+        std::array<VkClearValue, 2> clearValues{};
+        clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+        clearValues[1].depthStencil = {1.0f, 0};
+
+        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+        renderPassInfo.pClearValues = clearValues.data();
+
+        vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     }
 } // Gra

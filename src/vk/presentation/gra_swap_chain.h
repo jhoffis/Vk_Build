@@ -21,4 +21,6 @@ namespace Gra {
     void createSwapChain();
     void recreateSwapChain();
     void cleanupSwapChain();
+
+    void recordSwapChain(VkCommandBuffer commandBuffer);
 }

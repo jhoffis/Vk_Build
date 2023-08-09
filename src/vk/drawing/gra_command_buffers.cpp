@@ -68,38 +68,10 @@ namespace Gra {
             throw std::runtime_error("failed to begin recording command buffer!");
         }
 
-        VkRenderPassBeginInfo renderPassInfo{};
-        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = m_renderPass;
-        renderPassInfo.framebuffer = m_swapChainFramebuffers[imageIndex];
-        renderPassInfo.renderArea.offset = {0, 0};
-        renderPassInfo.renderArea.extent = m_swapChainExtent;
-
-        // Note that the order of clearValues should be identical to the order of your attachments.
-        std::array<VkClearValue, 2> clearValues{};
-        clearValues[0].color = {{i, 0.0f, 0.0f, 1.0f}};
-        clearValues[1].depthStencil = {1.0f, 0};
-
-        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-        renderPassInfo.pClearValues = clearValues.data();
-
-        vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+        beginRenderPass(commandBuffer, imageIndex);
         {
             vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Raster::m_pipeline.graphicsPipeline);
-
-            VkViewport viewport{};
-            viewport.x = 0.0f;
-            viewport.y = 0.0f;
-            viewport.width = static_cast<float>(m_swapChainExtent.width);
-            viewport.height = static_cast<float>(m_swapChainExtent.height);
-            viewport.minDepth = 0.0f;
-            viewport.maxDepth = 1.0f;
-            vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
-            VkRect2D scissor{};
-            scissor.offset = {0, 0};
-            scissor.extent = m_swapChainExtent;
-            vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+            Gra::recordSwapChain(commandBuffer);
 
             VkBuffer vertexBuffers[] = {m_vertexBuffer};
             VkDeviceSize offsets[] = {0};
@@ -107,9 +79,10 @@ namespace Gra {
 
             vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-            vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Raster::m_pipeline.pipelineLayout, 0, 1, &m_descriptorSets[currentFrame], 0, nullptr);
+            vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Raster::m_pipeline.pipelineLayout, 0, 1, &m_descriptorSets[Drawing::currSwapFrame], 0, nullptr);
 
             vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()) - 2, 1, 2, 0, 0);
         }
         vkCmdEndRenderPass(commandBuffer);
 
