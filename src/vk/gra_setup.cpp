@@ -75,7 +75,7 @@ namespace Gra {
         createIndexBuffer(&m_mesh);
         createUniformBuffers();
         m_descriptorPool = createDescriptorPool();
-        m_descriptorSets = createDescriptorSets(m_descriptorPool);
+//        m_descriptorSets = createDescriptorSets(m_descriptorPool);
         createCommandBuffers();
         Drawing::createSyncObjects();
 

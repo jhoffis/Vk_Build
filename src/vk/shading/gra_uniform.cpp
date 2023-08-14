@@ -11,25 +11,32 @@
 #include "src/vk/gra_setup.h"
 
 namespace Gra {
-    std::vector<VkBuffer> m_uniformBuffers;
-    std::vector<VkDeviceMemory> m_uniformBuffersMemory;
 
     VkDescriptorSetLayout m_descriptorSetLayout;
     VkDescriptorPool m_descriptorPool;
     std::vector<VkDescriptorSet> m_descriptorSets;
+    std::vector<StandardUBOMem> m_ubosToClean{};
 
-    void createUniformBuffers() {
-        VkDeviceSize bufferSize = 2*sizeof(UniformBufferObject);
+    StandardUBOMem createUniformBuffers() {
+        VkDeviceSize bufferSize = 2 * sizeof(UniformBufferObject);
 
-        m_uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-        m_uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+        StandardUBOMem uboMem{};
+        uboMem.uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+        uboMem.uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_uniformBuffers[i], m_uniformBuffersMemory[i]);
+            createBuffer(bufferSize,
+                         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                         uboMem.uniformBuffers[i],
+                         uboMem.uniformBuffersMemory[i]
+            );
         }
+        m_ubosToClean.emplace_back(uboMem);
+        return uboMem;
     }
 
-    void updateUniformBuffer(uint32_t currentImage, float x, uint32_t offset) {
+    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentImage, float x, uint32_t offset) {
         static auto startTime = std::chrono::high_resolution_clock::now();
 
         auto currentTime = std::chrono::high_resolution_clock::now();
@@ -40,14 +47,15 @@ namespace Gra {
 
         ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-        ubo.proj = glm::perspective(glm::radians(45.0f), m_swapChainExtent.width / (float) m_swapChainExtent.height, 0.1f, 10.0f);
+        ubo.proj = glm::perspective(glm::radians(45.0f), (float) m_swapChainExtent.width / (float) m_swapChainExtent.height,
+                                    0.1f, 10.0f);
 
         ubo.proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
 
-        void* data;
-        vkMapMemory(m_device, m_uniformBuffersMemory[currentImage], offset*sizeof(ubo), sizeof(ubo), 0, &data);
+        void *data;
+        vkMapMemory(m_device, uboMem.uniformBuffersMemory[currentImage], offset * sizeof(ubo), sizeof(ubo), 0, &data);
         memcpy(data, &ubo, sizeof(ubo));
-        vkUnmapMemory(m_device, m_uniformBuffersMemory[currentImage]);
+        vkUnmapMemory(m_device, uboMem.uniformBuffersMemory[currentImage]);
     }
 
 
@@ -61,11 +69,11 @@ namespace Gra {
 
         // This descriptor makes it possible for shaders to access an image resource through a sampler object
         VkDescriptorSetLayoutBinding samplerLayoutBinding{
-            .binding = 1,
-            .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-            .descriptorCount = 1,
-            .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT, // fragment shader.  It is possible to use texture sampling in the vertex shader, for example to dynamically deform a grid of vertices by a heightmap
-            .pImmutableSamplers = nullptr,
+                .binding = 1,
+                .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                .descriptorCount = 1,
+                .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT, // fragment shader.  It is possible to use texture sampling in the vertex shader, for example to dynamically deform a grid of vertices by a heightmap
+                .pImmutableSamplers = nullptr,
         };
 
         std::array<VkDescriptorSetLayoutBinding, 2> bindings = {uboLayoutBinding, samplerLayoutBinding};
@@ -102,8 +110,8 @@ namespace Gra {
         return pool;
     }
 
-    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorPool pool) {
-        std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, m_descriptorSetLayout);
+    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout layout, VkDescriptorPool pool, StandardUBOMem uboMem) {
+        std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, layout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
         allocInfo.descriptorPool = pool;
@@ -118,7 +126,7 @@ namespace Gra {
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             VkDescriptorBufferInfo bufferInfo{};
-            bufferInfo.buffer = m_uniformBuffers[i];
+            bufferInfo.buffer = uboMem.uniformBuffers[i]; // TODO Her er bindingen til ubo o.l.
             bufferInfo.offset = 0;
             bufferInfo.range = sizeof(UniformBufferObject);
 
@@ -145,16 +153,19 @@ namespace Gra {
             descriptorWrites[1].descriptorCount = 1;
             descriptorWrites[1].pImageInfo = &imageInfo;
 
-            vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+            vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0,
+                                   nullptr);
         }
 
         return descriptorSets;
     }
 
     void cleanupUniform() {
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            vkDestroyBuffer(m_device, m_uniformBuffers[i], nullptr);
-            vkFreeMemory(m_device, m_uniformBuffersMemory[i], nullptr);
+        for (auto uboMem : m_ubosToClean) {
+            for (size_t i = 0; i < uboMem.uniformBuffers.size(); i++) {
+                vkDestroyBuffer(m_device, uboMem.uniformBuffers[i], nullptr);
+                vkFreeMemory(m_device, uboMem.uniformBuffersMemory[i], nullptr);
+            }
         }
 
         vkDestroyDescriptorPool(m_device, m_descriptorPool, nullptr);

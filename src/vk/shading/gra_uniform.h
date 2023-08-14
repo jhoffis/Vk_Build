@@ -9,11 +9,16 @@ namespace Gra {
     extern std::vector<VkDescriptorSet> m_descriptorSets;
     extern VkDescriptorPool m_descriptorPool;
 
-    void createUniformBuffers();
-    void updateUniformBuffer(uint32_t currentImage, float x, uint32_t offset);
+    struct StandardUBOMem {
+        std::vector<VkBuffer> uniformBuffers{};
+        std::vector<VkDeviceMemory> uniformBuffersMemory{};
+    };
+
+    StandardUBOMem createUniformBuffers();
+    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentImage, float x, uint32_t offset);
     VkDescriptorSetLayout createDescriptorSetLayout();
 
     VkDescriptorPool createDescriptorPool();
-    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorPool pool);
+    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout layout, VkDescriptorPool pool, StandardUBOMem uboMem);
     void cleanupUniform();
 }

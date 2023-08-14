@@ -12,14 +12,16 @@ std::vector<Model> m_renderModels;
 
 Model::Model() {
     // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og attributes. Feks at de først har uniform buffer og så image sampler.
-    descriptorSetLayout = Gra::createDescriptorSetLayout();
+    descriptorSetLayout = Gra::createDescriptorSetLayout(); // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
     pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, "triangle");
     pool = Gra::createDescriptorPool();
-    descriptorSets = Gra::createDescriptorSets(pool);
+    uboMem = Gra::createUniformBuffers();
+    descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem);
 
     Gra::createVertexBuffer(&mesh);
     Gra::createIndexBuffer(&mesh);
     mesh.indices = Gra::indices;
+
 }
 
 void Model::destroy() {
@@ -32,7 +34,7 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
     Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, &descriptorSets[Drawing::currSwapFrame]);
-
+    Gra::updateUniformBuffer(uboMem, Drawing::currSwapFrame, x, 0);
     return cmd;
 }
 

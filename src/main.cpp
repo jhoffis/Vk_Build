@@ -18,6 +18,9 @@ int main() {
 
     Model testModel{};
     m_renderModels.emplace_back(testModel);
+    Model testModel2{};
+    testModel2.x = 1.0f;
+    m_renderModels.emplace_back(testModel2);
 
     static bool running = true;
     while(running)
@@ -31,6 +34,7 @@ int main() {
         Drawing::drawFrame();
     }
 
+    testModel2.destroy();
     testModel.destroy();
     Gra::cleanup();
     Window::destroyWindow();

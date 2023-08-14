@@ -64,8 +64,7 @@ namespace Drawing {
 //            Gra::recordCommandBuffer(commandBuffer, imageIndex, m_mesh, Raster::m_pipeline, &Gra::m_descriptorSets[Drawing::currSwapFrame]);
 //            i++;
 //        }
-        Gra::updateUniformBuffer(currSwapFrame, 0.0f, 0);
-        Gra::updateUniformBuffer(currSwapFrame, 1.0f, 1);
+//        Gra::updateUniformBuffer(currSwapFrame, 1.0f, 1);
 
         std::vector<VkCommandBuffer> cmds{};
         for (auto model : m_renderModels) {

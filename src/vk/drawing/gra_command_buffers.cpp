@@ -71,13 +71,13 @@ namespace Gra {
         }
     }
 
-    std::vector<VkCommandBuffer> createCommandBuffers2() {
+    std::vector<VkCommandBuffer> createCommandBuffers2(VkCommandPool pool) {
         std::vector<VkCommandBuffer> commandBuffers{};
         commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocInfo.commandPool = m_commandPool;
+        allocInfo.commandPool = pool;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
         allocInfo.commandBufferCount = (uint32_t) commandBuffers.size();
 
@@ -134,6 +134,6 @@ namespace Gra {
 
     CmdBuffer::CmdBuffer() {
         commandPool = createCommandPool2();
-        commandBuffers = createCommandBuffers2();
+        commandBuffers = createCommandBuffers2(commandPool);
     }
 } // Gra
