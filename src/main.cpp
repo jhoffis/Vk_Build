@@ -17,6 +17,7 @@ int main() {
     Gra::initVulkan();
 
     Model testModel{};
+    m_renderModels.emplace_back(testModel);
 
     static bool running = true;
     while(running)

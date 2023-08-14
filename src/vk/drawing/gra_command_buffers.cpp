@@ -31,7 +31,21 @@ namespace Gra {
         if (vkCreateCommandPool(m_device, &poolInfo, nullptr, &m_commandPool) != VK_SUCCESS) {
             throw std::runtime_error("failed to create command pool!");
         }
+    }
 
+    VkCommandPool createCommandPool2() {
+        QueueFamilyIndices queueFamilyIndices = findQueueFamilies(*m_physicalDevice);
+
+        VkCommandPoolCreateInfo poolInfo{};
+        poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+        poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+
+        VkCommandPool pool{};
+        if (vkCreateCommandPool(m_device, &poolInfo, nullptr, &pool) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create command pool!");
+        }
+        return pool;
     }
 
     void createCommandBuffers() {
@@ -55,7 +69,22 @@ namespace Gra {
                 m_commandBuffers[i][a] = tempCommandBuffers[a + i*size];
             }
         }
+    }
 
+    std::vector<VkCommandBuffer> createCommandBuffers2() {
+        std::vector<VkCommandBuffer> commandBuffers{};
+        commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.commandPool = m_commandPool;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandBufferCount = (uint32_t) commandBuffers.size();
+
+        if (vkAllocateCommandBuffers(m_device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate command buffers!");
+        }
+        return commandBuffers;
     }
 
     void recordCommandBuffer(VkCommandBuffer commandBuffer,
@@ -103,4 +132,8 @@ namespace Gra {
     }
 
 
+    CmdBuffer::CmdBuffer() {
+        commandPool = createCommandPool2();
+        commandBuffers = createCommandBuffers2();
+    }
 } // Gra

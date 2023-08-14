@@ -5,9 +5,10 @@
 #include "Model.h"
 #include "vk/shading/gra_uniform.h"
 #include "vk/gra_setup.h"
-#include "vk/presentation/gra_swap_chain.h"
 #include "vk/drawing/gra_drawing.h"
+#include "vk/shading/gra_vertex.h"
 
+std::vector<Model> m_renderModels;
 
 Model::Model() {
     // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og attributes. Feks at de først har uniform buffer og så image sampler.
@@ -15,6 +16,10 @@ Model::Model() {
     pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, "triangle");
     pool = Gra::createDescriptorPool();
     descriptorSets = Gra::createDescriptorSets(pool);
+
+    Gra::createVertexBuffer(&mesh);
+    Gra::createIndexBuffer(&mesh);
+    mesh.indices = Gra::indices;
 }
 
 void Model::destroy() {
@@ -24,7 +29,7 @@ void Model::destroy() {
 }
 
 VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
-    auto cmd = cmdBuffer.m_commandBuffers[Drawing::currSwapFrame];
+    auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
     Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, &descriptorSets[Drawing::currSwapFrame]);
 

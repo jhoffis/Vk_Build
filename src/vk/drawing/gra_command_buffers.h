@@ -8,12 +8,14 @@
 
 namespace Gra {
 
-    struct CmdBuffer {
-        VkCommandPool m_commandPool;
-        std::vector<VkCommandBuffer> m_commandBuffers; // vector for swap-chain
-    };
-
     const int MAX_FRAMES_IN_FLIGHT = 2;
+
+    struct CmdBuffer {
+        VkCommandPool commandPool;
+        std::vector<VkCommandBuffer> commandBuffers; // vector for swap-chain
+
+        CmdBuffer();
+    };
 
     extern VkCommandPool m_commandPool;
     extern std::vector<std::vector<VkCommandBuffer>> m_commandBuffers;

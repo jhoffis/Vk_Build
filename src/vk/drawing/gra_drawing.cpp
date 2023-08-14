@@ -9,6 +9,7 @@
 #include "gra_command_buffers.h"
 #include "src/vk/setup/gra_logical_device.h"
 #include "src/vk/shading/gra_uniform.h"
+#include "gra/Model.h"
 
 namespace Drawing {
 
@@ -58,13 +59,20 @@ namespace Drawing {
 
         float i = 0.0f;
 
-        for (auto commandBuffer : Gra::m_commandBuffers[currSwapFrame]) {
-            vkResetCommandBuffer(commandBuffer, 0);
-            Gra::recordCommandBuffer(commandBuffer, imageIndex, m_mesh, Raster::m_pipeline, &Gra::m_descriptorSets[Drawing::currSwapFrame]);
-            i++;
-        }
+//        for (auto commandBuffer : Gra::m_commandBuffers[currSwapFrame]) {
+//            vkResetCommandBuffer(commandBuffer, 0);
+//            Gra::recordCommandBuffer(commandBuffer, imageIndex, m_mesh, Raster::m_pipeline, &Gra::m_descriptorSets[Drawing::currSwapFrame]);
+//            i++;
+//        }
         Gra::updateUniformBuffer(currSwapFrame, 0.0f, 0);
         Gra::updateUniformBuffer(currSwapFrame, 1.0f, 1);
+
+        std::vector<VkCommandBuffer> cmds{};
+        for (auto model : m_renderModels) {
+            if (!model.visible)
+                continue;
+            cmds.emplace_back(model.renderMeshes(imageIndex));
+        }
 
         // TODO change this to VkSubmitInfo2 ?
         VkSubmitInfo submitInfo{};
@@ -76,8 +84,8 @@ namespace Drawing {
         submitInfo.pWaitSemaphores = waitSemaphores;
         submitInfo.pWaitDstStageMask = waitStages;
 
-        submitInfo.commandBufferCount = Gra::m_commandBuffers[currSwapFrame].size();
-        submitInfo.pCommandBuffers = Gra::m_commandBuffers[currSwapFrame].data();
+        submitInfo.commandBufferCount = cmds.size();
+        submitInfo.pCommandBuffers = cmds.data();
 
         VkSemaphore signalSemaphores[] = {m_renderFinishedSemaphores[currSwapFrame]};
         submitInfo.signalSemaphoreCount = 1;

@@ -24,6 +24,8 @@ private:
     Gra::CmdBuffer cmdBuffer{};
     Mesh mesh{};
 public:
+    bool visible = true;
+
     Model();
 
     void destroy();
@@ -31,5 +33,6 @@ public:
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
 };
 
+extern std::vector<Model> m_renderModels;
 
 #endif //VULKAN_MODEL_H

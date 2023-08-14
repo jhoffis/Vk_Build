@@ -79,7 +79,6 @@ namespace Gra {
         createCommandBuffers();
         Drawing::createSyncObjects();
 
-        m_mesh.indexBuffer = m_indexBuffer;
         m_mesh.indices = indices;
     }
 
