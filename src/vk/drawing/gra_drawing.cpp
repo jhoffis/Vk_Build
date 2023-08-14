@@ -59,7 +59,7 @@ namespace Drawing {
         float i = 0.0f;
         for (auto commandBuffer : Gra::m_commandBuffers[currSwapFrame]) {
             vkResetCommandBuffer(commandBuffer, 0);
-            Gra::recordCommandBuffer(commandBuffer, imageIndex, i);
+            Gra::recordCommandBuffer(commandBuffer, imageIndex);
             i++;
         }
         Gra::updateUniformBuffer(currSwapFrame, 0.0f, 0);

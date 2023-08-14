@@ -5,6 +5,11 @@
 
 namespace Gra {
 
+    struct CmdBuffer {
+        VkCommandPool m_commandPool;
+        std::vector<VkCommandBuffer> m_commandBuffers; // vector for swap-chain
+    };
+
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
     extern VkCommandPool m_commandPool;
@@ -12,6 +17,6 @@ namespace Gra {
 
     void createCommandPool();
     void createCommandBuffers();
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, float i);
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
 }

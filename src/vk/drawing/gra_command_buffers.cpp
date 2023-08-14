@@ -58,7 +58,7 @@ namespace Gra {
 
     }
 
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, float i) {
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = 0; // Optional
@@ -79,7 +79,14 @@ namespace Gra {
 
             vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-            vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Raster::m_pipeline.pipelineLayout, 0, 1, &m_descriptorSets[Drawing::currSwapFrame], 0, nullptr);
+            vkCmdBindDescriptorSets(commandBuffer,
+                                    VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                    Raster::m_pipeline.pipelineLayout, // inneholder descriptor layout
+                                    0,
+                                    1,
+                                    &m_descriptorSets[Drawing::currSwapFrame], // inneholder uniformbuffer ref
+                                    0,
+                                    nullptr);
 
             vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
             vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()) - 2, 1, 2, 0, 0);

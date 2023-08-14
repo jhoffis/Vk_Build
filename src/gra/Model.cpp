@@ -23,7 +23,15 @@ void Model::destroy() {
     vkDestroyDescriptorSetLayout(Gra::m_device, descriptorSetLayout, nullptr);
 }
 
-void Model::drawRenderPass(VkCommandBuffer commandBuffer) {
+VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
+    auto cmd = cmdBuffer.m_commandBuffers[Drawing::currSwapFrame];
+    vkResetCommandBuffer(cmd, 0);
+    Gra::recordCommandBuffer(cmd, imageIndex);
+
+    return cmd;
+}
+
+//void Model::drawRenderPass(VkCommandBuffer commandBuffer) {
 //    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 //    {
 //        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.graphicsPipeline);
@@ -41,4 +49,4 @@ void Model::drawRenderPass(VkCommandBuffer commandBuffer) {
 //        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()) - 2, 1, 2, 0, 0);
 //    }
 //    vkCmdEndRenderPass(commandBuffer);
-}
+//}
