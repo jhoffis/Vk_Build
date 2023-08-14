@@ -70,13 +70,17 @@ namespace Gra {
         Texture::createTextureImage();
         Texture::createTextureImageView();
         Texture::createTextureSampler();
-        createVertexBuffer();
-        createIndexBuffer();
+
+        createVertexBuffer(&m_mesh);
+        createIndexBuffer(&m_mesh);
         createUniformBuffers();
         m_descriptorPool = createDescriptorPool();
         m_descriptorSets = createDescriptorSets(m_descriptorPool);
         createCommandBuffers();
         Drawing::createSyncObjects();
+
+        m_mesh.indexBuffer = m_indexBuffer;
+        m_mesh.indices = indices;
     }
 
 

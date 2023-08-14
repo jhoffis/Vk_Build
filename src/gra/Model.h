@@ -16,19 +16,18 @@
  * Think of this class as a collection of a type of model instead of a single object to render.
 */
 class Model {
-
 private:
     VkDescriptorPool pool;
     VkDescriptorSetLayout descriptorSetLayout;
     std::vector<VkDescriptorSet> descriptorSets{};
-
     Raster::Pipeline pipeline{};
-
     Gra::CmdBuffer cmdBuffer{};
-
+    Mesh mesh{};
 public:
     Model();
+
     void destroy();
+
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
 };
 

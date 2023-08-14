@@ -2,6 +2,9 @@
 
 #include <vector>
 #include "src/window.h"
+#include "gra/Mesh.h"
+#include "vk/pipeline/gra_pipeline.h"
+//#include "vk/shading/gra_vertex.h"
 
 namespace Gra {
 
@@ -17,6 +20,12 @@ namespace Gra {
 
     void createCommandPool();
     void createCommandBuffers();
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+    void recordCommandBuffer(
+            VkCommandBuffer commandBuffer,
+            uint32_t imageIndex,
+            const Mesh& mesh,
+            const Raster::Pipeline& pipe,
+            VkDescriptorSet *descriptorSet
+            );
 
 }

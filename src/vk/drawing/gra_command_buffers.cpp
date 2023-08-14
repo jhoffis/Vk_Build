@@ -10,9 +10,9 @@
 #include "gra_framebuffers.h"
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/pipeline/gra_pipeline.h"
-#include "src/vk/shading/gra_vertex.h"
 #include "gra_drawing.h"
 #include "src/vk/shading/gra_uniform.h"
+#include "vk/shading/gra_vertex.h"
 
 
 namespace Gra {
@@ -58,7 +58,11 @@ namespace Gra {
 
     }
 
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+    void recordCommandBuffer(VkCommandBuffer commandBuffer,
+                             uint32_t imageIndex,
+                             const Mesh& mesh,
+                             const Raster::Pipeline& pipe,
+                             VkDescriptorSet *descriptorSet) {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = 0; // Optional
@@ -70,26 +74,26 @@ namespace Gra {
 
         beginRenderPass(commandBuffer, imageIndex);
         {
-            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Raster::m_pipeline.graphicsPipeline);
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipe.graphicsPipeline);
             Gra::recordSwapChain(commandBuffer);
 
-            VkBuffer vertexBuffers[] = {m_vertexBuffer};
+            VkBuffer vertexBuffers[] = {mesh.vertexBuffer};
             VkDeviceSize offsets[] = {0};
             vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-            vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdBindIndexBuffer(commandBuffer, mesh.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
             vkCmdBindDescriptorSets(commandBuffer,
                                     VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                    Raster::m_pipeline.pipelineLayout, // inneholder descriptor layout
+                                    pipe.pipelineLayout, // inneholder descriptor layout
                                     0,
                                     1,
-                                    &m_descriptorSets[Drawing::currSwapFrame], // inneholder uniformbuffer ref
+                                    descriptorSet, // &m_descriptorSets[Drawing::currSwapFrame], // inneholder uniformbuffer ref
                                     0,
                                     nullptr);
 
-            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
-            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()) - 2, 1, 2, 0, 0);
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(mesh.indices.size()), 1, 0, 0, 0);
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(mesh.indices.size()) - 2, 1, 2, 0, 0);
         }
         vkCmdEndRenderPass(commandBuffer);
 

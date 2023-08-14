@@ -26,7 +26,7 @@ void Model::destroy() {
 VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     auto cmd = cmdBuffer.m_commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
-    Gra::recordCommandBuffer(cmd, imageIndex);
+    Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, &descriptorSets[Drawing::currSwapFrame]);
 
     return cmd;
 }

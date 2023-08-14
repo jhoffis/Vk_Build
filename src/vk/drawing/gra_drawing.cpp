@@ -57,9 +57,10 @@ namespace Drawing {
         vkResetFences(Gra::m_device, 1, &m_inFlightFences[currSwapFrame]);
 
         float i = 0.0f;
+
         for (auto commandBuffer : Gra::m_commandBuffers[currSwapFrame]) {
             vkResetCommandBuffer(commandBuffer, 0);
-            Gra::recordCommandBuffer(commandBuffer, imageIndex);
+            Gra::recordCommandBuffer(commandBuffer, imageIndex, m_mesh, Raster::m_pipeline, &Gra::m_descriptorSets[Drawing::currSwapFrame]);
             i++;
         }
         Gra::updateUniformBuffer(currSwapFrame, 0.0f, 0);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "src/window.h"
+#include "gra/Mesh.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <array>
@@ -61,6 +62,12 @@ namespace Gra {
         4, 5, 6, 6, 7, 4
     };
 
+//    struct Mesh {
+//        VkBuffer *vertexBuffer;
+//        VkBuffer *indexBuffer;
+//        uint32_t *indices;
+//    };
+
     struct UniformBufferObject {
         alignas(16) glm::mat4 model;
         alignas(16) glm::mat4 view;
@@ -68,12 +75,10 @@ namespace Gra {
     };
 
     extern VkBuffer m_vertexBuffer;
-    extern VkDeviceMemory m_vertexBufferMemory;
     extern VkBuffer m_indexBuffer;
-    extern VkDeviceMemory m_indexBufferMemory;
 
-    void createVertexBuffer();
-    void createIndexBuffer();
+    void createVertexBuffer(Mesh *mesh);
+    void createIndexBuffer(Mesh *mesh);
 
     void cleanupVertex();
 }
