@@ -18,6 +18,8 @@ namespace Drawing {
     std::vector<VkFence> m_inFlightFences;
     uint32_t currSwapFrame = 0;
 
+    bool clear;
+
     void createSyncObjects() {
         m_imageAvailableSemaphores.resize(Gra::MAX_FRAMES_IN_FLIGHT);
         m_renderFinishedSemaphores.resize(Gra::MAX_FRAMES_IN_FLIGHT);
@@ -66,11 +68,13 @@ namespace Drawing {
 //        }
 //        Gra::updateUniformBuffer(currSwapFrame, 1.0f, 1);
 
+        clear = true;
         std::vector<VkCommandBuffer> cmds{};
         for (auto model : m_renderModels) {
             if (!model.visible)
                 continue;
             cmds.emplace_back(model.renderMeshes(imageIndex));
+            clear = false;
         }
 
         // TODO change this to VkSubmitInfo2 ?

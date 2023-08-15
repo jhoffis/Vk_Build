@@ -5,6 +5,7 @@
 namespace Gra {
     extern VkRenderPass m_renderPass;
 
-    void createRenderPass();
-    void beginRenderPass(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+    VkRenderPass createRenderPass(bool clear);
+    void createRenderPasses();
+    void beginRenderPass(VkCommandBuffer commandBuffer, uint32_t imageIndex, bool clear);
 }

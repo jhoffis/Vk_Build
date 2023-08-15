@@ -101,7 +101,7 @@ namespace Gra {
             throw std::runtime_error("failed to begin recording command buffer!");
         }
 
-        beginRenderPass(commandBuffer, imageIndex);
+        beginRenderPass(commandBuffer, imageIndex, Drawing::clear);
         {
             vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipe.graphicsPipeline);
             Gra::recordSwapChain(commandBuffer);

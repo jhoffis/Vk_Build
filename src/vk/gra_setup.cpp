@@ -61,7 +61,7 @@ namespace Gra {
 
         createSwapChain();
         createImageViews();
-        createRenderPass();
+        createRenderPasses();
         m_descriptorSetLayout = createDescriptorSetLayout();
         Raster::m_pipeline = Raster::createGraphicsPipeline(m_descriptorSetLayout, "triangle");
         createCommandPool();

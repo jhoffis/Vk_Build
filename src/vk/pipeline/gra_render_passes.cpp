@@ -13,15 +13,16 @@
 namespace Gra {
 
     VkRenderPass m_renderPass;
+    VkRenderPass m_renderPassNone;
 
-    void createRenderPass() {
+    VkRenderPass createRenderPass(bool clear) {
         /*
          * Attachment description
          */
         VkAttachmentDescription colorAttachment{};
         colorAttachment.format = m_swapChainImageFormat;
         colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-        colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        colorAttachment.loadOp = clear ? VK_ATTACHMENT_LOAD_OP_CLEAR : VK_ATTACHMENT_LOAD_OP_NONE_EXT;
         colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
         colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -84,22 +85,29 @@ namespace Gra {
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = &dependency;
 
-        if (vkCreateRenderPass(m_device, &renderPassInfo, nullptr, &m_renderPass) != VK_SUCCESS) {
+        VkRenderPass renderPass;
+        if (vkCreateRenderPass(m_device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
             throw std::runtime_error("failed to create render pass!");
         }
+        return renderPass;
     }
 
-    void beginRenderPass(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+    void createRenderPasses() {
+        m_renderPass = createRenderPass(true);
+        m_renderPassNone = createRenderPass(false);
+    }
+
+    void beginRenderPass(VkCommandBuffer commandBuffer, uint32_t imageIndex, bool clear) {
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = m_renderPass;
+        renderPassInfo.renderPass = clear ? m_renderPass : m_renderPassNone;
         renderPassInfo.framebuffer = m_swapChainFramebuffers[imageIndex];
         renderPassInfo.renderArea.offset = {0, 0};
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
         // Note that the order of clearValues should be identical to the order of your attachments.
         std::array<VkClearValue, 2> clearValues{};
-        clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
+        clearValues[0].color = {{0.0f, 0.0f, 0.0f, 0.0f}};
         clearValues[1].depthStencil = {1.0f, 0};
 
         renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
