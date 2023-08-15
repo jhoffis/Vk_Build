@@ -8,7 +8,7 @@
 #include "vk/drawing/gra_drawing.h"
 #include "vk/shading/gra_vertex.h"
 
-std::vector<Model> m_renderModels;
+std::vector<Model*> m_renderModels;
 
 Model::Model() {
     // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og attributes. Feks at de først har uniform buffer og så image sampler.
