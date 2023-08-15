@@ -25,7 +25,7 @@ namespace Gra {
     void recordCommandBuffer(
             VkCommandBuffer commandBuffer,
             uint32_t imageIndex,
-            const Mesh& mesh,
+            const Mesh::Mesh& mesh,
             const Raster::Pipeline& pipe,
             VkDescriptorSet *descriptorSet
             );

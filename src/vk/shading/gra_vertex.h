@@ -1,18 +1,16 @@
 #pragma once
 
 #include "src/window.h"
-#include "gra/Mesh.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <array>
-#include <vector>
 
 namespace Gra {
 
     struct Vertex {
-        glm::vec3 pos;
-        glm::vec3 color;
-        glm::vec2 texCoord;
+        glm::vec3 pos{};
+        glm::vec3 color{};
+        glm::vec2 texCoord{};
 
         static VkVertexInputBindingDescription getBindingDescription() {
             VkVertexInputBindingDescription bindingDescription{
@@ -45,40 +43,10 @@ namespace Gra {
         }
     };
 
-    const std::vector<Vertex> vertices = {
-        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
-
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
-    };
-    // TODO lag en check på int størrelse i forhold til attributeDescriptions[1].format osv fordi om du definerer feil int størrelse så vil den ikke klage men heller ikke fungere!
-    const std::vector<uint32_t> indices = {
-        0, 1, 2, 2, 3, 0,
-        4, 5, 6, 6, 7, 4
-    };
-
-//    struct Mesh {
-//        VkBuffer *vertexBuffer;
-//        VkBuffer *indexBuffer;
-//        uint32_t *indices;
-//    };
-
     struct UniformBufferObject {
         alignas(16) glm::mat4 model;
         alignas(16) glm::mat4 view;
         alignas(16) glm::mat4 proj;
     };
 
-    extern VkBuffer m_vertexBuffer;
-    extern VkBuffer m_indexBuffer;
-
-    void createVertexBuffer(Mesh *mesh);
-    void createIndexBuffer(Mesh *mesh);
-
-    void cleanupVertex();
 }

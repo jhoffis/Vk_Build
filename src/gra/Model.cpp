@@ -6,7 +6,6 @@
 #include "vk/shading/gra_uniform.h"
 #include "vk/gra_setup.h"
 #include "vk/drawing/gra_drawing.h"
-#include "vk/shading/gra_vertex.h"
 
 std::vector<Model> m_renderModels;
 
@@ -18,13 +17,27 @@ Model::Model() {
     uboMem = Gra::createUniformBuffers();
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem);
 
-    Gra::createVertexBuffer(&mesh);
-    Gra::createIndexBuffer(&mesh);
-    mesh.indices = Gra::indices;
+    // TODO lag en check på int størrelse i forhold til attributeDescriptions[1].format osv fordi om du definerer feil int størrelse så vil den ikke klage men heller ikke fungere!
+    mesh.indices = {
+        0, 1, 2, 2, 3, 0,
+        4, 5, 6, 6, 7, 4
+    };
+    mesh.vertices = {
+        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
 
+        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
+    };
+    Mesh::init(&mesh);
 }
 
 void Model::destroy() {
+    mesh.destroy();
     vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
     Raster::destroyPipeline(pipeline);
     vkDestroyDescriptorSetLayout(Gra::m_device, descriptorSetLayout, nullptr);

@@ -71,15 +71,11 @@ namespace Gra {
         Texture::createTextureImageView();
         Texture::createTextureSampler();
 
-        createVertexBuffer(&m_mesh);
-        createIndexBuffer(&m_mesh);
         createUniformBuffers();
         m_descriptorPool = createDescriptorPool();
 //        m_descriptorSets = createDescriptorSets(m_descriptorPool);
         createCommandBuffers();
         Drawing::createSyncObjects();
-
-        m_mesh.indices = indices;
     }
 
 
@@ -91,7 +87,7 @@ namespace Gra {
         Texture::cleanupTextures();
 
         cleanupUniform();
-        cleanupVertex();
+        Mesh::cleanup();
 
         Raster::destroyPipeline(Raster::m_pipeline);
         vkDestroyRenderPass(m_device, m_renderPass, nullptr);
