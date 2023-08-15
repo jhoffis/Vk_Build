@@ -17,10 +17,10 @@ int main() {
     Gra::initVulkan();
 
     Model testModel{};
-    m_renderModels.emplace_back(testModel);
+    m_renderModels.emplace_back(&testModel);
     Model testModel2{};
     testModel2.x = 1.0f;
-    m_renderModels.emplace_back(testModel2);
+    m_renderModels.emplace_back(&testModel2);
 
     static bool running = true;
     while(running)

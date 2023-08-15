@@ -71,9 +71,9 @@ namespace Drawing {
         clear = true;
         std::vector<VkCommandBuffer> cmds{};
         for (auto model : m_renderModels) {
-            if (!model.visible)
+            if (!model->visible)
                 continue;
-            cmds.emplace_back(model.renderMeshes(imageIndex));
+            cmds.emplace_back(model->renderMeshes(imageIndex));
             clear = false;
         }
 
