@@ -9,6 +9,8 @@
 #include "gra_memory_utils.h"
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/gra_setup.h"
+#include <cmath>
+#include <iostream>
 
 namespace Gra {
 
@@ -45,12 +47,15 @@ namespace Gra {
         UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(x, x, 1.0f));
 
-        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        auto z = std::sin(time) * 2;
+//        std::cout << "z: " << z << std::endl;
+        ubo.view = glm::lookAt(glm::vec3(0, .0001, 1), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-        ubo.proj = glm::perspective(glm::radians(45.0f), (float) m_swapChainExtent.width / (float) m_swapChainExtent.height,
-                                    0.1f, 10.0f);
+        ubo.proj = glm::ortho(0.0f, 1.0f, 1.0f, 0.0f, -10.0f, 10.0f);
 
-        ubo.proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
+//        ubo.proj = glm::perspective(glm::radians(80.0f), (float) m_swapChainExtent.width / (float) m_swapChainExtent.height,
+//                                    0.1f, 10.0f);
+//        ubo.proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
 
         void *data;
         vkMapMemory(m_device, uboMem.uniformBuffersMemory[currentImage], offset * sizeof(ubo), sizeof(ubo), 0, &data);
