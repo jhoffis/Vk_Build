@@ -1,10 +1,4 @@
-//
-// Created by jonah on 8/5/2023.
-//
-
-#ifndef VULKAN_MODEL_H
-#define VULKAN_MODEL_H
-
+#pragma once
 
 #include <vulkan/vulkan.h>
 #include <vector>
@@ -39,5 +33,3 @@ public:
 };
 
 extern std::vector<Model*> m_renderModels;
-
-#endif //VULKAN_MODEL_H

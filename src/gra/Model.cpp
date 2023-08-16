@@ -16,12 +16,11 @@ Model::Model() {
     pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, "triangle");
     pool = Gra::createDescriptorPool();
     uboMem = Gra::createUniformBuffers();
-    descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem);
+    auto texImageView = Texture::createTexture("texture.jpg");
+    descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
 
     Gra::createVertexBuffer(&mesh);
     Gra::createIndexBuffer(&mesh);
-//    mesh.indices = Gra::indices;
-
 }
 
 void Model::destroy() {

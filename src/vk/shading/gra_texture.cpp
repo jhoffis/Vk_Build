@@ -12,10 +12,18 @@
 
 namespace Texture {
 
-    VkImage textureImage;
-    VkDeviceMemory textureImageMemory;
-    VkImageView textureImageView;
-    VkSampler textureSampler;
+    struct TextureData {
+        VkImage textureImage;
+        VkDeviceMemory textureImageMemory;
+        VkImageView textureImageView;
+    };
+
+    std::vector<TextureData> texsToClean{};
+
+//    VkImage m_textureImage;
+//    VkDeviceMemory m_textureImageMemory;
+//    VkImageView m_textureImageView; // Points to textureImage
+    VkSampler m_textureSampler; // Holds information about how to render like e.g. filters
 
     struct ImageData {
         int w;
@@ -191,16 +199,18 @@ namespace Texture {
         vkBindImageMemory(Gra::m_device, image, imageMemory, 0);
     }
 
-    void createTextureImage() {
-        auto texture = loadImage("texture.jpg");
+    void createTextureImage(char *name, TextureData *texData) {
+        auto texture = loadImage(name);
         // The pixels are laid out row by row with 4 bytes per pixel in the case of STBI_rgb_alpha for a total of texWidth * texHeight * 4 values.
         VkDeviceSize imageSize = texture.w * texture.h * 4;
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
 
-        Gra::createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
+        Gra::createBuffer(imageSize,
+                          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                          stagingBuffer,
                           stagingBufferMemory);
 
         void *data;
@@ -212,23 +222,27 @@ namespace Texture {
 
         createImage(texture.w, texture.h, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
                     VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                    textureImage, textureImageMemory);
+                    texData->textureImage, texData->textureImageMemory);
 
         // The next step is to copy the staging buffer to the texture image. This involves two steps:
 
-        transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        transitionImageLayout(texData->textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-        copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texture.w), static_cast<uint32_t>(texture.h));
+        copyBufferToImage(stagingBuffer, texData->textureImage, static_cast<uint32_t>(texture.w), static_cast<uint32_t>(texture.h));
 
         // To be able to start sampling from the texture image in the shader, we need one last transition to prepare it for shader access:
-        transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        transitionImageLayout(texData->textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
         vkDestroyBuffer(Gra::m_device, stagingBuffer, nullptr);
         vkFreeMemory(Gra::m_device, stagingBufferMemory, nullptr);
     }
 
-    void createTextureImageView() {
-        textureImageView = Gra::createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+    VkImageView createTexture(std::string imgPath) {
+        TextureData data{};
+        createTextureImage(imgPath.data(), &data);
+        data.textureImageView = Gra::createImageView(data.textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+        texsToClean.emplace_back(data);
+        return data.textureImageView;
     }
 
     /*
@@ -271,7 +285,7 @@ namespace Texture {
             .unnormalizedCoordinates = VK_FALSE,
         };
 
-        if (vkCreateSampler(Gra::m_device, &samplerInfo, nullptr, &textureSampler) != VK_SUCCESS) {
+        if (vkCreateSampler(Gra::m_device, &samplerInfo, nullptr, &m_textureSampler) != VK_SUCCESS) {
             throw std::runtime_error("failed to create texture sampler!");
         }
     }
@@ -288,10 +302,12 @@ namespace Texture {
     }
 
     void cleanupTextures() {
-        vkDestroySampler(Gra::m_device, textureSampler, nullptr);
-        vkDestroyImageView(Gra::m_device, textureImageView, nullptr);
-        vkDestroyImage(Gra::m_device, textureImage, nullptr);
-        vkFreeMemory(Gra::m_device, textureImageMemory, nullptr);
+        vkDestroySampler(Gra::m_device, m_textureSampler, nullptr);
+        for (auto tex : texsToClean) {
+            vkDestroyImageView(Gra::m_device, tex.textureImageView, nullptr);
+            vkDestroyImage(Gra::m_device, tex.textureImage, nullptr);
+            vkFreeMemory(Gra::m_device, tex.textureImageMemory, nullptr);
+        }
     }
 
 } // Texture

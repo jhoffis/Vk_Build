@@ -19,6 +19,9 @@ namespace Gra {
     VkDescriptorSetLayout createDescriptorSetLayout();
 
     VkDescriptorPool createDescriptorPool();
-    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout layout, VkDescriptorPool pool, StandardUBOMem uboMem);
+    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout layout,
+                                                      VkDescriptorPool pool,
+                                                      StandardUBOMem uboMem,
+                                                      VkImageView textureImageView);
     void cleanupUniform();
 }

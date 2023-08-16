@@ -110,7 +110,10 @@ namespace Gra {
         return pool;
     }
 
-    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout layout, VkDescriptorPool pool, StandardUBOMem uboMem) {
+    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout layout,
+                                                      VkDescriptorPool pool,
+                                                      StandardUBOMem uboMem,
+                                                      VkImageView textureImageView) {
         std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, layout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -132,8 +135,8 @@ namespace Gra {
 
             VkDescriptorImageInfo imageInfo{};
             imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.imageView = Texture::textureImageView;
-            imageInfo.sampler = Texture::textureSampler;
+            imageInfo.imageView = textureImageView;
+            imageInfo.sampler = Texture::m_textureSampler;
 
             std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 

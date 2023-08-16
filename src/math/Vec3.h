@@ -1,10 +1,4 @@
-//
-// Created by jonhof on 8/16/2023.
-//
-
-#ifndef VULKAN_VEC3_H
-#define VULKAN_VEC3_H
-
+#pragma once
 
 struct Vec3 {
 //    TODO skift over til "std::float32_t" en gang i fremtiden
@@ -13,6 +7,3 @@ struct Vec3 {
             y{0},
             z{0};
 };
-
-
-#endif //VULKAN_VEC3_H

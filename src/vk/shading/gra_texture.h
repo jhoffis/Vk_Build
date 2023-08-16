@@ -6,10 +6,7 @@
 
 namespace Texture {
 
-    extern VkImage textureImage;
-    extern VkDeviceMemory textureImageMemory;
-    extern VkImageView textureImageView;
-    extern VkSampler textureSampler;
+    extern VkSampler m_textureSampler;
 
     void createImage(uint32_t width,
                      uint32_t height,
@@ -21,10 +18,9 @@ namespace Texture {
                      VkDeviceMemory &imageMemory
     );
 
-    void createTextureImage();
-    void createTextureImageView();
     void createTextureSampler();
     GLFWimage createGLFWImage(const char *path);
+    VkImageView createTexture(std::string imgPath);
 
     void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
