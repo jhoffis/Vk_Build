@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "src/window.h"
-#include "gra/Mesh.h"
+#include "gra/Mesh2D.h"
 #include "vk/pipeline/gra_pipeline.h"
 //#include "vk/shading/gra_vertex.h"
 
@@ -25,7 +25,7 @@ namespace Gra {
     void recordCommandBuffer(
             VkCommandBuffer commandBuffer,
             uint32_t imageIndex,
-            const Mesh& mesh,
+            const Mesh2D& mesh,
             const Raster::Pipeline& pipe,
             VkDescriptorSet *descriptorSet
             );

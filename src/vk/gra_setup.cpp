@@ -78,8 +78,6 @@ namespace Gra {
 //        m_descriptorSets = createDescriptorSets(m_descriptorPool);
         createCommandBuffers();
         Drawing::createSyncObjects();
-
-        m_mesh.indices = indices;
     }
 
 

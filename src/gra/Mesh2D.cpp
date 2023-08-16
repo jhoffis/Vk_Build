@@ -2,6 +2,6 @@
 // Created by jonhof on 8/14/2023.
 //
 
-#include "Mesh.h"
+#include "Mesh2D.h"
 
-Mesh m_mesh{};
+Mesh2D m_mesh{};

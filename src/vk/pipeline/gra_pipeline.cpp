@@ -53,8 +53,8 @@ namespace Raster {
          * Vertex input
          */
 
-        auto bindingDescription = Gra::Vertex::getBindingDescription();
-        auto attributeDescriptions = Gra::Vertex::getAttributeDescriptions();
+        auto bindingDescription = Vertex::getBindingDescription();
+        auto attributeDescriptions = Vertex::getAttributeDescriptions();
 
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;

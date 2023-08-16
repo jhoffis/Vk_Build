@@ -89,7 +89,7 @@ namespace Gra {
 
     void recordCommandBuffer(VkCommandBuffer commandBuffer,
                              uint32_t imageIndex,
-                             const Mesh& mesh,
+                             const Mesh2D& mesh,
                              const Raster::Pipeline& pipe,
                              VkDescriptorSet *descriptorSet) {
         VkCommandBufferBeginInfo beginInfo{};
@@ -121,8 +121,7 @@ namespace Gra {
                                     0,
                                     nullptr);
 
-            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(mesh.indices.size()), 1, 0, 0, 0);
-            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(mesh.indices.size()) - 2, 1, 2, 0, 0);
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(6), 1, 0, 0, 0);
         }
         vkCmdEndRenderPass(commandBuffer);
 

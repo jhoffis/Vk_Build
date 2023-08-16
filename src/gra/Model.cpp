@@ -20,7 +20,7 @@ Model::Model() {
 
     Gra::createVertexBuffer(&mesh);
     Gra::createIndexBuffer(&mesh);
-    mesh.indices = Gra::indices;
+//    mesh.indices = Gra::indices;
 
 }
 

@@ -25,7 +25,7 @@ private:
     std::vector<VkDescriptorSet> descriptorSets{};
     Raster::Pipeline pipeline{};
     Gra::CmdBuffer cmdBuffer{};
-    Mesh mesh{};
+    Mesh2D mesh{};
     Gra::StandardUBOMem uboMem{};
 public:
     bool visible = true;
