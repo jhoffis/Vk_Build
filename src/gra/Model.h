@@ -25,7 +25,7 @@ public:
     bool visible = true;
     float x = 0;
 
-    Model();
+    Model(const std::string& shaderName, const std::string& textureName);
 
     void destroy();
 

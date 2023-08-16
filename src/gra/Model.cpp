@@ -3,6 +3,8 @@
 //
 
 #include "Model.h"
+
+#include <utility>
 #include "vk/shading/gra_uniform.h"
 #include "vk/gra_setup.h"
 #include "vk/drawing/gra_drawing.h"
@@ -10,13 +12,13 @@
 
 std::vector<Model*> m_renderModels;
 
-Model::Model() {
+Model::Model(const std::string& shaderName, const std::string& textureName) {
     // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og attributes. Feks at de først har uniform buffer og så image sampler.
     descriptorSetLayout = Gra::createDescriptorSetLayout(); // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
-    pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, "triangle");
+    pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, shaderName);
     pool = Gra::createDescriptorPool();
     uboMem = Gra::createUniformBuffers();
-    auto texImageView = Texture::createTexture("texture.jpg");
+    auto texImageView = Texture::createTexture(const_cast<std::string &>(textureName));
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
 
     Gra::createVertexBuffer(&mesh);

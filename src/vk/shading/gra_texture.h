@@ -20,7 +20,7 @@ namespace Texture {
 
     void createTextureSampler();
     GLFWimage createGLFWImage(const char *path);
-    VkImageView createTexture(std::string imgPath);
+    VkImageView createTexture(std::string &imgPath);
 
     void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
