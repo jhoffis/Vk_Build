@@ -19,7 +19,6 @@ int main() {
     Model testModel("triangle", "texture.jpg");
     m_renderModels.emplace_back(&testModel);
     Model testModel2("triangle", "Decentra_character.png");
-    testModel2.x = 1.0f;
     m_renderModels.emplace_back(&testModel2);
 
     static bool running = true;

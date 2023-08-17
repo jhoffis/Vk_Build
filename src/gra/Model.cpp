@@ -37,7 +37,8 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
     Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, &descriptorSets[Drawing::currSwapFrame]);
-    Gra::updateUniformBuffer(uboMem, Drawing::currSwapFrame, 0, );
+    Entity e{};
+    Gra::updateUniformBuffer(uboMem, Drawing::currSwapFrame, 0, e);
     return cmd;
 }
 
