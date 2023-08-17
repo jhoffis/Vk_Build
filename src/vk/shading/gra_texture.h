@@ -8,6 +8,14 @@ namespace Texture {
 
     extern VkSampler m_textureSampler;
 
+
+    struct ImageData {
+        int w;
+        int h;
+        int comp;
+        unsigned char *image;
+    };
+
     void createImage(uint32_t width,
                      uint32_t height,
                      VkFormat format,
@@ -18,9 +26,10 @@ namespace Texture {
                      VkDeviceMemory &imageMemory
     );
 
+    ImageData loadImage(const char *name);
     void createTextureSampler();
     GLFWimage createGLFWImage(const char *path);
-    VkImageView createTexture(std::string &imgPath);
+    VkImageView createTexture(ImageData &img);
 
     void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 

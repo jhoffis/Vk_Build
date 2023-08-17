@@ -69,8 +69,6 @@ namespace Gra {
         createFramebuffers();
         Texture::createTextureSampler();
 
-        createVertexBuffer(&m_mesh);
-        createIndexBuffer(&m_mesh);
         createUniformBuffers();
         m_descriptorPool = createDescriptorPool();
 //        m_descriptorSets = createDescriptorSets(m_descriptorPool);

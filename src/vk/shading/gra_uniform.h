@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include "src/window.h"
+#include "gra/Entity.h"
 #include <vector>
 
 namespace Gra {
@@ -15,7 +16,7 @@ namespace Gra {
     };
 
     StandardUBOMem createUniformBuffers();
-    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentImage, float x, uint32_t offset);
+    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentImage, uint32_t offset, Entity &entity);
     VkDescriptorSetLayout createDescriptorSetLayout();
 
     VkDescriptorPool createDescriptorPool();

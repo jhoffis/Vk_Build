@@ -5,6 +5,7 @@
 #include "vk/pipeline/gra_pipeline.h"
 #include "vk/drawing/gra_command_buffers.h"
 #include "vk/shading/gra_uniform.h"
+#include "Entity.h"
 
 /*
  * super inefficient first model version
@@ -14,22 +15,28 @@
 */
 class Model {
 private:
+    Mesh2D mesh{};
+    Gra::CmdBuffer cmdBuffer{};
+    Gra::StandardUBOMem uboMem{};
+
+    Raster::Pipeline pipeline{};
+
     VkDescriptorPool pool;
     VkDescriptorSetLayout descriptorSetLayout;
     std::vector<VkDescriptorSet> descriptorSets{};
-    Raster::Pipeline pipeline{};
-    Gra::CmdBuffer cmdBuffer{};
-    Mesh2D mesh{};
-    Gra::StandardUBOMem uboMem{};
+
+    std::vector<Entity> entities{};
+
 public:
     bool visible = true;
-    float x = 0;
 
-    Model(const std::string& shaderName, const std::string& textureName);
+    Model(const std::string &shaderName, const std::string &textureName);
 
-    void destroy();
+    Entity* addEntity();
 
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
+
+    void destroy();
 };
 
-extern std::vector<Model*> m_renderModels;
+extern std::vector<Model *> m_renderModels;

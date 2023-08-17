@@ -20,6 +20,7 @@ namespace Gra {
     std::vector<StandardUBOMem> m_ubosToClean{};
 
     StandardUBOMem createUniformBuffers() {
+        // TODO make custom shit, hmmm vel du kan basere deg på en size av en struct som har endret størrelse da! Lag en struct med en vector med components kanskje?
         VkDeviceSize bufferSize = 2 * sizeof(UniformBufferObject);
 
         StandardUBOMem uboMem{};
@@ -38,20 +39,18 @@ namespace Gra {
         return uboMem;
     }
 
-    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentImage, float x, uint32_t offset) {
-        static auto startTime = std::chrono::high_resolution_clock::now();
-
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentImage, uint32_t offset, Entity &entity) {
 
         UniformBufferObject ubo{};
-        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(x, x, 1.0f));
+        ubo.model = glm::mat4(1.0f); //glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(x, x, 1.0f));
 
-        auto z = std::sin(time) * 2;
-//        std::cout << "z: " << z << std::endl;
-        ubo.view = glm::lookAt(glm::vec3(0, .0001, 1), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.model = glm::translate(ubo.model, glm::vec3(-entity.pos.x, -entity.pos.y, -entity.pos.z));
 
-        ubo.proj = glm::ortho(0.0f, 1.0f, 1.0f, 0.0f, -10.0f, 10.0f);
+        ubo.view = glm::lookAt(glm::vec3(0, .00000000000000001f, 1), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        auto aspect = (float) m_swapChainExtent.width / (float) m_swapChainExtent.height;
+
+        ubo.proj = glm::ortho(0.0f, aspect, 1.0f, 0.0f, -10.0f, 10.0f);
 
 //        ubo.proj = glm::perspective(glm::radians(80.0f), (float) m_swapChainExtent.width / (float) m_swapChainExtent.height,
 //                                    0.1f, 10.0f);

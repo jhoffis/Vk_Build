@@ -25,14 +25,6 @@ namespace Texture {
 //    VkImageView m_textureImageView; // Points to textureImage
     VkSampler m_textureSampler; // Holds information about how to render like e.g. filters
 
-    struct ImageData {
-        int w;
-        int h;
-        int comp;
-        unsigned char *image;
-    };
-
-
     /*
      * Helper methods
      */
@@ -142,8 +134,7 @@ namespace Texture {
     /*
      * Creating
      */
-
-    auto loadImage(const char *name) {
+    ImageData loadImage(const char *name) {
         ImageData img{};
         std::string currPath = std::filesystem::current_path().string().append("/res/pics/");
         const char *realPath = reinterpret_cast<const char *>(currPath.append(name).c_str());
@@ -199,8 +190,7 @@ namespace Texture {
         vkBindImageMemory(Gra::m_device, image, imageMemory, 0);
     }
 
-    void createTextureImage(char *name, TextureData *texData) {
-        auto texture = loadImage(name);
+    void createTextureImage(ImageData &texture, TextureData *texData) {
         // The pixels are laid out row by row with 4 bytes per pixel in the case of STBI_rgb_alpha for a total of texWidth * texHeight * 4 values.
         VkDeviceSize imageSize = texture.w * texture.h * 4;
 
@@ -237,9 +227,9 @@ namespace Texture {
         vkFreeMemory(Gra::m_device, stagingBufferMemory, nullptr);
     }
 
-    VkImageView createTexture(std::string &imgPath) {
+    VkImageView createTexture(ImageData &img) {
         TextureData data{};
-        createTextureImage(imgPath.data(), &data);
+        createTextureImage(img, &data);
         data.textureImageView = Gra::createImageView(data.textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
         texsToClean.emplace_back(data);
         return data.textureImageView;

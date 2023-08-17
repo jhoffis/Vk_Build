@@ -18,9 +18,11 @@ Model::Model(const std::string& shaderName, const std::string& textureName) {
     pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, shaderName);
     pool = Gra::createDescriptorPool();
     uboMem = Gra::createUniformBuffers();
-    auto texImageView = Texture::createTexture(const_cast<std::string &>(textureName));
+    auto img = Texture::loadImage(textureName.data());
+    auto texImageView = Texture::createTexture(img);
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
 
+    mesh.init(static_cast<float>(img.w), static_cast<float>(img.h));
     Gra::createVertexBuffer(&mesh);
     Gra::createIndexBuffer(&mesh);
 }
@@ -35,7 +37,7 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
     Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, &descriptorSets[Drawing::currSwapFrame]);
-    Gra::updateUniformBuffer(uboMem, Drawing::currSwapFrame, x, 0);
+    Gra::updateUniformBuffer(uboMem, Drawing::currSwapFrame, 0, );
     return cmd;
 }
 
