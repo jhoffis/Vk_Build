@@ -1,6 +1,5 @@
 #include "Model.h"
 
-#include <utility>
 #include "vk/shading/gra_uniform.h"
 #include "vk/gra_setup.h"
 #include "vk/drawing/gra_drawing.h"
@@ -13,10 +12,10 @@ Model::Model(const std::string& shaderName, const std::string& textureName) {
     entities.emplace_back(Entity{});
     descriptorSetLayout = Gra::createDescriptorSetLayout(); // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
     pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, shaderName);
-    pool = Gra::createDescriptorPool();
     uboMem = Gra::createUniformBuffers(1);
     auto img = Texture::loadImage(textureName.data());
     texImageView = Texture::createTexture(img);
+    pool = Gra::createDescriptorPool();
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
 
     mesh.init(static_cast<float>(img.w), static_cast<float>(img.h));
@@ -44,11 +43,14 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
 
 void Model::updateUboBuffer() {
     // liste med alle referanser til ubos - bare utvid vector listen med descSets og så bruk currswapframe for å tegne alle.
-    auto size = entities.size() + 1;
-    if (size < uboMem.size)
+    auto amount = static_cast<int>(entities.size() + 1);
+    if (amount < uboMem.size)
         return;
     uboMem.destroy();
+    uboMem = Gra::createUniformBuffers(amount);
+    // TODO gjenbruk gamle descriptors...
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
+
 }
 
 Entity& Model::addEntity(bool update) {

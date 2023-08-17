@@ -6,6 +6,8 @@
 
 namespace Gra {
 
+    extern VkPhysicalDeviceProperties m_deviceProperties;
+
     const std::vector<const char *> deviceExtensions = {
             VK_KHR_SWAPCHAIN_EXTENSION_NAME
     };

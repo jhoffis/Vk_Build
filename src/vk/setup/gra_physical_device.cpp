@@ -11,6 +11,7 @@
 #include <iostream>
 #include <set>
 
+VkPhysicalDeviceProperties Gra::m_deviceProperties;
 
 bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
     uint32_t extensionCount;
@@ -115,7 +116,8 @@ auto Gra::pickPhysicalDevice(
             .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2
         };
         vkGetPhysicalDeviceProperties2(physicalDevice, &properties);
-        std::cout << "Picked GPU: " << properties.properties.deviceName << std::endl;
+        m_deviceProperties = properties.properties;
+        std::cout << "Picked GPU: " << m_deviceProperties.deviceName << " with minUniformBufferOffsetAlignment: " << m_deviceProperties.limits.minUniformBufferOffsetAlignment <<  std::endl;
 
         return std::make_shared<VkPhysicalDevice>(physicalDevice);
     } else {

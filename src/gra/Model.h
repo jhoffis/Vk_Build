@@ -25,9 +25,9 @@ private:
     VkDescriptorSetLayout descriptorSetLayout;
     std::vector<VkDescriptorSet> descriptorSets{};
 
-    std::vector<Entity> entities{};
 
 public:
+    std::vector<Entity> entities{};
     bool visible = true;
 
     Model(const std::string &shaderName, const std::string &textureName);

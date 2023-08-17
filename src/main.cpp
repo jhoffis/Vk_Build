@@ -20,6 +20,9 @@ int main() {
     m_renderModels.emplace_back(&testModel);
     Model testModel2("triangle", "Decentra_character.png");
     m_renderModels.emplace_back(&testModel2);
+    testModel2.entities[0].pos.x = .5f;
+    testModel2.entities[0].pos.y = .5f;
+    testModel2.addEntity();
 
     static bool running = true;
     while(running)

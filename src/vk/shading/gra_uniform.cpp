@@ -106,7 +106,7 @@ namespace Gra {
         poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
         poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
         poolInfo.pPoolSizes = poolSizes.data();
-        poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        poolInfo.maxSets = 6; //static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
         VkDescriptorPool pool{};
         if (vkCreateDescriptorPool(m_device, &poolInfo, nullptr, &pool) != VK_SUCCESS) {
@@ -115,10 +115,10 @@ namespace Gra {
         return pool;
     }
 
-    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout layout,
-                                                      VkDescriptorPool pool,
-                                                      StandardUBOMem uboMem,
-                                                      VkImageView textureImageView) {
+    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout &layout,
+                                                      VkDescriptorPool &pool,
+                                                      StandardUBOMem &uboMem,
+                                                      VkImageView &textureImageView) {
         auto size = MAX_FRAMES_IN_FLIGHT * uboMem.size;
         std::vector<VkDescriptorSetLayout> layouts(size, layout);
         VkDescriptorSetAllocateInfo allocInfo{};
@@ -129,7 +129,8 @@ namespace Gra {
 
         std::vector<VkDescriptorSet> descriptorSets{};
         descriptorSets.resize(size);
-        if (vkAllocateDescriptorSets(m_device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+        auto res = vkAllocateDescriptorSets(m_device, &allocInfo, descriptorSets.data());
+        if (res != VK_SUCCESS) {
             throw std::runtime_error("failed to allocate descriptor sets!");
         }
 
