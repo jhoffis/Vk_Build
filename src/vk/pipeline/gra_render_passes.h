@@ -8,4 +8,5 @@ namespace Gra {
     VkRenderPass createRenderPass(bool clear);
     void createRenderPasses();
     void beginRenderPass(VkCommandBuffer commandBuffer, uint32_t imageIndex, bool clear);
+    void destroyRenderPasses();
 }

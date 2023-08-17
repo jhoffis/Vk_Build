@@ -18,10 +18,8 @@ namespace Gra {
     };
 
     extern VkCommandPool m_commandPool;
-    extern std::vector<std::vector<VkCommandBuffer>> m_commandBuffers;
 
     void createCommandPool();
-    void createCommandBuffers();
     void recordCommandBuffer(
             VkCommandBuffer commandBuffer,
             uint32_t imageIndex,

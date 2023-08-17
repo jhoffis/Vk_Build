@@ -37,9 +37,7 @@
 
 namespace Gra {
 
-    VkBuffer m_vertexBuffer;
-    VkBuffer m_indexBuffer;
-
+    std::vector<VkBuffer> vkBuffersToClean{};
     std::vector<VkDeviceMemory> bufferMemToClean{};
 
     void createVertexBuffer(Mesh2D *mesh) {
@@ -60,14 +58,16 @@ namespace Gra {
         vkUnmapMemory(m_device, stagingBufferMemory);
 
         VkDeviceMemory mem{};
+        VkBuffer buffer{};
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT |
                                  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_vertexBuffer, // Device local = at the gpu
+                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, // Device local = at the gpu
                      mem);
         bufferMemToClean.emplace_back(mem);
+        vkBuffersToClean.emplace_back(buffer);
 
-        copyBuffer(stagingBuffer, m_vertexBuffer, bufferSize);
-        mesh->vertexBuffer = m_vertexBuffer;
+        copyBuffer(stagingBuffer, buffer, bufferSize);
+        mesh->vertexBuffer = buffer;
 
         vkDestroyBuffer(m_device, stagingBuffer, nullptr);
         vkFreeMemory(m_device, stagingBufferMemory, nullptr);
@@ -92,14 +92,16 @@ namespace Gra {
         vkUnmapMemory(m_device, stagingBufferMemory);
 
         VkDeviceMemory mem{};
+        VkBuffer buffer{};
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT |
                                  VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_indexBuffer,
+                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer,
                      mem);
         bufferMemToClean.emplace_back(mem);
+        vkBuffersToClean.emplace_back(buffer);
 
-        copyBuffer(stagingBuffer, m_indexBuffer, bufferSize);
-        mesh->indexBuffer = m_indexBuffer;
+        copyBuffer(stagingBuffer, buffer, bufferSize);
+        mesh->indexBuffer = buffer;
 
         vkDestroyBuffer(m_device, stagingBuffer, nullptr);
         vkFreeMemory(m_device, stagingBufferMemory, nullptr);
@@ -107,13 +109,10 @@ namespace Gra {
 
 
     void cleanupVertex() {
-        vkDestroyBuffer(m_device, m_indexBuffer, nullptr);
-
-        vkDestroyBuffer(m_device, m_vertexBuffer, nullptr);
-
-        for (auto mem : bufferMemToClean) {
+        for (auto buff : vkBuffersToClean)
+            vkDestroyBuffer(m_device, buff, nullptr);
+        for (auto mem : bufferMemToClean)
             vkFreeMemory(m_device, mem, nullptr);
-        }
     }
 
 

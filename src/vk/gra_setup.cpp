@@ -62,8 +62,6 @@ namespace Gra {
         createSwapChain();
         createImageViews();
         createRenderPasses();
-        m_descriptorSetLayout = createDescriptorSetLayout();
-        Raster::m_pipeline = Raster::createGraphicsPipeline(m_descriptorSetLayout, "triangle");
         createCommandPool();
         createDepthResources();
         createFramebuffers();
@@ -71,15 +69,11 @@ namespace Gra {
 
         createUniformBuffers();
         m_descriptorPool = createDescriptorPool();
-//        m_descriptorSets = createDescriptorSets(m_descriptorPool);
-        createCommandBuffers();
         Drawing::createSyncObjects();
     }
 
 
     void cleanup() {
-        vkDeviceWaitIdle(m_device);
-
         cleanupSwapChain();
 
         Texture::cleanupTextures();
@@ -87,9 +81,7 @@ namespace Gra {
         cleanupUniform();
         cleanupVertex();
 
-        Raster::destroyPipeline(Raster::m_pipeline);
-        vkDestroyRenderPass(m_device, m_renderPass, nullptr);
-
+        destroyRenderPasses();
         Drawing::cleanupSyncObjects();
         vkDestroyCommandPool(m_device, m_commandPool, nullptr);
 

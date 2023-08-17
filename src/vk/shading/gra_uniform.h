@@ -6,7 +6,6 @@
 #include <vector>
 
 namespace Gra {
-    extern VkDescriptorSetLayout m_descriptorSetLayout;
     extern std::vector<VkDescriptorSet> m_descriptorSets;
     extern VkDescriptorPool m_descriptorPool;
 

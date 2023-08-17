@@ -9,8 +9,6 @@ namespace Raster {
         VkPipeline graphicsPipeline;
     };
 
-    extern Pipeline m_pipeline;
-
     Pipeline createGraphicsPipeline(VkDescriptorSetLayout descriptorSetLayout, const std::string &shaderName);
 
     void destroyPipeline(Pipeline &pipeline);

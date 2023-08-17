@@ -115,4 +115,9 @@ namespace Gra {
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     }
+
+    void destroyRenderPasses() {
+        vkDestroyRenderPass(m_device, m_renderPass, nullptr);
+        vkDestroyRenderPass(m_device, m_renderPassNone, nullptr);
+    }
 } // Gra

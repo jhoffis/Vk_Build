@@ -13,8 +13,6 @@
 
 namespace Raster {
 
-    Pipeline m_pipeline;
-
     Pipeline createGraphicsPipeline(VkDescriptorSetLayout descriptorSetLayout, const std::string &shaderName) {
         auto vertShaderCode = readFile("res/shaders/" + shaderName + "_vert.spv");
         auto fragShaderCode = readFile("res/shaders/" + shaderName + "_frag.spv");

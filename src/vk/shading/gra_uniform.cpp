@@ -14,7 +14,6 @@
 
 namespace Gra {
 
-    VkDescriptorSetLayout m_descriptorSetLayout;
     VkDescriptorPool m_descriptorPool;
     std::vector<VkDescriptorSet> m_descriptorSets;
     std::vector<StandardUBOMem> m_ubosToClean{};
@@ -176,7 +175,6 @@ namespace Gra {
         }
 
         vkDestroyDescriptorPool(m_device, m_descriptorPool, nullptr);
-        vkDestroyDescriptorSetLayout(m_device, m_descriptorSetLayout, nullptr);
     }
 
 } // Gra

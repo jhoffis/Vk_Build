@@ -18,7 +18,6 @@
 namespace Gra {
 
     VkCommandPool m_commandPool;
-    std::vector<std::vector<VkCommandBuffer>> m_commandBuffers;
 
     void createCommandPool() {
         QueueFamilyIndices queueFamilyIndices = findQueueFamilies(*m_physicalDevice);
@@ -48,30 +47,7 @@ namespace Gra {
         return pool;
     }
 
-    void createCommandBuffers() {
-        m_commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-        uint32_t size = 2;
-        std::vector<VkCommandBuffer> tempCommandBuffers{2*size};
-
-        VkCommandBufferAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocInfo.commandPool = m_commandPool;
-        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandBufferCount = (uint32_t) tempCommandBuffers.size();
-
-        if (vkAllocateCommandBuffers(m_device, &allocInfo, tempCommandBuffers.data()) != VK_SUCCESS) {
-            throw std::runtime_error("failed to allocate command buffers!");
-        }
-
-        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            m_commandBuffers[i].resize(size);
-            for (int a = 0; a < size; a++) {
-                m_commandBuffers[i][a] = tempCommandBuffers[a + i*size];
-            }
-        }
-    }
-
-    std::vector<VkCommandBuffer> createCommandBuffers2(VkCommandPool pool) {
+    std::vector<VkCommandBuffer> createCommandBuffers(VkCommandPool pool) {
         std::vector<VkCommandBuffer> commandBuffers{};
         commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -133,6 +109,6 @@ namespace Gra {
 
     CmdBuffer::CmdBuffer() {
         commandPool = createCommandPool2();
-        commandBuffers = createCommandBuffers2(commandPool);
+        commandBuffers = createCommandBuffers(commandPool);
     }
 } // Gra

@@ -33,6 +33,8 @@ int main() {
         Drawing::drawFrame();
     }
 
+    vkDeviceWaitIdle(Gra::m_device);
+
     testModel2.destroy();
     testModel.destroy();
     Gra::cleanup();

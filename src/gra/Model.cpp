@@ -28,6 +28,10 @@ Model::Model(const std::string& shaderName, const std::string& textureName) {
 }
 
 void Model::destroy() {
+//    for (auto cmdBuf : cmdBuffer.commandBuffers) {
+//        vkResetCommandBuffer(cmdBuf, 0);
+//    }
+    vkDestroyCommandPool(Gra::m_device, cmdBuffer.commandPool, nullptr);
     vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
     Raster::destroyPipeline(pipeline);
     vkDestroyDescriptorSetLayout(Gra::m_device, descriptorSetLayout, nullptr);

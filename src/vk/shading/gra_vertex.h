@@ -35,9 +35,6 @@ namespace Gra {
         alignas(16) glm::mat4 proj;
     };
 
-    extern VkBuffer m_vertexBuffer;
-    extern VkBuffer m_indexBuffer;
-
     void createVertexBuffer(Mesh2D *mesh);
     void createIndexBuffer(Mesh2D *mesh);
 
