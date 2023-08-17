@@ -25,7 +25,7 @@ namespace Gra {
             uint32_t imageIndex,
             const Mesh2D& mesh,
             const Raster::Pipeline& pipe,
-            VkDescriptorSet *descriptorSet
+            std::vector<VkDescriptorSet> &descriptorSets
             );
 
 }

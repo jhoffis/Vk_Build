@@ -16,13 +16,13 @@ namespace Gra {
 
     VkDescriptorPool m_descriptorPool;
     std::vector<VkDescriptorSet> m_descriptorSets;
-    std::vector<StandardUBOMem> m_ubosToClean{};
 
-    StandardUBOMem createUniformBuffers() {
+    StandardUBOMem createUniformBuffers(int amount) {
         // TODO make custom shit, hmmm vel du kan basere deg på en size av en struct som har endret størrelse da! Lag en struct med en vector med components kanskje?
-        VkDeviceSize bufferSize = 2 * sizeof(UniformBufferObject);
+        VkDeviceSize bufferSize = 2*amount * sizeof(UniformBufferObject);
 
         StandardUBOMem uboMem{};
+        uboMem.size = amount;
         uboMem.uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
         uboMem.uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -34,18 +34,19 @@ namespace Gra {
                          uboMem.uniformBuffersMemory[i]
             );
         }
-        m_ubosToClean.emplace_back(uboMem);
         return uboMem;
     }
 
-    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentImage, uint32_t offset, Entity &entity) {
+
+    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentSwapImage, uint32_t offset, Entity &entity) {
 
         UniformBufferObject ubo{};
         ubo.model = glm::mat4(1.0f); //glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(x, x, 1.0f));
 
         ubo.model = glm::translate(ubo.model, glm::vec3(-entity.pos.x, -entity.pos.y, -entity.pos.z));
 
-        ubo.view = glm::lookAt(glm::vec3(0, .00000000000000001f, 1), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.view = glm::lookAt(glm::vec3(0, .00000000000000001f, 1), glm::vec3(0.0f, 0.0f, 0.0f),
+                               glm::vec3(0.0f, 0.0f, 1.0f));
 
         auto aspect = (float) m_swapChainExtent.width / (float) m_swapChainExtent.height;
 
@@ -56,9 +57,10 @@ namespace Gra {
 //        ubo.proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
 
         void *data;
-        vkMapMemory(m_device, uboMem.uniformBuffersMemory[currentImage], offset * sizeof(ubo), sizeof(ubo), 0, &data);
+        vkMapMemory(m_device, uboMem.uniformBuffersMemory[currentSwapImage], offset * sizeof(ubo), sizeof(ubo), 0,
+                    &data);
         memcpy(data, &ubo, sizeof(ubo));
-        vkUnmapMemory(m_device, uboMem.uniformBuffersMemory[currentImage]);
+        vkUnmapMemory(m_device, uboMem.uniformBuffersMemory[currentSwapImage]);
     }
 
 
@@ -117,29 +119,32 @@ namespace Gra {
                                                       VkDescriptorPool pool,
                                                       StandardUBOMem uboMem,
                                                       VkImageView textureImageView) {
-        std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, layout);
+        auto size = MAX_FRAMES_IN_FLIGHT * uboMem.size;
+        std::vector<VkDescriptorSetLayout> layouts(size, layout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
         allocInfo.descriptorPool = pool;
-        allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        allocInfo.descriptorSetCount = static_cast<uint32_t>(size);
         allocInfo.pSetLayouts = layouts.data();
 
         std::vector<VkDescriptorSet> descriptorSets{};
-        descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+        descriptorSets.resize(size);
         if (vkAllocateDescriptorSets(m_device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
             throw std::runtime_error("failed to allocate descriptor sets!");
         }
 
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            VkDescriptorBufferInfo bufferInfo{};
-            bufferInfo.buffer = uboMem.uniformBuffers[i]; // TODO Her er bindingen til ubo o.l.
-            bufferInfo.offset = 0;
-            bufferInfo.range = sizeof(UniformBufferObject);
+        VkDescriptorImageInfo imageInfo{};
+        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        imageInfo.imageView = textureImageView;
+        imageInfo.sampler = Texture::m_textureSampler;
 
-            VkDescriptorImageInfo imageInfo{};
-            imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.imageView = textureImageView;
-            imageInfo.sampler = Texture::m_textureSampler;
+        for (auto i = 0; i < size; i++) {
+
+            VkDescriptorBufferInfo bufferInfo{};
+            bufferInfo.buffer = uboMem.uniformBuffers[i % MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
+            bufferInfo.offset = sizeof(UniformBufferObject) * static_cast<int>(std::floor(
+                    static_cast<float>(i) / static_cast<float>(MAX_FRAMES_IN_FLIGHT)));
+            bufferInfo.range = sizeof(UniformBufferObject);
 
             std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
@@ -167,13 +172,6 @@ namespace Gra {
     }
 
     void cleanupUniform() {
-        for (auto uboMem : m_ubosToClean) {
-            for (size_t i = 0; i < uboMem.uniformBuffers.size(); i++) {
-                vkDestroyBuffer(m_device, uboMem.uniformBuffers[i], nullptr);
-                vkFreeMemory(m_device, uboMem.uniformBuffersMemory[i], nullptr);
-            }
-        }
-
         vkDestroyDescriptorPool(m_device, m_descriptorPool, nullptr);
     }
 

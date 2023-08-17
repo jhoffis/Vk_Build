@@ -20,7 +20,7 @@ private:
     Gra::StandardUBOMem uboMem{};
 
     Raster::Pipeline pipeline{};
-
+    VkImageView texImageView;
     VkDescriptorPool pool;
     VkDescriptorSetLayout descriptorSetLayout;
     std::vector<VkDescriptorSet> descriptorSets{};
@@ -32,7 +32,8 @@ public:
 
     Model(const std::string &shaderName, const std::string &textureName);
 
-    Entity* addEntity();
+    void updateUboBuffer();
+    Entity& addEntity(bool update = true);
 
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
 

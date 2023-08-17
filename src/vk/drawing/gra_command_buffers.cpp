@@ -67,7 +67,7 @@ namespace Gra {
                              uint32_t imageIndex,
                              const Mesh2D& mesh,
                              const Raster::Pipeline& pipe,
-                             VkDescriptorSet *descriptorSet) {
+                             std::vector<VkDescriptorSet> &descriptorSets) {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = 0; // Optional
@@ -88,16 +88,18 @@ namespace Gra {
 
             vkCmdBindIndexBuffer(commandBuffer, mesh.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-            vkCmdBindDescriptorSets(commandBuffer,
-                                    VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                    pipe.pipelineLayout, // inneholder descriptor layout
-                                    0,
-                                    1,
-                                    descriptorSet, // &m_descriptorSets[Drawing::currSwapFrame], // inneholder uniformbuffer ref
-                                    0,
-                                    nullptr);
+            for (auto i = Drawing::currSwapFrame; i < descriptorSets.size(); i += 2) {
+                vkCmdBindDescriptorSets(commandBuffer,
+                                        VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                        pipe.pipelineLayout, // inneholder descriptor layout
+                                        0,
+                                        1,
+                                        &descriptorSets[i], // &m_descriptorSets[Drawing::currSwapFrame], // inneholder uniformbuffer ref
+                                        0,
+                                        nullptr);
 
-            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(6), 1, 0, 0, 0);
+                vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(6), 1, 0, 0, 0);
+            }
         }
         vkCmdEndRenderPass(commandBuffer);
 

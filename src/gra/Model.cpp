@@ -1,7 +1,3 @@
-//
-// Created by jonah on 8/5/2023.
-//
-
 #include "Model.h"
 
 #include <utility>
@@ -14,12 +10,13 @@ std::vector<Model*> m_renderModels;
 
 Model::Model(const std::string& shaderName, const std::string& textureName) {
     // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og attributes. Feks at de først har uniform buffer og så image sampler.
+    entities.emplace_back(Entity{});
     descriptorSetLayout = Gra::createDescriptorSetLayout(); // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
     pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, shaderName);
     pool = Gra::createDescriptorPool();
-    uboMem = Gra::createUniformBuffers();
+    uboMem = Gra::createUniformBuffers(1);
     auto img = Texture::loadImage(textureName.data());
-    auto texImageView = Texture::createTexture(img);
+    texImageView = Texture::createTexture(img);
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
 
     mesh.init(static_cast<float>(img.w), static_cast<float>(img.h));
@@ -28,10 +25,8 @@ Model::Model(const std::string& shaderName, const std::string& textureName) {
 }
 
 void Model::destroy() {
-//    for (auto cmdBuf : cmdBuffer.commandBuffers) {
-//        vkResetCommandBuffer(cmdBuf, 0);
-//    }
     vkDestroyCommandPool(Gra::m_device, cmdBuffer.commandPool, nullptr);
+    uboMem.destroy();
     vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
     Raster::destroyPipeline(pipeline);
     vkDestroyDescriptorSetLayout(Gra::m_device, descriptorSetLayout, nullptr);
@@ -40,28 +35,25 @@ void Model::destroy() {
 VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
-    Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, &descriptorSets[Drawing::currSwapFrame]);
-    Entity e{};
-    Gra::updateUniformBuffer(uboMem, Drawing::currSwapFrame, 0, e);
+    Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, descriptorSets);
+    for (auto i = 0; i < entities.size(); i++) {
+        Gra::updateUniformBuffer(uboMem, Drawing::currSwapFrame, i, entities[i]);
+    }
     return cmd;
 }
 
-//void Model::drawRenderPass(VkCommandBuffer commandBuffer) {
-//    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-//    {
-//        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.graphicsPipeline);
-//        Gra::recordSwapChain(commandBuffer);
-//
-//        VkBuffer vertexBuffers[] = {m_vertexBuffer};
-//        VkDeviceSize offsets[] = {0};
-//        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-//
-//        vkCmdBindIndexBuffer(commandBuffer, m_indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-//
-//        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipelineLayout, 0, 1, &descriptorSets[Drawing::currSwapFrame], 0, nullptr);
-//
-//        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
-//        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()) - 2, 1, 2, 0, 0);
-//    }
-//    vkCmdEndRenderPass(commandBuffer);
-//}
+void Model::updateUboBuffer() {
+    // liste med alle referanser til ubos - bare utvid vector listen med descSets og så bruk currswapframe for å tegne alle.
+    auto size = entities.size() + 1;
+    if (size < uboMem.size)
+        return;
+    uboMem.destroy();
+    descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
+}
+
+Entity& Model::addEntity(bool update) {
+    if (update)
+        updateUboBuffer();
+    Entity entity{};
+    return entities.emplace_back(entity);
+}
