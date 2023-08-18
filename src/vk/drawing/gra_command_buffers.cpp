@@ -109,7 +109,7 @@ namespace Gra {
     }
 
 
-    CmdBuffer::CmdBuffer() {
+    void CmdBuffer::init() {
         commandPool = createCommandPool2();
         commandBuffers = createCommandBuffers(commandPool);
     }

@@ -10,6 +10,7 @@ struct Mesh2D {
     VkBuffer indexBuffer{};
     const uint32_t indices[6] = {0, 1, 2, 2, 3, 0};
     Vertex vertices[4];
+    float worldWidth, worldHeight;
 
     void init(float width, float height);
 };

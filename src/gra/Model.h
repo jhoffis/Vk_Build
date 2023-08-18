@@ -30,14 +30,23 @@ public:
     std::vector<Entity> entities{};
     bool visible = true;
 
-    Model(const std::string &shaderName, const std::string &textureName);
+    void init(const std::string &shaderName, const std::string &textureName);
 
     void updateUboBuffer();
-    Entity& addEntity(bool update = true);
+    Entity* addEntity(bool update = true);
 
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
 
+    float width() const {
+        return mesh.worldWidth;
+    }
+
+    float height() const {
+        return mesh.worldHeight;
+    }
+
     void destroy();
+
 };
 
 extern std::vector<Model *> m_renderModels;

@@ -7,9 +7,9 @@
 
 std::vector<Model*> m_renderModels;
 
-Model::Model(const std::string& shaderName, const std::string& textureName) {
+void Model::init(const std::string& shaderName, const std::string& textureName) {
     // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og attributes. Feks at de først har uniform buffer og så image sampler.
-    entities.emplace_back(Entity{});
+    cmdBuffer.init();
     descriptorSetLayout = Gra::createDescriptorSetLayout(); // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
     pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, shaderName);
     uboMem = Gra::createUniformBuffers(1);
@@ -43,10 +43,12 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
 
 void Model::updateUboBuffer() {
     // liste med alle referanser til ubos - bare utvid vector listen med descSets og så bruk currswapframe for å tegne alle.
-    auto amount = static_cast<int>(entities.size() + 1);
-    if (amount < uboMem.size)
+    auto entitiesSize = static_cast<int>(entities.size() + 1);
+    if (entitiesSize < uboMem.size)
         return;
-    amount = 2*uboMem.size;
+    auto amount = 2*uboMem.size;
+    while (amount < entitiesSize)
+        amount *= 2;
     vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
     pool = Gra::createDescriptorPool(amount);
     uboMem.destroy();
@@ -54,9 +56,9 @@ void Model::updateUboBuffer() {
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
 }
 
-Entity& Model::addEntity(bool update) {
+Entity* Model::addEntity(bool update) {
     if (update)
         updateUboBuffer();
     Entity entity{};
-    return entities.emplace_back(entity);
+    return &entities.emplace_back(entity);
 }

@@ -14,7 +14,7 @@ namespace Gra {
         VkCommandPool commandPool;
         std::vector<VkCommandBuffer> commandBuffers; // vector for swap-chain
 
-        CmdBuffer();
+        void init();
     };
 
     extern VkCommandPool m_commandPool;
