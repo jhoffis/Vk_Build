@@ -9,6 +9,7 @@
 #include "gra_memory_utils.h"
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/gra_setup.h"
+#include "vk/setup/gra_physical_device.h"
 #include <cmath>
 #include <iostream>
 
@@ -19,10 +20,16 @@ namespace Gra {
 
     StandardUBOMem createUniformBuffers(int amount) {
         // TODO make custom shit, hmmm vel du kan basere deg på en size av en struct som har endret størrelse da! Lag en struct med en vector med components kanskje?
-        VkDeviceSize bufferSize = 2*amount * sizeof(UniformBufferObject);
+        auto singleSize = sizeof(UniformBufferObject);
+        auto offset = singleSize >= m_deviceProperties.limits.minUniformBufferOffsetAlignment ? singleSize : m_deviceProperties.limits.minUniformBufferOffsetAlignment;
+        VkDeviceSize bufferSize = (amount-1)*offset+ 2*amount*singleSize;
+
+        std::cout << "created ubo with Range " << singleSize << " and offset " << offset << std::endl;
 
         StandardUBOMem uboMem{};
         uboMem.size = amount;
+        uboMem.range = static_cast<int>(singleSize);
+        uboMem.offset = static_cast<int>(offset);
         uboMem.uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
         uboMem.uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -107,6 +114,7 @@ namespace Gra {
         poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
         poolInfo.pPoolSizes = poolSizes.data();
         poolInfo.maxSets = 6; //static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 
         VkDescriptorPool pool{};
         if (vkCreateDescriptorPool(m_device, &poolInfo, nullptr, &pool) != VK_SUCCESS) {
@@ -143,9 +151,9 @@ namespace Gra {
 
             VkDescriptorBufferInfo bufferInfo{};
             bufferInfo.buffer = uboMem.uniformBuffers[i % MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
-            bufferInfo.offset = sizeof(UniformBufferObject) * static_cast<int>(std::floor(
+            bufferInfo.offset = uboMem.offset * static_cast<int>(std::floor(
                     static_cast<float>(i) / static_cast<float>(MAX_FRAMES_IN_FLIGHT)));
-            bufferInfo.range = sizeof(UniformBufferObject);
+            bufferInfo.range = uboMem.range;
 
             std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 

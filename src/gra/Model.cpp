@@ -48,7 +48,8 @@ void Model::updateUboBuffer() {
         return;
     uboMem.destroy();
     uboMem = Gra::createUniformBuffers(amount);
-    // TODO gjenbruk gamle descriptors...
+    // TODO gjenbruk gamle descriptors... eller bare fortsett å slette.
+    vkFreeDescriptorSets(Gra::m_device, pool, descriptorSets.size(), descriptorSets.data());
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
 
 }

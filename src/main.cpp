@@ -23,6 +23,9 @@ int main() {
     testModel2.entities[0].pos.x = .5f;
     testModel2.entities[0].pos.y = .5f;
     testModel2.addEntity();
+    testModel2.addEntity();
+    testModel2.entities[2].pos.x = .7f;
+    testModel2.entities[2].pos.y = .5f;
 
     static bool running = true;
     while(running)

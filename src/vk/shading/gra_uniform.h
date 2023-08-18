@@ -12,6 +12,8 @@ namespace Gra {
 
     struct StandardUBOMem {
         int size{};
+        int offset{};
+        int range{};
         std::vector<VkBuffer> uniformBuffers{};
         std::vector<VkDeviceMemory> uniformBuffersMemory{};
 
@@ -21,6 +23,7 @@ namespace Gra {
                 vkFreeMemory(m_device, uniformBuffersMemory[i], nullptr);
             }
         }
+
     };
 
     StandardUBOMem createUniformBuffers(int amount);
