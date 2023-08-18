@@ -8,7 +8,6 @@
 
 namespace Gra {
     extern std::vector<VkDescriptorSet> m_descriptorSets;
-    extern VkDescriptorPool m_descriptorPool;
 
     struct StandardUBOMem {
         int size{};
@@ -30,7 +29,7 @@ namespace Gra {
     void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentImage, uint32_t offset, Entity &entity);
     VkDescriptorSetLayout createDescriptorSetLayout();
 
-    VkDescriptorPool createDescriptorPool();
+    VkDescriptorPool createDescriptorPool(int amountEntities);
     std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout &layout,
                                                       VkDescriptorPool &pool,
                                                       StandardUBOMem &uboMem,

@@ -67,7 +67,6 @@ namespace Gra {
         createFramebuffers();
         Texture::createTextureSampler();
 
-        m_descriptorPool = createDescriptorPool();
         Drawing::createSyncObjects();
     }
 

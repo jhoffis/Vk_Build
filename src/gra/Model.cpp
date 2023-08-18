@@ -15,7 +15,7 @@ Model::Model(const std::string& shaderName, const std::string& textureName) {
     uboMem = Gra::createUniformBuffers(1);
     auto img = Texture::loadImage(textureName.data());
     texImageView = Texture::createTexture(img);
-    pool = Gra::createDescriptorPool();
+    pool = Gra::createDescriptorPool(1);
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
 
     mesh.init(static_cast<float>(img.w), static_cast<float>(img.h));
@@ -46,12 +46,12 @@ void Model::updateUboBuffer() {
     auto amount = static_cast<int>(entities.size() + 1);
     if (amount < uboMem.size)
         return;
+    amount = 2*uboMem.size;
+    vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
+    pool = Gra::createDescriptorPool(amount);
     uboMem.destroy();
     uboMem = Gra::createUniformBuffers(amount);
-    // TODO gjenbruk gamle descriptors... eller bare fortsett å slette.
-    vkFreeDescriptorSets(Gra::m_device, pool, descriptorSets.size(), descriptorSets.data());
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
-
 }
 
 Entity& Model::addEntity(bool update) {
