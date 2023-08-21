@@ -1,5 +1,6 @@
 #include "Villagers.h"
 #include "gra/Model.h"
+#include <cstdlib>
 
 namespace Villager {
 
@@ -21,7 +22,7 @@ namespace Villager {
     }
 
     void successfulImpregnation(Female &mother, Male &father) {
-        mother.pregnant = true;
+        int random_variable;
     }
 
 }

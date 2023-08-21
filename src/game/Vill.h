@@ -20,6 +20,7 @@ namespace Villager {
         uint8_t speed{};
         uint8_t sight{};
         uint8_t smell{};
+        uint8_t hearing{};
         uint8_t melatonin{};
         uint16_t weight{};
         uint16_t height{};
@@ -31,13 +32,16 @@ namespace Villager {
      * Armor shall be based on the clothes the vill wears.
      */
     struct Vill {
-        Entity *entity{};
+        // Genetics:
+        Personality personality{};
+        Body body{};
+
         uint16_t hp{};
         uint8_t age{};
         bool gender{};
 
-        // Genetics:
-        Personality personality{};
-        Body body{};
+        Entity *entity{};
+        char *name{};
+
     };
 }

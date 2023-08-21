@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Vill.h"
-
+#include <vector>
 /*
  * Actions only females can do
  */
@@ -9,8 +9,8 @@
 namespace Villager {
 
     struct Female {
-        Villager::Vill vill{};
-        bool pregnant{};
+        Vill vill{};
+        std::vector<Vill> foeti{};
     };
 
 }

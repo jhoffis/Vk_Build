@@ -236,11 +236,10 @@ namespace Texture {
     }
 
     /*
-        NN, bilinear Filtering, anisotropic filtering, addressing mode
+    *   NN, bilinear Filtering, anisotropic filtering, addressing mode
     */
     void createTextureSampler()
     {
-
         VkPhysicalDeviceProperties properties{};
         vkGetPhysicalDeviceProperties(*Gra::m_physicalDevice, &properties);
 

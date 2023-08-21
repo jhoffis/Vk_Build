@@ -13,9 +13,12 @@
 #include "game/Villagers.h"
 #include "network/RemoteLan.h"
 #include "gra/Model.h"
+#include "timer_util.h"
+
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
+    std::srand(Timer::nowMillis());
 
     Window::createWindow(false, false);
     Gra::initVulkan();

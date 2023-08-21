@@ -43,7 +43,9 @@ add_executable(${PROJECT_NAME}
         src/game/Femaleness.cpp
         src/game/Femaleness.h
         src/game/Vill.cpp
-        src/game/Vill.h)
+        src/game/Vill.h
+        src/timer_util.cpp
+        src/timer_util.h)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
