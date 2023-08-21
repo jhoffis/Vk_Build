@@ -94,7 +94,7 @@ namespace Gra {
                                         pipe.pipelineLayout, // inneholder descriptor layout
                                         0,
                                         1,
-                                        &descriptorSets[i], // &m_descriptorSets[Drawing::currSwapFrame], // inneholder uniformbuffer ref
+                                        &descriptorSets[i], // inneholder uniformbuffer ref
                                         0,
                                         nullptr);
 

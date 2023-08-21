@@ -15,8 +15,6 @@
 
 namespace Gra {
 
-    std::vector<VkDescriptorSet> m_descriptorSets;
-
     StandardUBOMem createUniformBuffers(int amount) {
         // TODO make custom shit, hmmm vel du kan basere deg på en size av en struct som har endret størrelse da! Lag en struct med en vector med components kanskje?
         auto singleSize = sizeof(UniformBufferObject);
@@ -44,7 +42,7 @@ namespace Gra {
     }
 
 
-    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentSwapImage, uint32_t offset, Entity &entity) {
+    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentSwapImage, uint32_t entityIndex, Entity &entity) {
 
         UniformBufferObject ubo{};
         ubo.model = glm::mat4(1.0f); //glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(x, x, 1.0f));
@@ -63,10 +61,17 @@ namespace Gra {
 //        ubo.proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
 
         void *data;
-        vkMapMemory(m_device, uboMem.uniformBuffersMemory[currentSwapImage], offset * sizeof(ubo), sizeof(ubo), 0,
+        vkMapMemory(m_device,
+                    uboMem.uniformBuffersMemory[currentSwapImage],
+                    entityIndex * uboMem.offset,
+                    uboMem.range,
+                    0,
                     &data);
-        memcpy(data, &ubo, sizeof(ubo));
-        vkUnmapMemory(m_device, uboMem.uniformBuffersMemory[currentSwapImage]);
+        memcpy(data,
+               &ubo,
+               uboMem.range);
+        vkUnmapMemory(m_device,
+                      uboMem.uniformBuffersMemory[currentSwapImage]);
     }
 
 

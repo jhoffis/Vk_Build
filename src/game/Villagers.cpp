@@ -1,4 +1,4 @@
-#include "Villager.h"
+#include "Villagers.h"
 #include "gra/Model.h"
 
 namespace Villager {
@@ -20,8 +20,8 @@ namespace Villager {
         villModel.destroy();
     }
 
-    void impregnate(Vill &mother, Vill &father) {
-
+    void successfulImpregnation(Female &mother, Male &father) {
+        mother.pregnant = true;
     }
 
 }

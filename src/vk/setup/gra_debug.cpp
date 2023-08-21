@@ -36,7 +36,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityF
     if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
         std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
     } else {
-#ifdef PRINT_VALIDATION:
+#ifdef PRINT_VALIDATION
         std::cout << "validation layer: " << pCallbackData->pMessage << std::endl;
 #endif
     }
