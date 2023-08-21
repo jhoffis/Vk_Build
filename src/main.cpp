@@ -6,10 +6,11 @@
 // Lage et kattespill som er idle in essence MEN som kan fungere som et slukende tradisjonelt spill - F.eks "Mr. Erik Loves Pussy"
 
 #include <iostream>
-#include "src/vk/gra_setup.h"
-#include "src/vk/drawing/gra_drawing.h"
-#include "src/game/Map.h"
+#include "vk/gra_setup.h"
+#include "vk/drawing/gra_drawing.h"
+#include "game/Map.h"
 #include "game/Villager.h"
+#include "network/RemoteLan.h"
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
