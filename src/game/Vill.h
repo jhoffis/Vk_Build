@@ -5,6 +5,23 @@
 
 namespace Villager {
 
+    struct Deeds {
+        uint8_t badOnes;
+        treesChopped
+        hadSex
+        arrowsShot
+        swordSlashed
+    };
+
+    struct HealthPoints {
+        uint8_t head{};
+        uint8_t leftArm{};
+        uint8_t rightArm{};
+        uint8_t torso{};
+        uint8_t leftFoot{};
+        uint8_t rightFoot{};
+    };
+
     struct Personality {
         uint8_t openness{};
         uint8_t conscientiousness{};
@@ -13,17 +30,24 @@ namespace Villager {
         uint8_t neuroticism{};
         uint8_t words{};
         uint8_t craft{};
+        greed
+        lust etc
+        dark tetrad
+        bad deeds
     };
 
     struct Body {
         uint8_t lifting{};
         uint8_t speed{};
-        uint8_t sight{};
-        uint8_t smell{};
-        uint8_t hearing{};
         uint8_t melatonin{};
         uint16_t weight{};
         uint16_t height{};
+
+        // Face:
+        uint8_t skinFairness{};
+        uint8_t sight{};
+        uint8_t smell{};
+        uint8_t hearing{};
         Vec3 eyeColor{};
         Vec3 hairColor{};
     };
@@ -36,9 +60,11 @@ namespace Villager {
         Personality personality{};
         Body body{};
 
-        uint16_t hp{};
+        HealthPoints hp{};
         uint8_t age{};
-        bool gender{};
+        uint8_t interestInSex{};
+        uint8_t blueness{};
+        uint8_t gender{}; // includes male female bi and gay
 
         Entity *entity{};
         char *name{};
