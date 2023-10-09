@@ -7,10 +7,10 @@ namespace Villager {
 
     struct Deeds {
         uint8_t badOnes;
-        treesChopped
-        hadSex
-        arrowsShot
-        swordSlashed
+//        treesChopped
+//        hadSex
+//        arrowsShot
+//        swordSlashed
     };
 
     struct HealthPoints {
@@ -30,10 +30,10 @@ namespace Villager {
         uint8_t neuroticism{};
         uint8_t words{};
         uint8_t craft{};
-        greed
-        lust etc
-        dark tetrad
-        bad deeds
+//        greed
+//        lust etc
+//        dark tetrad
+//        bad deeds
     };
 
     struct Body {

@@ -20,8 +20,6 @@ add_executable(${PROJECT_NAME}
         src/window.h
         src/scene_handler.cpp
         src/scene_handler.h
-        src/scene_data.cpp
-        src/scene_data.h
         src/vk/gra_setup.cpp
         src/vk/gra_setup.h
         src/vk/shading/gra_depth.cpp

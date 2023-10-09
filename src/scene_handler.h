@@ -4,8 +4,8 @@
 namespace  SceneHandler {
 
 
-	void createSceneHandler();
-	void tick(double delta);
+	void create();
+	void tick();
 	void render();
 	/*
 	void updateGenerally() override;

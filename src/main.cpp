@@ -7,6 +7,8 @@
 // Lage et kattespill som er idle in essence MEN som kan fungere som et slukende tradisjonelt spill - F.eks "Mr. Erik Loves Pussy"
 
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include "vk/gra_setup.h"
 #include "vk/drawing/gra_drawing.h"
 #include "game/Map.h"
@@ -14,6 +16,7 @@
 #include "network/RemoteLan.h"
 #include "gra/Model.h"
 #include "timer_util.h"
+#include "scene_handler.h"
 
 
 int main() {
@@ -25,6 +28,7 @@ int main() {
 
     Map::create(30);
     Villager::createVillagers();
+    SceneHandler::create();
 
 //    Model testModel{};
 //    testModel.init("triangle", "grass.png");

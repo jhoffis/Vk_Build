@@ -11,7 +11,6 @@
 #include "src/vk/shading/gra_depth.h"
 #include "src/file_util.h"
 #include "src/window.h"
-#include "src/scene_data.h"
 
 VkSwapchainKHR Gra::m_swapChain;
 std::vector<VkImage> Gra::m_swapChainImages;
