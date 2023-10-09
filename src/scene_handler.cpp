@@ -1,4 +1,6 @@
 #include "scene_handler.h"
+#include "game/Map.h"
+#include "game/Villagers.h"
 
 #include <vector>
 #include <iostream>
@@ -27,13 +29,13 @@ void SceneHandler::create() {
         std::cout << "mus x: " << xpos << ", y: " << ypos << std::endl;
 //        mousePosInput(&scenes[currentScene], x, y);
     });
+
+
+    Map::create(30);
+    Villager::createVillagers();
 }
 
-void SceneHandler::tick() {
-
-}
-
-void SceneHandler::render() {
+void SceneHandler::update() {
 
 }
 

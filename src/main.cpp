@@ -13,8 +13,6 @@
 #include "vk/drawing/gra_drawing.h"
 #include "game/Map.h"
 #include "game/Villagers.h"
-#include "network/RemoteLan.h"
-#include "gra/Model.h"
 #include "timer_util.h"
 #include "scene_handler.h"
 
@@ -25,9 +23,6 @@ int main() {
 
     Window::createWindow(false, false);
     Gra::initVulkan();
-
-    Map::create(30);
-    Villager::createVillagers();
     SceneHandler::create();
 
 //    Model testModel{};
@@ -54,8 +49,8 @@ int main() {
             break;
         }
         glfwPollEvents();
+        SceneHandler::update();
         Drawing::drawFrame();
-
 #ifdef RM_DEV
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 #endif

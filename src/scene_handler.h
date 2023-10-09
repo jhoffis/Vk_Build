@@ -5,12 +5,11 @@ namespace  SceneHandler {
 
 
 	void create();
-	void tick();
-	void render();
+	void update();
 	/*
 	void updateGenerally() override;
 	void updateResolution() override;
-	void tick(double delta) override;
+	void update(double delta) override;
 	void renderGame() override;
 	void renderUILayout(NkContext ctx) override;
 	void keyInput(int keycode, int action) override;
