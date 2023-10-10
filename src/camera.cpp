@@ -5,4 +5,5 @@
 #include "camera.h"
 
 namespace Camera {
+    Cam m_cam{};
 } // Camera

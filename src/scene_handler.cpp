@@ -1,6 +1,7 @@
 #include "scene_handler.h"
 #include "game/Map.h"
 #include "game/Villagers.h"
+#include "camera.h"
 
 #include <vector>
 #include <iostream>
@@ -16,6 +17,24 @@ void SceneHandler::create() {
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
 //        keyInput(&scenes[currentScene], key, action);
         std::cout << "tast key: " << key << ", scancode: " << scancode << ", action: " << action << std::endl;
+
+        switch (key) {
+            case GLFW_KEY_UP:
+                Camera::m_cam.y += .1f;
+                break;
+            case GLFW_KEY_DOWN:
+                Camera::m_cam.y -= .1f;
+                break;
+            case GLFW_KEY_LEFT:
+                Camera::m_cam.x -= .1f;
+                break;
+            case GLFW_KEY_RIGHT:
+                Camera::m_cam.x += .1f;
+                break;
+            default:
+                // do nothing
+                break;
+        }
     });
 
     glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button, auto action, auto mods) {
