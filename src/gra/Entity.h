@@ -7,9 +7,11 @@
 
 
 #include "math/Vec3.h"
+#include "math/Vec2.h"
 
 struct Entity {
     Vec3 pos{};
+    Vec2 size{};
     bool visible{};
 };
 

@@ -56,9 +56,8 @@ void Model::updateUboBuffer() {
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
 }
 
-Entity* Model::addEntity(bool update) {
+void Model::addEntity(Entity* entity, bool update) {
     if (update)
         updateUboBuffer();
-    Entity entity{};
-    return &entities.emplace_back(entity);
+    entities.emplace_back(entity);
 }

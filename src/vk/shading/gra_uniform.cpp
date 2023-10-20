@@ -43,11 +43,15 @@ namespace Gra {
     }
 
 
-    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentSwapImage, uint32_t entityIndex, Entity &entity) {
+    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentSwapImage, uint32_t entityIndex, Entity *entity) {
 
         UniformBufferObject ubo{};
         ubo.model = glm::mat4(1.0f); //glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(x, x, 1.0f));
-        ubo.model = glm::translate(ubo.model, glm::vec3(-(entity.pos.x - Camera::m_cam.x), -(entity.pos.y - Camera::m_cam.y), -entity.pos.z));
+        ubo.model = glm::translate(ubo.model,
+                                   glm::vec3(
+                                           -((entity->size.x * entity->pos.x) - Camera::m_cam.x),
+                                           -((entity->size.y * entity->pos.y) - Camera::m_cam.y),
+                                           -entity->pos.z));
 
         ubo.view = glm::lookAt(glm::vec3(0, .00000000000000001f, 1), glm::vec3(0.0f, 0.0f, 0.0f),
                                glm::vec3(0.0f, 0.0f, 1.0f));

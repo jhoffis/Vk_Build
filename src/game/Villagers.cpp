@@ -4,24 +4,29 @@
 
 namespace Villager {
 
-    Model villModel{};
+    Model m_maleVillModel{};
 
-    void createVillagers() {
-        villModel.init("triangle", "unit.png");
-        for (int x = 0; x < 3; x++) {
-            auto entity = villModel.addEntity(false);
-            entity->pos.x = villModel.width() * static_cast<float>(x);
-            entity->pos.y = villModel.height() * static_cast<float>(1);
-        }
-        villModel.updateUboBuffer();
-        m_renderModels.emplace_back(&villModel);
+    void initVillModel() {
+        m_maleVillModel.init("triangle", "unit.png");
+        m_maleVillModel.updateUboBuffer();
+        m_renderModels.emplace_back(&m_maleVillModel);
+    }
+
+    Male* spawnMale(float x, float y) {
+        auto male = new Male();
+        m_maleVillModel.addEntity(&male->vill.entity, true);
+        male->vill.entity.size.x = m_maleVillModel.width();
+        male->vill.entity.size.y = m_maleVillModel.height();
+        male->vill.entity.pos.x = x;
+        male->vill.entity.pos.y = y;
+        return male;
     }
 
     void destroy() {
-        villModel.destroy();
+        m_maleVillModel.destroy();
     }
 
-    void successfulImpregnation(Female &mother, Male &father) {
+    void successfulImpregnation(Female &maid, Male &male) {
         int random_variable;
     }
 

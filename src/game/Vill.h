@@ -66,7 +66,7 @@ namespace Villager {
         uint8_t blueness{};
         uint8_t gender{}; // includes male female bi and gay
 
-        Entity *entity{};
+        Entity entity{};
         char *name{};
 
     };

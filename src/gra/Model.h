@@ -27,13 +27,13 @@ private:
 
 
 public:
-    std::vector<Entity> entities{};
+    std::vector<Entity*> entities{};
     bool visible = true;
 
     void init(const std::string &shaderName, const std::string &textureName);
 
     void updateUboBuffer();
-    Entity* addEntity(bool update = true);
+    void addEntity(Entity* entity, bool update);
 
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
 

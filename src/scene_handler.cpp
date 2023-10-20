@@ -2,17 +2,17 @@
 #include "game/Map.h"
 #include "game/Villagers.h"
 #include "camera.h"
+#include "timer_util.h"
 
 #include <vector>
 #include <iostream>
 
 int currentScene = 0;
+std::vector<Villager::Male*> males{};
 
 void SceneHandler::create() {
     static size_t x = 0;
     static size_t y = 0;
-
-//    scenes.emplace_back(0); // feiler om scenes er const / constexpr av en eller annen grunn
 
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
 //        keyInput(&scenes[currentScene], key, action);
@@ -20,16 +20,16 @@ void SceneHandler::create() {
 
         switch (key) {
             case GLFW_KEY_UP:
-                Camera::m_cam.y += .1f;
+                Camera::m_cam.up(action != GLFW_RELEASE);
                 break;
             case GLFW_KEY_DOWN:
-                Camera::m_cam.y -= .1f;
+                Camera::m_cam.down(action != GLFW_RELEASE);
                 break;
             case GLFW_KEY_LEFT:
-                Camera::m_cam.x -= .1f;
+                Camera::m_cam.left(action != GLFW_RELEASE);
                 break;
             case GLFW_KEY_RIGHT:
-                Camera::m_cam.x += .1f;
+                Camera::m_cam.right(action != GLFW_RELEASE);
                 break;
             default:
                 // do nothing
@@ -51,11 +51,17 @@ void SceneHandler::create() {
 
 
     Map::create(30);
-    Villager::createVillagers();
+    Villager::initVillModel();
+    males.emplace_back(Villager::spawnMale(0,0));
+    males.emplace_back(Villager::spawnMale(1,1));
+    males.emplace_back(Villager::spawnMale(2,1));
+    males.emplace_back(Villager::spawnMale(2,3));
 }
 
 void SceneHandler::update() {
-
+    Camera::m_cam.update();
+    males[0]->vill.entity.pos.x += static_cast<float>(.1 * Timer::delta());
+//    std::cout << males[0].vill.entity.pos.x << std::endl;
 }
 
 

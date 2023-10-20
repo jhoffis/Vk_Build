@@ -25,7 +25,7 @@ namespace Gra {
     };
 
     StandardUBOMem createUniformBuffers(int amount);
-    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentImage, uint32_t entityIndex, Entity &entity);
+    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentSwapImage, uint32_t entityIndex, Entity *entity);
     VkDescriptorSetLayout createDescriptorSetLayout();
 
     VkDescriptorPool createDescriptorPool(int amountEntities);

@@ -24,6 +24,7 @@ int main() {
     Window::createWindow(false, false);
     Gra::initVulkan();
     SceneHandler::create();
+    Timer::updateDelta();
 
 //    Model testModel{};
 //    testModel.init("triangle", "grass.png");
@@ -49,6 +50,7 @@ int main() {
             break;
         }
         glfwPollEvents();
+        Timer::updateDelta();
         SceneHandler::update();
         Drawing::drawFrame();
 #ifdef RM_DEV

@@ -3,14 +3,21 @@
 
 Model grassModel{};
 
+std::vector<Entity*> grass;
+
 void Map::create(int xy) {
     grassModel.init("triangle", "grass.png");
 
     for (int x = 0; x < xy; x++) {
         for (int y = 0; y < xy; y++) {
-            auto entity = grassModel.addEntity(false);
-            entity->pos.x = grassModel.width() * static_cast<float>(x);
-            entity->pos.y = grassModel.height() * static_cast<float>(y);
+            auto entity = new Entity();
+            entity->size.x = grassModel.width();
+            entity->size.y = grassModel.height();
+            entity->pos.x = static_cast<float>(x);
+            entity->pos.y = static_cast<float>(y);
+            entity->visible = true;
+            auto p_entity = grass.emplace_back(entity);
+            grassModel.addEntity(p_entity, false);
         }
     }
     grassModel.updateUboBuffer();
