@@ -52,6 +52,10 @@ namespace Villager {
         Vec3 hairColor{};
     };
 
+    enum VillSex {
+        Male, Female
+    };
+
     /*
      * Armor shall be based on the clothes the vill wears.
      */
@@ -64,7 +68,7 @@ namespace Villager {
         uint8_t age{};
         uint8_t interestInSex{};
         uint8_t blueness{};
-        uint8_t gender{}; // includes male female bi and gay
+        VillSex sex{};
 
         Entity entity{};
         char *name{};
