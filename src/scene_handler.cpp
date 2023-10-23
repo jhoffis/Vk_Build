@@ -13,6 +13,8 @@ std::vector<Villager::Male*> males{};
 void SceneHandler::create() {
     static size_t x = 0;
     static size_t y = 0;
+    static double xWorld{};
+    static double yWorld{};
 
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
 //        keyInput(&scenes[currentScene], key, action);
@@ -35,6 +37,7 @@ void SceneHandler::create() {
                 // do nothing
                 break;
         }
+        std::cout << "camera world x: " << Camera::m_cam.x << ", y: " << Camera::m_cam.y << std::endl;
     });
 
     glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button, auto action, auto mods) {
@@ -42,11 +45,17 @@ void SceneHandler::create() {
         std::cout << "museklikk x: " << x << ", y: " << y << ", knapp: " << button << std::endl;
     });
 
-    glfwSetCursorPosCallback(Window::m_window, [](auto window, auto xpos, auto ypos) {
-        x = xpos;
-        y = ypos;
-        std::cout << "mus x: " << xpos << ", y: " << ypos << std::endl;
-//        mousePosInput(&scenes[currentScene], x, y);
+    glfwSetCursorPosCallback(Window::m_window, [](auto window, auto xPos, auto yPos) {
+        x = xPos;
+        y = yPos;
+
+        // world er basert på høyde av skjermen!
+        auto h = static_cast<double>(Window::HEIGHT);
+        xWorld = (xPos / h) + Camera::m_cam.x;
+        yWorld = 1. - (yPos / h) + Camera::m_cam.y;
+
+        std::cout << "mus x: " << xPos << ", y: " << yPos
+                  << ", world x: " << xWorld << ", y: " << yWorld << std::endl;
     });
 
 

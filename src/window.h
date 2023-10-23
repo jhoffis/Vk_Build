@@ -20,8 +20,8 @@ namespace Window {
     };
     extern GLFWwindow* m_window;
     extern bool m_framebufferResized;
+    extern int WIDTH, HEIGHT;
 
-    inline static int WIDTH, HEIGHT;
     void createWindow(bool fullscreen, bool vsync);
     void destroyWindow();
     void setCursor(CursorType cursor);

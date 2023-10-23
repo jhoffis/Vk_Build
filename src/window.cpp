@@ -17,6 +17,7 @@ GLFWmonitor* m_monitor;
 bool m_previousMouseStateVisible;
 bool Window::m_framebufferResized;
 Window::CursorType m_cursorTypeSelected;
+int Window::WIDTH, Window::HEIGHT;
 
 void glfwErrors(int error_code, const char *description) {
     throw std::runtime_error(std::string("GLFW ERROR: ").append(reinterpret_cast<const char *>(error_code)).append("\n").append(description));
