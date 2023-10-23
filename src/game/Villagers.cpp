@@ -7,7 +7,7 @@ namespace Villager {
     Model m_maleVillModel{};
 
     void initVillModel() {
-        m_maleVillModel.init("triangle", "unit.png");
+        m_maleVillModel.init("triangle", "isometric tileset/separated images/tile_000.png");
         m_maleVillModel.updateUboBuffer();
         m_renderModels.emplace_back(&m_maleVillModel);
     }
