@@ -70,7 +70,7 @@ void SceneHandler::create() {
 void SceneHandler::update() {
     Camera::m_cam.update();
     if (!males[0]->entity.isAbove(xWorld, yWorld))
-        males[0]->entity.pos.x += static_cast<float>(.1 * Timer::delta());
+        males[0]->entity.pos.x += static_cast<float>(.001 * Timer::delta());
 //    std::cout << males[0].vill.entity.pos.x << std::endl;
 }
 
