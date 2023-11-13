@@ -245,8 +245,8 @@ namespace Texture {
 
         VkSamplerCreateInfo samplerInfo{
             .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
-            .magFilter = VK_FILTER_LINEAR, // specify how to interpolate texels that are magnified or minified
-            .minFilter = VK_FILTER_LINEAR,
+            .magFilter = VK_FILTER_NEAREST, // specify how to interpolate texels that are magnified or minified
+            .minFilter = VK_FILTER_NEAREST,
 
             .mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR,
 

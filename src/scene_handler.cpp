@@ -8,13 +8,13 @@
 #include <iostream>
 
 int currentScene = 0;
-std::vector<Villager::Male*> males{};
+std::vector<Villager::Vill*> males{};
+static size_t x = 0;
+static size_t y = 0;
+static double xWorld{};
+static double yWorld{};
 
 void SceneHandler::create() {
-    static size_t x = 0;
-    static size_t y = 0;
-    static double xWorld{};
-    static double yWorld{};
 
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
 //        keyInput(&scenes[currentScene], key, action);
@@ -69,7 +69,8 @@ void SceneHandler::create() {
 
 void SceneHandler::update() {
     Camera::m_cam.update();
-    males[0]->vill.entity.pos.x += static_cast<float>(.1 * Timer::delta());
+    if (!males[0]->entity.isAbove(xWorld, yWorld))
+        males[0]->entity.pos.x += static_cast<float>(.1 * Timer::delta());
 //    std::cout << males[0].vill.entity.pos.x << std::endl;
 }
 

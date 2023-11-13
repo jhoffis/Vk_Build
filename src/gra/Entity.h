@@ -13,6 +13,8 @@ struct Entity {
     Vec3 pos{};
     Vec2 size{};
     bool visible{};
+
+    bool isAbove(float x, float y) const;
 };
 
 

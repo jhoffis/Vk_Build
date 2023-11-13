@@ -7,9 +7,9 @@
 
 namespace Villager {
 
-    void successfulImpregnation(Female& maid, Male& male);
+//    void successfulImpregnation(Female& maid, Male& male);
 
     void initVillModel();
-    Male* spawnMale(float x, float y);
+    Vill* spawnMale(float x, float y);
     void destroy();
 }

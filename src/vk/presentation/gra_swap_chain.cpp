@@ -160,8 +160,9 @@ void Gra::recreateSwapChain() {
         glfwGetFramebufferSize(Window::m_window, &width, &height);
         glfwWaitEvents();
     }
-
     vkDeviceWaitIdle(m_device);
+    Window::WIDTH = width;
+    Window::HEIGHT = height;
 
     cleanupSwapChain();
 
