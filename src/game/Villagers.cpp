@@ -7,7 +7,7 @@ namespace Villager {
     Model m_maleVillModel{};
 
     void initVillModel() {
-        m_maleVillModel.init("triangle", "isometric tileset/separated images/tile_000.png");
+        m_maleVillModel.init("triangle", "unit.png");
         m_maleVillModel.updateUboBuffer();
         m_renderModels.emplace_back(&m_maleVillModel);
     }
@@ -17,8 +17,8 @@ namespace Villager {
         m_maleVillModel.addEntity(&male->entity, true);
         male->entity.size.x = m_maleVillModel.width();
         male->entity.size.y = m_maleVillModel.height();
-        male->entity.pos.x = x;
-        male->entity.pos.y = y;
+        male->entity.pos.x = x * male->entity.size.x;
+        male->entity.pos.y = y * male->entity.size.y;
         return male;
     }
 
@@ -26,8 +26,5 @@ namespace Villager {
         m_maleVillModel.destroy();
     }
 
-//    void successfulImpregnation(Female &maid, Male &male) {
-//        int random_variable;
-//    }
 
 }

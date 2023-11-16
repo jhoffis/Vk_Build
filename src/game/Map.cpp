@@ -13,8 +13,8 @@ void Map::create(int xy) {
             auto entity = new Entity();
             entity->size.x = grassModel.width();
             entity->size.y = grassModel.height();
-            entity->pos.x = static_cast<float>(x);
-            entity->pos.y = static_cast<float>(y);
+            entity->pos.x = static_cast<float>(x) * entity->size.x;
+            entity->pos.y = static_cast<float>(y) * entity->size.y;
             entity->visible = true;
             auto p_entity = grass.emplace_back(entity);
             grassModel.addEntity(p_entity, false);

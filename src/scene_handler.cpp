@@ -9,6 +9,7 @@
 
 int currentScene = 0;
 std::vector<Villager::Vill*> males{};
+Villager::Vill* selected = nullptr;
 static size_t x = 0;
 static size_t y = 0;
 static double xWorld{};
@@ -43,6 +44,20 @@ void SceneHandler::create() {
     glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button, auto action, auto mods) {
 //        mouseButtonInput(&scenes[currentScene], button, action, x, y);
         std::cout << "museklikk x: " << x << ", y: " << y << ", knapp: " << button << std::endl;
+
+        if (action != GLFW_RELEASE) {
+            bool found = false;
+            for (auto vill : males) {
+                if (vill->entity.isAbove(xWorld, yWorld)) {
+                    selected = vill;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                selected = nullptr;
+
+        }
     });
 
     glfwSetCursorPosCallback(Window::m_window, [](auto window, auto xPos, auto yPos) {
@@ -69,8 +84,8 @@ void SceneHandler::create() {
 
 void SceneHandler::update() {
     Camera::m_cam.update();
-    if (!males[0]->entity.isAbove(xWorld, yWorld))
-        males[0]->entity.pos.x += static_cast<float>(.001 * Timer::delta());
+    if (selected != nullptr && !selected->entity.isAbove(xWorld, yWorld))
+        selected->entity.pos.x += static_cast<float>(.001 * Timer::delta());
 //    std::cout << males[0].vill.entity.pos.x << std::endl;
 }
 
