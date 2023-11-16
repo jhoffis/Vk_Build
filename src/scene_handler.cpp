@@ -14,6 +14,9 @@ static size_t x = 0;
 static size_t y = 0;
 static double xWorld{};
 static double yWorld{};
+double xWorldDragCam{};
+double yWorldDragCam{};
+bool dragging{};
 
 void SceneHandler::create() {
 
@@ -46,17 +49,26 @@ void SceneHandler::create() {
         std::cout << "museklikk x: " << x << ", y: " << y << ", knapp: " << button << std::endl;
 
         if (action != GLFW_RELEASE) {
-            bool found = false;
-            for (auto vill : males) {
-                if (vill->entity.isAbove(xWorld, yWorld)) {
-                    selected = vill;
-                    found = true;
-                    break;
+            if (button == GLFW_MOUSE_BUTTON_LEFT) {
+                bool found = false;
+                for (auto vill : males) {
+                    if (vill->entity.isAbove(xWorld, yWorld)) {
+                        selected = vill;
+                        found = true;
+                        break;
+                    }
                 }
+                if (!found)
+                    selected = nullptr;
+            } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+                xWorldDragCam = xWorld;
+                yWorldDragCam = yWorld;
+                dragging = true;
             }
-            if (!found)
-                selected = nullptr;
-
+        } else {
+            if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+                dragging = false;
+            }
         }
     });
 
@@ -68,6 +80,11 @@ void SceneHandler::create() {
         auto h = static_cast<double>(Window::HEIGHT);
         xWorld = (xPos / h) + Camera::m_cam.x;
         yWorld = 1. - (yPos / h) + Camera::m_cam.y;
+
+        if (dragging) {
+            Camera::m_cam.x += xWorldDragCam - xWorld;
+            Camera::m_cam.y += yWorldDragCam - yWorld;
+        }
 
         std::cout << "mus x: " << xPos << ", y: " << yPos
                   << ", world x: " << xWorld << ", y: " << yWorld << std::endl;
@@ -85,7 +102,7 @@ void SceneHandler::create() {
 void SceneHandler::update() {
     Camera::m_cam.update();
     if (selected != nullptr && !selected->entity.isAbove(xWorld, yWorld))
-        selected->entity.pos.x += static_cast<float>(.001 * Timer::delta());
+        selected->entity.pos.x += static_cast<float>(.005 * Timer::delta());
 //    std::cout << males[0].vill.entity.pos.x << std::endl;
 }
 
