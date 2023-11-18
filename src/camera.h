@@ -1,10 +1,11 @@
 #pragma once
 #include <bitset>
+#include "math/Vec3.h"
 
 namespace Camera {
 
     struct Cam {
-        float x{}, y{};
+        Vec3 pos{};
         std::bitset<4> movement;
 
         void update();

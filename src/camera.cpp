@@ -11,12 +11,12 @@ namespace Camera {
     void Cam::update() {
         auto spd = static_cast<float>(.075 * Timer::delta());
         if (movement.test(0))
-            y += spd;
+            pos.y += spd;
         if (movement.test(1))
-            y -= spd;
+            pos.y -= spd;
         if (movement.test(2))
-            x -= spd;
+            pos.x -= spd;
         if (movement.test(3))
-            x += spd;
+            pos.x += spd;
     }
 } // Camera

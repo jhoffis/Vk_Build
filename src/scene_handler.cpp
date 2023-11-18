@@ -8,8 +8,8 @@
 #include <iostream>
 
 int currentScene = 0;
-std::vector<Villager::Vill*> males{};
-Villager::Vill* selected = nullptr;
+std::vector<Villager::Vill *> males{};
+Villager::Vill *selected = nullptr;
 static size_t x = 0;
 static size_t y = 0;
 static double xWorld{};
@@ -37,11 +37,20 @@ void SceneHandler::create() {
             case GLFW_KEY_RIGHT:
                 Camera::m_cam.right(action != GLFW_RELEASE);
                 break;
+            case GLFW_KEY_SPACE:
+                if (action == GLFW_PRESS) {
+                    xWorldDragCam = xWorld;
+                    yWorldDragCam = yWorld;
+                    dragging = true;
+                } else if (action == GLFW_RELEASE) {
+                    dragging = false;
+                }
+                break;
             default:
                 // do nothing
                 break;
         }
-        std::cout << "camera world x: " << Camera::m_cam.x << ", y: " << Camera::m_cam.y << std::endl;
+        std::cout << "camera world x: " << Camera::m_cam.pos.x << ", y: " << Camera::m_cam.pos.y << std::endl;
     });
 
     glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button, auto action, auto mods) {
@@ -51,7 +60,7 @@ void SceneHandler::create() {
         if (action != GLFW_RELEASE) {
             if (button == GLFW_MOUSE_BUTTON_LEFT) {
                 bool found = false;
-                for (auto vill : males) {
+                for (auto vill: males) {
                     if (vill->entity.isAbove(xWorld, yWorld)) {
                         selected = vill;
                         found = true;
@@ -78,12 +87,12 @@ void SceneHandler::create() {
 
         // world er basert på høyde av skjermen!
         auto h = static_cast<double>(Window::HEIGHT);
-        xWorld = (xPos / h) + Camera::m_cam.x;
-        yWorld = 1. - (yPos / h) + Camera::m_cam.y;
+        xWorld = (xPos / h) + Camera::m_cam.pos.x;
+        yWorld = 1. - (yPos / h) + Camera::m_cam.pos.y;
 
         if (dragging) {
-            Camera::m_cam.x += xWorldDragCam - xWorld;
-            Camera::m_cam.y += yWorldDragCam - yWorld;
+            Camera::m_cam.pos.x += xWorldDragCam - xWorld;
+            Camera::m_cam.pos.y += yWorldDragCam - yWorld;
         }
 
         std::cout << "mus x: " << xPos << ", y: " << yPos
@@ -93,16 +102,18 @@ void SceneHandler::create() {
 
     Map::create(30);
     Villager::initVillModel();
-    males.emplace_back(Villager::spawnMale(0,0));
-    males.emplace_back(Villager::spawnMale(1,1));
-    males.emplace_back(Villager::spawnMale(2,1));
-    males.emplace_back(Villager::spawnMale(2,3));
+    males.emplace_back(Villager::spawnMale(0, 0));
+    males.emplace_back(Villager::spawnMale(1, 1));
+    males.emplace_back(Villager::spawnMale(2, 1));
+    males.emplace_back(Villager::spawnMale(2, 3));
 }
 
 void SceneHandler::update() {
     Camera::m_cam.update();
     if (selected != nullptr && !selected->entity.isAbove(xWorld, yWorld))
-        selected->entity.pos.x += static_cast<float>(.005 * Timer::delta());
+        selected->entity.pos.x += static_cast<float>(.001 * Timer::delta());
+//    for (auto male : males)
+//        male->entity.pos.x += static_cast<float>(.001 * Timer::delta());
 //    std::cout << males[0].vill.entity.pos.x << std::endl;
 }
 
