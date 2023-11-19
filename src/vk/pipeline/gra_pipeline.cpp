@@ -2,6 +2,7 @@
 // Created by jh on 8/23/2022.
 //
 
+#include <stdexcept>
 #include "gra_pipeline.h"
 #include "file_util.h"
 #include "gra_shader.h"

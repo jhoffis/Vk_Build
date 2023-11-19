@@ -3,6 +3,7 @@
 //
 #include <set>
 #include <algorithm>
+#include <stdexcept>
 #include "gra_swap_chain.h"
 #include "src/vk/gra_setup.h"
 #include "src/vk/setup/gra_queue_families.cpp.h"
