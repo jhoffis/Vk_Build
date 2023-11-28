@@ -6,6 +6,7 @@
 #include "vk/drawing/gra_command_buffers.h"
 #include "vk/shading/gra_uniform.h"
 #include "Entity.h"
+#include "Mesh2D.h"
 
 /*
  * super inefficient first model version

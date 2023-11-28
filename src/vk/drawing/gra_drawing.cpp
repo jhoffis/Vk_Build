@@ -4,12 +4,12 @@
 
 #include <stdexcept>
 #include "gra_drawing.h"
-#include "src/vk/gra_setup.h"
-#include "src/vk/presentation/gra_swap_chain.h"
+#include "vk/gra_setup.h"
+#include "vk/presentation/gra_swap_chain.h"
 #include "gra_command_buffers.h"
-#include "src/vk/setup/gra_logical_device.h"
-#include "src/vk/shading/gra_uniform.h"
-#include "gra/Model.h"
+#include "vk/setup/gra_logical_device.h"
+#include "vk/shading/gra_uniform.h"
+#include "gra_elems/Model.h"
 
 namespace Drawing {
 

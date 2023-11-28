@@ -8,6 +8,10 @@ namespace Camera {
         Vec3 pos{};
         std::bitset<4> movement;
 
+        Cam() {
+            pos.z = -1.;
+        }
+
         void update();
         constexpr void up(bool move) {
             movement.set(0, move);

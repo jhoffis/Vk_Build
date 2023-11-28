@@ -1,5 +1,5 @@
 #include "Map.h"
-#include "src/gra/Model.h"
+#include "gra_elems/Model.h"
 
 Model grassModel{};
 

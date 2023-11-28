@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include "src/window.h"
-#include "gra/Entity.h"
+#include "window.h"
+#include "gra_elems/Entity.h"
 #include "vk/gra_setup.h"
 #include <vector>
 

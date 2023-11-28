@@ -1,7 +1,7 @@
 #pragma once
 
-#include "gra/Mesh2D.h"
-#include "gra/Vertex.h"
+#include "gra_elems/Mesh2D.h"
+#include "gra_elems/Vertex.h"
 #include <vector>
 
 namespace Gra {

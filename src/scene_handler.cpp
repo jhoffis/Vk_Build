@@ -99,11 +99,20 @@ void SceneHandler::create() {
                   << ", world x: " << xWorld << ", y: " << yWorld << std::endl;
     });
 
+//    glfwSetScrollCallback(Window::m_window, [](auto window, auto xoffset, auto yoffset) {
+//        Camera::m_cam.pos.z *= 1+.125*yoffset;
+//        if (Camera::m_cam.pos.z < -2.)
+//            Camera::m_cam.pos.z = -2.;
+//        else if (Camera::m_cam.pos.z > -.5)
+//            Camera::m_cam.pos.z = -.5;
+//        std::cout << "scroll x: " << xoffset << ", y: " << yoffset << "cam z: " << Camera::m_cam.pos.z << std::endl;
+//    });
 
-    Map::create(30);
+
+    Map::create(15);
     Villager::initVillModel();
     males.emplace_back(Villager::spawnMale(0, 0));
-    males.emplace_back(Villager::spawnMale(1, 1));
+    males.emplace_back(Villager::spawnMale(1.5f, 1));
     males.emplace_back(Villager::spawnMale(2, 1));
     males.emplace_back(Villager::spawnMale(2, 3));
 }

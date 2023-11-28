@@ -17,6 +17,7 @@ VkSwapchainKHR Gra::m_swapChain;
 std::vector<VkImage> Gra::m_swapChainImages;
 VkFormat Gra::m_swapChainImageFormat;
 VkExtent2D Gra::m_swapChainExtent;
+float Gra::m_swapChainAspectRatio;
 
 SwapChainSupportDetails Gra::querySwapChainSupport(VkPhysicalDevice device) {
     SwapChainSupportDetails details;
@@ -138,6 +139,7 @@ void Gra::createSwapChain() {
 
     m_swapChainImageFormat = surfaceFormat.format;
     m_swapChainExtent = extent;
+    m_swapChainAspectRatio = (float) m_swapChainExtent.width / (float) m_swapChainExtent.height;
 }
 
 void Gra::cleanupSwapChain() {

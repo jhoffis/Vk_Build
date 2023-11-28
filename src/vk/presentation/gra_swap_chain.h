@@ -16,6 +16,7 @@ namespace Gra {
     extern std::vector<VkImage> m_swapChainImages;
     extern VkFormat m_swapChainImageFormat;
     extern VkExtent2D m_swapChainExtent;
+    extern float m_swapChainAspectRatio;
 
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
     void createSwapChain();
@@ -23,4 +24,6 @@ namespace Gra {
     void cleanupSwapChain();
 
     void recordSwapChain(VkCommandBuffer commandBuffer);
+
+
 }

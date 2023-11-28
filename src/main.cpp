@@ -15,6 +15,7 @@
 #include "game/Villagers.h"
 #include "timer_util.h"
 #include "scene_handler.h"
+#include "gra_elems/SelectionBox.h"
 
 
 int main() {
@@ -25,6 +26,7 @@ int main() {
     Gra::initVulkan();
     SceneHandler::create();
     Timer::updateDelta();
+    initSelectionModel();
 
 //    Model testModel{};
 //    testModel.init("triangle", "grass.png");
@@ -53,9 +55,9 @@ int main() {
         Timer::updateDelta();
         SceneHandler::update();
         Drawing::drawFrame();
-#ifdef RM_DEV
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-#endif
+//#ifdef RM_DEV
+//        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+//#endif
     }
 
     vkDeviceWaitIdle(Gra::m_device);

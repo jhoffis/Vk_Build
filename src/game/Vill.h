@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include "gra/Entity.h"
+#include "gra_elems/Entity.h"
 
 namespace Villager {
 

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "src/window.h"
-#include "gra/Mesh2D.h"
+#include "window.h"
+#include "gra_elems/Mesh2D.h"
 #include "vk/pipeline/gra_pipeline.h"
 //#include "vk/shading/gra_vertex.h"
 
