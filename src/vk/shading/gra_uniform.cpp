@@ -19,8 +19,9 @@ namespace Gra {
     UBOMem createUniformBuffers(int amount, int sizeOfUBO) {
         // TODO make custom shit, hmmm vel du kan basere deg på en size av en struct som har endret størrelse da! Lag en struct med en vector med components kanskje?
         auto singleSize = sizeOfUBO; // sizeof(UniformBufferObject);
-        auto offset = singleSize >= m_deviceProperties.limits.minUniformBufferOffsetAlignment ? singleSize : m_deviceProperties.limits.minUniformBufferOffsetAlignment;
-        VkDeviceSize bufferSize = (amount-1)*offset+ 2*amount*singleSize;
+        auto offset = singleSize >= m_deviceProperties.limits.minUniformBufferOffsetAlignment ? singleSize
+                                                                                              : m_deviceProperties.limits.minUniformBufferOffsetAlignment;
+        VkDeviceSize bufferSize = (amount - 1) * offset + 2 * amount * singleSize;
 
         std::cout << "created ubo with Range " << singleSize << " and offset " << offset << std::endl;
 
@@ -98,9 +99,9 @@ namespace Gra {
     VkDescriptorPool createDescriptorPool(int amountEntities) {
         std::array<VkDescriptorPoolSize, 2> poolSizes{};
         poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        poolSizes[0].descriptorCount = amountEntities*2; //static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT); // WHYYYYY
+        poolSizes[0].descriptorCount = amountEntities * 2; //static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT); // WHYYYYY
         poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        poolSizes[1].descriptorCount = amountEntities*2; //static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        poolSizes[1].descriptorCount = amountEntities * 2; //static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
         VkDescriptorPoolCreateInfo poolInfo{};
         poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -116,7 +117,62 @@ namespace Gra {
         return pool;
     }
 
-    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout &layout,
+    void shaderFillDescriptorSets(const ShaderName &shader,
+                                  const UBOMem &uboMem,
+                                  const VkImageView &textureImageView,
+                                  int size,
+                                  const std::vector<VkDescriptorSet> &descriptorSets) {
+        switch (shader) {
+            case triangle: {
+                VkDescriptorImageInfo imageInfo{};
+                imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                imageInfo.imageView = textureImageView;
+                imageInfo.sampler = Texture::m_textureSampler;
+
+                for (auto i = 0; i < size; i++) {
+
+                    VkDescriptorBufferInfo bufferInfo{};
+                    bufferInfo.buffer = uboMem.uniformBuffers[i %
+                                                              MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
+                    bufferInfo.offset = uboMem.offset * static_cast<int>(floor(
+                            static_cast<float>(i) / static_cast<float>(MAX_FRAMES_IN_FLIGHT)));
+                    bufferInfo.range = uboMem.range;
+
+                    std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+
+                    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+                    descriptorWrites[0].dstSet = descriptorSets[i];
+                    descriptorWrites[0].dstBinding = 0;
+                    descriptorWrites[0].dstArrayElement = 0;
+                    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+                    descriptorWrites[0].descriptorCount = 1;
+                    descriptorWrites[0].pBufferInfo = &bufferInfo;
+
+                    descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+                    descriptorWrites[1].dstSet = descriptorSets[i];
+                    descriptorWrites[1].dstBinding = 1;
+                    descriptorWrites[1].dstArrayElement = 0;
+                    descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+                    descriptorWrites[1].descriptorCount = 1;
+                    descriptorWrites[1].pImageInfo = &imageInfo;
+
+                    vkUpdateDescriptorSets(m_device,
+                                           static_cast<uint32_t>(descriptorWrites.size()),
+                                           descriptorWrites.data(),
+                                           0,
+                                           nullptr);
+                }
+                break;
+            }
+            case selectionBox: {
+
+                break;
+            }
+        }
+    }
+
+    std::vector<VkDescriptorSet> createDescriptorSets(const ShaderName &shader,
+                                                      VkDescriptorSetLayout &layout,
                                                       VkDescriptorPool &pool,
                                                       UBOMem &uboMem,
                                                       VkImageView &textureImageView) {
@@ -135,43 +191,11 @@ namespace Gra {
             throw std::runtime_error("failed to allocate descriptor sets!");
         }
 
-        VkDescriptorImageInfo imageInfo{};
-        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        imageInfo.imageView = textureImageView;
-        imageInfo.sampler = Texture::m_textureSampler;
-
-        for (auto i = 0; i < size; i++) {
-
-            VkDescriptorBufferInfo bufferInfo{};
-            bufferInfo.buffer = uboMem.uniformBuffers[i % MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
-            bufferInfo.offset = uboMem.offset * static_cast<int>(std::floor(
-                    static_cast<float>(i) / static_cast<float>(MAX_FRAMES_IN_FLIGHT)));
-            bufferInfo.range = uboMem.range;
-
-            std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
-
-            descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            descriptorWrites[0].dstSet = descriptorSets[i];
-            descriptorWrites[0].dstBinding = 0;
-            descriptorWrites[0].dstArrayElement = 0;
-            descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            descriptorWrites[0].descriptorCount = 1;
-            descriptorWrites[0].pBufferInfo = &bufferInfo;
-
-            descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            descriptorWrites[1].dstSet = descriptorSets[i];
-            descriptorWrites[1].dstBinding = 1;
-            descriptorWrites[1].dstArrayElement = 0;
-            descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            descriptorWrites[1].descriptorCount = 1;
-            descriptorWrites[1].pImageInfo = &imageInfo;
-
-            vkUpdateDescriptorSets(m_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0,
-                                   nullptr);
-        }
+        shaderFillDescriptorSets(shader, uboMem, textureImageView, size, descriptorSets);
 
         return descriptorSets;
     }
+
 
     void cleanupUniform() {
     }

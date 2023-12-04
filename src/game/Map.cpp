@@ -8,27 +8,10 @@ std::vector<Entity *> grass;
 
 void Map::create(int xy) {
     grassModel.init(
-        {
-            .sizeOfUBO = sizeof(Gra::UniformBufferObject),
-            .shaderName = "triangle",
-            .textureName = "grass.png",
-            .bindings = {
-                {
-                    .binding = 0,
-                    .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                    .descriptorCount = 1,
-                    .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-                    .pImmutableSamplers = nullptr // only relevant for image sampling related descriptor,
-                },
-                {
-                    .binding = 1,
-                    .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                    .descriptorCount = 1,
-                    .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT, // fragment shader.  It is possible to use texture sampling in the vertex shader, for example to dynamically deform a grid of vertices by a heightmap
-                    .pImmutableSamplers = nullptr,
-                }
+            {
+                    .shaderName = triangle,
+                    .textureName = "grass.png",
             }
-        }
     );
 
     for (int x = 0; x < xy; x++) {
@@ -43,7 +26,7 @@ void Map::create(int xy) {
             grassModel.addEntity(p_entity, false);
         }
     }
-    grassModel.updateUboBuffer();
+    grassModel.recreateUboBuffer();
     m_renderModels.emplace_back(&grassModel);
 }
 

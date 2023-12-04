@@ -4,6 +4,7 @@
 #include "window.h"
 #include "gra_elems/Entity.h"
 #include "vk/gra_setup.h"
+#include "gra_elems/ShaderName.h"
 #include <vector>
 
 namespace Gra {
@@ -29,7 +30,8 @@ namespace Gra {
     VkDescriptorSetLayout createDescriptorSetLayout(std::vector<VkDescriptorSetLayoutBinding> bindings);
 
     VkDescriptorPool createDescriptorPool(int amountEntities);
-    std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout &layout,
+    std::vector<VkDescriptorSet> createDescriptorSets(const ShaderName &shader,
+                                                      VkDescriptorSetLayout &layout,
                                                       VkDescriptorPool &pool,
                                                       UBOMem &uboMem,
                                                       VkImageView &textureImageView);

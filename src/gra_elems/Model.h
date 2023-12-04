@@ -7,6 +7,7 @@
 #include "vk/shading/gra_uniform.h"
 #include "Entity.h"
 #include "Mesh2D.h"
+#include "ShaderName.h"
 
 struct UniformStuff {
     // what is common and can be used to generate the rest?
@@ -17,11 +18,9 @@ struct UniformStuff {
 
 
 struct ModelInfo {
-    int sizeOfUBO{};
-    float fallbackWidth{0.f}, fallbackHeight{0.f};
-    char const *shaderName{};
-    char const *textureName{};
-    const std::vector<VkDescriptorSetLayoutBinding> bindings{};
+    const float fallbackWidth{0.f}, fallbackHeight{0.f};
+    const ShaderName &shaderName;
+    const char *textureName{};
 };
 
 /*
@@ -31,7 +30,9 @@ struct ModelInfo {
  * TODO for senere, hva om du definerer alle objekt du ønsker og så init de senere?
 */
 struct Model {
-private:
+
+    ShaderName shaderName;
+
     Mesh2D mesh{};
     Gra::CmdBuffer cmdBuffer{};
     Gra::UBOMem uboMem{};
@@ -42,17 +43,12 @@ private:
     VkDescriptorSetLayout descriptorSetLayout;
     std::vector<VkDescriptorSet> descriptorSets{};
 
-
-public:
-
-
-
     std::vector<Entity*> entities{};
     bool visible = true;
 
-    void init(ModelInfo modelInfo);
+    void init(ModelInfo info);
 
-    void updateUboBuffer();
+    void recreateUboBuffer();
     void addEntity(Entity* entity, bool update);
 
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
