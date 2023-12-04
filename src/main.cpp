@@ -15,7 +15,7 @@
 #include "game/Villagers.h"
 #include "timer_util.h"
 #include "scene_handler.h"
-#include "gra_elems/SelectionBox.h"
+#include "src/gra_elems/fabrications/SelectionBoxModel.h"
 
 
 int main() {
@@ -26,7 +26,6 @@ int main() {
     Gra::initVulkan();
     SceneHandler::create();
     Timer::updateDelta();
-    initSelectionModel();
 
 //    Model testModel{};
 //    testModel.init("triangle", "grass.png");
@@ -42,6 +41,8 @@ int main() {
 //    testModel.updateUboBuffer();
 //    m_renderModels.emplace_back(&testModel);
 
+    int fps = 0;
+    double fpsTime = 0;
 
     static bool running = true;
     while(running)
@@ -55,6 +56,14 @@ int main() {
         Timer::updateDelta();
         SceneHandler::update();
         Drawing::drawFrame();
+
+        fps++;
+        fpsTime += Timer::delta();
+        if (fpsTime >= 1.) {
+            Window::setName("vk FPS: " + std::to_string(fps));
+            fpsTime -= 1.;
+            fps = 0;
+        }
 //#ifdef RM_DEV
 //        std::this_thread::sleep_for(std::chrono::milliseconds(2));
 //#endif

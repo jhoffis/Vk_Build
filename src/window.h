@@ -30,6 +30,7 @@ namespace Window {
     void mouseStateHide(bool lock);
     void mouseStateToPrevious();
     void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
+    void setName(const std::string &name);
 }
 
 #endif //VULKAN_WINDOW_H

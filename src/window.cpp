@@ -230,3 +230,7 @@ void Window::destroyWindow() {
 //    delete monitor;
     glfwTerminate();
 }
+
+void Window::setName(const std::string &name) {
+    glfwSetWindowTitle(m_window, name.data());
+}

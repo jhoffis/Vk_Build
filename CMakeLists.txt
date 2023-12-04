@@ -25,7 +25,7 @@ add_executable(${PROJECT_NAME}
         src/vk/shading/gra_depth.cpp
         src/vk/shading/gra_depth.h
         src/vk/presentation/gra_surface.cpp
-        src/vk/presentation/gra_surface. h
+        src/vk/presentation/gra_surface.h
         src/vk/setup/gra_logical_device.cpp
         src/vk/setup/gra_physical_device.cpp
         src/vk/setup/gra_queue_families.cpp
@@ -43,7 +43,7 @@ add_executable(${PROJECT_NAME}
         src/game/Vill.cpp
         src/game/Vill.h
         src/timer_util.cpp
-        src/timer_util.h src/game/Bodyparts.cpp src/game/Bodyparts.h src/file_util.cpp src/gra_elems/SelectionBox.cpp src/gra_elems/SelectionBox.h)
+        src/timer_util.h src/game/Bodyparts.cpp src/game/Bodyparts.h src/file_util.cpp src/gra_elems/fabrications/SelectionBoxModel.cpp src/gra_elems/fabrications/SelectionBoxModel.h src/gra_elems/fabrications/VillagerModel.cpp src/gra_elems/fabrications/VillagerModel.h)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})

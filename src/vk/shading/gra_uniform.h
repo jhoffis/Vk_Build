@@ -8,8 +8,8 @@
 
 namespace Gra {
 
-    struct StandardUBOMem {
-        int size{};
+    struct UBOMem {
+        int amount{};
         int offset{};
         int range{};
         std::vector<VkBuffer> uniformBuffers{};
@@ -24,14 +24,14 @@ namespace Gra {
 
     };
 
-    StandardUBOMem createUniformBuffers(int amount);
-    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentSwapImage, uint32_t entityIndex, Entity *entity);
-    VkDescriptorSetLayout createDescriptorSetLayout();
+    UBOMem createUniformBuffers(int amount, int sizeOfUBO);
+    void updateUniformBuffer(UBOMem uboMem, uint32_t currentSwapImage, uint32_t entityIndex, Entity *entity);
+    VkDescriptorSetLayout createDescriptorSetLayout(std::vector<VkDescriptorSetLayoutBinding> bindings);
 
     VkDescriptorPool createDescriptorPool(int amountEntities);
     std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout &layout,
                                                       VkDescriptorPool &pool,
-                                                      StandardUBOMem &uboMem,
+                                                      UBOMem &uboMem,
                                                       VkImageView &textureImageView);
     void cleanupUniform();
 }

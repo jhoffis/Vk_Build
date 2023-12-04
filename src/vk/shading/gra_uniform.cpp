@@ -16,16 +16,16 @@
 
 namespace Gra {
 
-    StandardUBOMem createUniformBuffers(int amount) {
+    UBOMem createUniformBuffers(int amount, int sizeOfUBO) {
         // TODO make custom shit, hmmm vel du kan basere deg på en size av en struct som har endret størrelse da! Lag en struct med en vector med components kanskje?
-        auto singleSize = sizeof(UniformBufferObject);
+        auto singleSize = sizeOfUBO; // sizeof(UniformBufferObject);
         auto offset = singleSize >= m_deviceProperties.limits.minUniformBufferOffsetAlignment ? singleSize : m_deviceProperties.limits.minUniformBufferOffsetAlignment;
         VkDeviceSize bufferSize = (amount-1)*offset+ 2*amount*singleSize;
 
         std::cout << "created ubo with Range " << singleSize << " and offset " << offset << std::endl;
 
-        StandardUBOMem uboMem{};
-        uboMem.size = amount;
+        UBOMem uboMem{};
+        uboMem.amount = amount;
         uboMem.range = static_cast<int>(singleSize);
         uboMem.offset = static_cast<int>(offset);
         uboMem.uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -43,7 +43,7 @@ namespace Gra {
     }
 
 
-    void updateUniformBuffer(StandardUBOMem uboMem, uint32_t currentSwapImage, uint32_t entityIndex, Entity *entity) {
+    void updateUniformBuffer(UBOMem uboMem, uint32_t currentSwapImage, uint32_t entityIndex, Entity *entity) {
 
         // TODO move aspect to somewhere else. Should not calculate this every frame nor for every element
 
@@ -82,25 +82,7 @@ namespace Gra {
     }
 
 
-    VkDescriptorSetLayout createDescriptorSetLayout() {
-        VkDescriptorSetLayoutBinding uboLayoutBinding{};
-        uboLayoutBinding.binding = 0;
-        uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        uboLayoutBinding.descriptorCount = 1;
-        uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-        uboLayoutBinding.pImmutableSamplers = nullptr; // only relevant for image sampling related descriptors
-
-        // This descriptor makes it possible for shaders to access an image resource through a sampler object
-        VkDescriptorSetLayoutBinding samplerLayoutBinding{
-                .binding = 1,
-                .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                .descriptorCount = 1,
-                .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT, // fragment shader.  It is possible to use texture sampling in the vertex shader, for example to dynamically deform a grid of vertices by a heightmap
-                .pImmutableSamplers = nullptr,
-        };
-
-        std::array<VkDescriptorSetLayoutBinding, 2> bindings = {uboLayoutBinding, samplerLayoutBinding};
-
+    VkDescriptorSetLayout createDescriptorSetLayout(std::vector<VkDescriptorSetLayoutBinding> bindings) {
         VkDescriptorSetLayoutCreateInfo layoutInfo{};
         layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
         layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
@@ -136,9 +118,9 @@ namespace Gra {
 
     std::vector<VkDescriptorSet> createDescriptorSets(VkDescriptorSetLayout &layout,
                                                       VkDescriptorPool &pool,
-                                                      StandardUBOMem &uboMem,
+                                                      UBOMem &uboMem,
                                                       VkImageView &textureImageView) {
-        auto size = MAX_FRAMES_IN_FLIGHT * uboMem.size;
+        auto size = MAX_FRAMES_IN_FLIGHT * uboMem.amount;
         std::vector<VkDescriptorSetLayout> layouts(size, layout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;

@@ -52,6 +52,7 @@ namespace Raster {
          * Vertex input
          */
 
+        // TODO seperate into non static descriptions
         auto bindingDescription = Vertex::getBindingDescription();
         auto attributeDescriptions = Vertex::getAttributeDescriptions();
 

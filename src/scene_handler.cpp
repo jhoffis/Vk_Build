@@ -95,8 +95,8 @@ void SceneHandler::create() {
             Camera::m_cam.pos.y += yWorldDragCam - yWorld;
         }
 
-        std::cout << "mus x: " << xPos << ", y: " << yPos
-                  << ", world x: " << xWorld << ", y: " << yWorld << std::endl;
+//        std::cout << "mus x: " << xPos << ", y: " << yPos
+//                  << ", world x: " << xWorld << ", y: " << yWorld << std::endl;
     });
 
 //    glfwSetScrollCallback(Window::m_window, [](auto window, auto xoffset, auto yoffset) {

@@ -8,17 +8,33 @@
 #include "Entity.h"
 #include "Mesh2D.h"
 
+struct UniformStuff {
+    // what is common and can be used to generate the rest?
+    int bindingId;
+    boolean vertexOrFragment;
+    int type; // like is it image or ubo or smt else?
+};
+
+
+struct ModelInfo {
+    int sizeOfUBO{};
+    float fallbackWidth{0.f}, fallbackHeight{0.f};
+    char const *shaderName{};
+    char const *textureName{};
+    const std::vector<VkDescriptorSetLayoutBinding> bindings{};
+};
+
 /*
  * super inefficient first model version
  * Think of this class as a collection of a type of model instead of a single object to render.
  *
  * TODO for senere, hva om du definerer alle objekt du ønsker og så init de senere?
 */
-class Model {
+struct Model {
 private:
     Mesh2D mesh{};
     Gra::CmdBuffer cmdBuffer{};
-    Gra::StandardUBOMem uboMem{};
+    Gra::UBOMem uboMem{};
 
     Raster::Pipeline pipeline{};
     VkImageView texImageView;
@@ -28,10 +44,13 @@ private:
 
 
 public:
+
+
+
     std::vector<Entity*> entities{};
     bool visible = true;
 
-    void init(const std::string &shaderName, const std::string &textureName);
+    void init(ModelInfo modelInfo);
 
     void updateUboBuffer();
     void addEntity(Entity* entity, bool update);
@@ -51,3 +70,5 @@ public:
 };
 
 extern std::vector<Model *> m_renderModels;
+
+

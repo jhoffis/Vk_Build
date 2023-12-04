@@ -17,7 +17,7 @@ void Timer::updateDelta() {
     auto time = nowNanos();
     auto delta = static_cast<double>(time - m_lastLoopTime);
     m_lastLoopTime = time;
-    m_delta = delta / 40000000.0;
+    m_delta = delta / 1000'000'000.0;
 }
 
 double Timer::delta() {

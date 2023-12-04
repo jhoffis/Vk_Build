@@ -1,5 +1,6 @@
 #include "Villagers.h"
 #include "gra_elems/Model.h"
+#include "vk/shading/gra_vertex.h"
 #include <cstdlib>
 
 namespace Villager {
@@ -7,7 +8,29 @@ namespace Villager {
     Model m_maleVillModel{};
 
     void initVillModel() {
-        m_maleVillModel.init("triangle", "unit.png");
+        m_maleVillModel.init(
+                {
+                .sizeOfUBO = sizeof(Gra::UniformBufferObject),
+                .shaderName = "triangle",
+                .textureName = "unit.png",
+                .bindings = {
+                    {
+                        .binding = 0,
+                        .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                        .descriptorCount = 1,
+                        .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+                        .pImmutableSamplers = nullptr // only relevant for image sampling related descriptor,
+                    },
+                    {
+                        .binding = 1,
+                        .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                        .descriptorCount = 1,
+                        .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT, // fragment shader.  It is possible to use texture sampling in the vertex shader, for example to dynamically deform a grid of vertices by a heightmap
+                        .pImmutableSamplers = nullptr,
+                    }
+                }
+                }
+                );
         m_maleVillModel.updateUboBuffer();
         m_renderModels.emplace_back(&m_maleVillModel);
     }

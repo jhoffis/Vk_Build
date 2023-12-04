@@ -7,18 +7,26 @@
 
 std::vector<Model*> m_renderModels;
 
-void Model::init(const std::string& shaderName, const std::string& textureName) {
+void Model::init(ModelInfo modelInfo) {
     // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og attributes. Feks at de først har uniform buffer og så image sampler.
     cmdBuffer.init();
-    descriptorSetLayout = Gra::createDescriptorSetLayout(); // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
-    pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, shaderName);
-    uboMem = Gra::createUniformBuffers(1);
-    auto img = Texture::loadImage(textureName.data());
-    texImageView = Texture::createTexture(img);
+
+    descriptorSetLayout = Gra::createDescriptorSetLayout(modelInfo.bindings); // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
+    pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, modelInfo.shaderName);
+    uboMem = Gra::createUniformBuffers(1, modelInfo.sizeOfUBO); // sizeof(Gra::UniformBufferObject));
+
+    if (modelInfo.textureName != nullptr) {
+        auto img = Texture::loadImage(modelInfo.textureName);
+        texImageView = Texture::createTexture(img);
+        if (modelInfo.fallbackWidth == 0)
+            modelInfo.fallbackWidth = static_cast<float>(img.w);
+        if (modelInfo.fallbackHeight == 0)
+            modelInfo.fallbackHeight = static_cast<float>(img.h);
+    }
     pool = Gra::createDescriptorPool(1);
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
 
-    mesh.init(static_cast<float>(img.w), static_cast<float>(img.h));
+    mesh.init(modelInfo.fallbackWidth, modelInfo.fallbackHeight);
     Gra::createVertexBuffer(&mesh);
     Gra::createIndexBuffer(&mesh);
 }
@@ -44,15 +52,15 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
 void Model::updateUboBuffer() {
     // liste med alle referanser til ubos - bare utvid vector listen med descSets og så bruk currswapframe for å tegne alle.
     auto entitiesSize = static_cast<int>(entities.size() + 1);
-    if (entitiesSize < uboMem.size)
+    if (entitiesSize < uboMem.amount)
         return;
-    auto amount = 2*uboMem.size;
+    auto amount = 2*uboMem.amount;
     while (amount < entitiesSize)
         amount *= 2;
     vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
     pool = Gra::createDescriptorPool(amount);
     uboMem.destroy();
-    uboMem = Gra::createUniformBuffers(amount);
+    uboMem = Gra::createUniformBuffers(amount, uboMem.range);
     descriptorSets = Gra::createDescriptorSets(descriptorSetLayout, pool, uboMem, texImageView);
 }
 
