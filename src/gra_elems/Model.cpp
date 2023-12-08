@@ -9,7 +9,8 @@
 std::vector<Model*> m_renderModels;
 
 std::vector<VkDescriptorSetLayoutBinding> createBindings(const ShaderName &shader) {
-    if (shader == triangle) {
+    switch (shader) {
+    case triangle:
         return {
                 {
                         .binding = 0,
@@ -26,15 +27,26 @@ std::vector<VkDescriptorSetLayoutBinding> createBindings(const ShaderName &shade
                         .pImmutableSamplers = nullptr,
                 }
         };
+    case selectionBox:
+        return {
+                {
+                        .binding = 0,
+                        .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                        .descriptorCount = 1,
+                        .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+                        .pImmutableSamplers = nullptr // only relevant for image sampling related descriptor,
+                }
+        };
+    default : throw std::invalid_argument("Could not create shader-bindings");
     }
-    throw std::invalid_argument("Could not create shader-bindings");
 }
 
 std::string createShaderName(const ShaderName &shader) {
     switch (shader)
     {
-        case triangle:   return "triangle";
-        default:      throw std::invalid_argument("Could not create shader-name");
+        case triangle:     return "triangle";
+        case selectionBox: return "selectionbox";
+        default: throw std::invalid_argument("Could not create shader-name");
     }
 }
 
@@ -44,10 +56,10 @@ void Model::init(ModelInfo info) {
     shaderName = info.shaderName;
     cmdBuffer.init();
 
-    descriptorSetLayout = Gra::createDescriptorSetLayout(createBindings(info.shaderName)); // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
+    descriptorSetLayout = Gra_Uniform::createDescriptorSetLayout(createBindings(info.shaderName)); // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
     pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, createShaderName(info.shaderName));
     if (info.shaderName == triangle) {
-        uboMem = Gra::createUniformBuffers(1, sizeof(Gra::UniformBufferObject));
+        uboMem = Gra_Uniform::createUniformBuffers(1, sizeof(Gra::UniformBufferObject));
     }
 
     auto w = info.fallbackWidth;
@@ -61,8 +73,8 @@ void Model::init(ModelInfo info) {
         if (h == 0)
             h = static_cast<float>(img.h);
     }
-    pool = Gra::createDescriptorPool(1);
-    descriptorSets = Gra::createDescriptorSets(info.shaderName, descriptorSetLayout, pool, uboMem, texImageView);
+    pool = Gra_Uniform::createDescriptorPool(1);
+    descriptorSets = Gra_Uniform::createDescriptorSets(info.shaderName, descriptorSetLayout, pool, uboMem, texImageView);
 
     mesh.init(w, h);
     Gra::createVertexBuffer(&mesh);
@@ -82,7 +94,7 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     vkResetCommandBuffer(cmd, 0);
     Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, descriptorSets);
     for (auto i = 0; i < entities.size(); i++) {
-        Gra::updateUniformBuffer(uboMem, Drawing::currSwapFrame, i, entities[i]);
+        Gra_Uniform::updateUniformBuffer(uboMem, Drawing::currSwapFrame, i, entities[i]);
     }
     return cmd;
 }
@@ -96,10 +108,10 @@ void Model::recreateUboBuffer() {
     while (amount < entitiesSize)
         amount *= 2;
     vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
-    pool = Gra::createDescriptorPool(amount);
+    pool = Gra_Uniform::createDescriptorPool(amount);
     uboMem.destroy();
-    uboMem = Gra::createUniformBuffers(amount, uboMem.range);
-    descriptorSets = Gra::createDescriptorSets(shaderName, descriptorSetLayout, pool, uboMem, texImageView);
+    uboMem = Gra_Uniform::createUniformBuffers(amount, uboMem.range);
+    descriptorSets = Gra_Uniform::createDescriptorSets(shaderName, descriptorSetLayout, pool, uboMem, texImageView);
 }
 
 void Model::addEntity(Entity* entity, bool update) {

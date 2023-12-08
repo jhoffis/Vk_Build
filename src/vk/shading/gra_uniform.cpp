@@ -14,13 +14,13 @@
 #include <cmath>
 #include <iostream>
 
-namespace Gra {
+namespace Gra_Uniform {
 
     UBOMem createUniformBuffers(int amount, int sizeOfUBO) {
         // TODO make custom shit, hmmm vel du kan basere deg på en size av en struct som har endret størrelse da! Lag en struct med en vector med components kanskje?
         auto singleSize = sizeOfUBO; // sizeof(UniformBufferObject);
-        auto offset = singleSize >= m_deviceProperties.limits.minUniformBufferOffsetAlignment ? singleSize
-                                                                                              : m_deviceProperties.limits.minUniformBufferOffsetAlignment;
+        auto offset = singleSize >= Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment ? singleSize
+                                                                                              : Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment;
         VkDeviceSize bufferSize = (amount - 1) * offset + 2 * amount * singleSize;
 
         std::cout << "created ubo with Range " << singleSize << " and offset " << offset << std::endl;
@@ -29,11 +29,11 @@ namespace Gra {
         uboMem.amount = amount;
         uboMem.range = static_cast<int>(singleSize);
         uboMem.offset = static_cast<int>(offset);
-        uboMem.uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-        uboMem.uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+        uboMem.uniformBuffers.resize(Gra::MAX_FRAMES_IN_FLIGHT);
+        uboMem.uniformBuffersMemory.resize(Gra::MAX_FRAMES_IN_FLIGHT);
 
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            createBuffer(bufferSize,
+        for (size_t i = 0; i < Gra::MAX_FRAMES_IN_FLIGHT; i++) {
+            Gra::createBuffer(bufferSize,
                          VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                          uboMem.uniformBuffers[i],
@@ -48,9 +48,9 @@ namespace Gra {
 
         // TODO move aspect to somewhere else. Should not calculate this every frame nor for every element
 
-        UniformBufferObject ubo{};
+        Gra::UniformBufferObject ubo{};
         auto pos = entity->pos;
-        ubo.aspect = m_swapChainAspectRatio;
+        ubo.aspect = Gra::m_swapChainAspectRatio;
         ubo.pos = pos - Camera::m_cam.pos;
 //        ubo.model = glm::mat4(1.0f); //glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(x, x, 1.0f));
 //        ubo.model = glm::translate(ubo.model,
@@ -69,7 +69,7 @@ namespace Gra {
 //        ubo.proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
 
         void *data;
-        vkMapMemory(m_device,
+        vkMapMemory(Gra::m_device,
                     uboMem.uniformBuffersMemory[currentSwapImage],
                     entityIndex * uboMem.offset,
                     uboMem.range,
@@ -78,7 +78,7 @@ namespace Gra {
         memcpy(data,
                &ubo,
                uboMem.range);
-        vkUnmapMemory(m_device,
+        vkUnmapMemory(Gra::m_device,
                       uboMem.uniformBuffersMemory[currentSwapImage]);
     }
 
@@ -90,7 +90,7 @@ namespace Gra {
         layoutInfo.pBindings = bindings.data();
 
         VkDescriptorSetLayout descriptorSetLayout{};
-        if (vkCreateDescriptorSetLayout(m_device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+        if (vkCreateDescriptorSetLayout(Gra::m_device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
             throw std::runtime_error("failed to create descriptor set layout!");
         }
         return descriptorSetLayout;
@@ -111,7 +111,7 @@ namespace Gra {
         poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 
         VkDescriptorPool pool{};
-        if (vkCreateDescriptorPool(m_device, &poolInfo, nullptr, &pool) != VK_SUCCESS) {
+        if (vkCreateDescriptorPool(Gra::m_device, &poolInfo, nullptr, &pool) != VK_SUCCESS) {
             throw std::runtime_error("failed to create descriptor pool!");
         }
         return pool;
@@ -133,9 +133,9 @@ namespace Gra {
 
                     VkDescriptorBufferInfo bufferInfo{};
                     bufferInfo.buffer = uboMem.uniformBuffers[i %
-                                                              MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
+                            Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
                     bufferInfo.offset = uboMem.offset * static_cast<int>(floor(
-                            static_cast<float>(i) / static_cast<float>(MAX_FRAMES_IN_FLIGHT)));
+                            static_cast<float>(i) / static_cast<float>(Gra::MAX_FRAMES_IN_FLIGHT)));
                     bufferInfo.range = uboMem.range;
 
                     std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
@@ -156,19 +156,20 @@ namespace Gra {
                     descriptorWrites[1].descriptorCount = 1;
                     descriptorWrites[1].pImageInfo = &imageInfo;
 
-                    vkUpdateDescriptorSets(m_device,
+                    vkUpdateDescriptorSets(Gra::m_device,
                                            static_cast<uint32_t>(descriptorWrites.size()),
                                            descriptorWrites.data(),
                                            0,
                                            nullptr);
                 }
-                break;
+                return;
             }
             case selectionBox: {
 
                 break;
             }
         }
+        throw std::invalid_argument("Could not fill shader descriptor-sets");
     }
 
     std::vector<VkDescriptorSet> createDescriptorSets(const ShaderName &shader,
@@ -176,7 +177,7 @@ namespace Gra {
                                                       VkDescriptorPool &pool,
                                                       UBOMem &uboMem,
                                                       VkImageView &textureImageView) {
-        auto size = MAX_FRAMES_IN_FLIGHT * uboMem.amount;
+        auto size = Gra::MAX_FRAMES_IN_FLIGHT * uboMem.amount;
         std::vector<VkDescriptorSetLayout> layouts(size, layout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -186,7 +187,7 @@ namespace Gra {
 
         std::vector<VkDescriptorSet> descriptorSets{};
         descriptorSets.resize(size);
-        auto res = vkAllocateDescriptorSets(m_device, &allocInfo, descriptorSets.data());
+        auto res = vkAllocateDescriptorSets(Gra::m_device, &allocInfo, descriptorSets.data());
         if (res != VK_SUCCESS) {
             throw std::runtime_error("failed to allocate descriptor sets!");
         }
@@ -196,8 +197,5 @@ namespace Gra {
         return descriptorSets;
     }
 
-
-    void cleanupUniform() {
-    }
 
 } // Gra

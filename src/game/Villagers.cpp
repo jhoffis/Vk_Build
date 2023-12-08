@@ -15,7 +15,7 @@ namespace Villager {
                 }
             );
         m_maleVillModel.recreateUboBuffer();
-        m_renderModels.emplace_back(&m_maleVillModel);
+        m_renderModels.emplace_back(&m_maleVillModel); // TODO this whole init is very strange..? No?
     }
 
     Vill* spawnMale(float x, float y) {

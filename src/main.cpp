@@ -26,6 +26,7 @@ int main() {
     Gra::initVulkan();
     SceneHandler::create();
     Timer::updateDelta();
+    SelectionBox::init();
 
 //    Model testModel{};
 //    testModel.init("triangle", "grass.png");

@@ -35,7 +35,7 @@ struct Model {
 
     Mesh2D mesh{};
     Gra::CmdBuffer cmdBuffer{};
-    Gra::UBOMem uboMem{};
+    Gra_Uniform::UBOMem uboMem{};
 
     Raster::Pipeline pipeline{};
     VkImageView texImageView;

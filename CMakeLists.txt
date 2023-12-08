@@ -49,24 +49,12 @@ find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} Vulkan::Vulkan)
 
-# set(ENV{VULKAN_SDK} "C:/VulkanSDK/1.3.239.0")
-# find_package(Vulkan REQUIRED)
-# target_link_libraries(target ${Vulkan_LIBRARIES})
-
-# find_package(Vulkan REQUIRED)
-# target_link_libraries(${PROJECT_NAME} ${Vulkan_LIBRARIES})
-# target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
-
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Libraries/socket.io-client-cpp)
 target_link_libraries(${PROJECT_NAME} sioclient)
 
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glm)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/stb)
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/tiny_obj)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-#target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glfw-3.3.2.bin.WIN64/lib-mingw-w64/libglfw3dll.a)
-#target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glfw-3.3.2.bin.WIN64/lib-mingw-w64/libglfw3.a)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glfw)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Libraries/glfw/include)
 
@@ -91,7 +79,7 @@ endif()
 # track a build to a specific GIT SHA
 set(CPACK_PACKAGE_FILE_NAME
         "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${GIT_SHORT_SHA}-${CMAKE_SYSTEM_NAME}-${CMAKE_BUILD_TYPE}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
-)
+        )
 
 # shader compile
 # add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND cmd //C ${CMAKE_CURRENT_LIST_DIR}/res/shaders/compile.bat)

@@ -76,7 +76,6 @@ namespace Gra {
 
         Texture::cleanupTextures();
 
-        cleanupUniform();
         cleanupVertex();
 
         destroyRenderPasses();

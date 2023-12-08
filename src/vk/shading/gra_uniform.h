@@ -7,7 +7,7 @@
 #include "gra_elems/ShaderName.h"
 #include <vector>
 
-namespace Gra {
+namespace Gra_Uniform {
 
     struct UBOMem {
         int amount{};
@@ -18,8 +18,8 @@ namespace Gra {
 
         void destroy() {
             for (size_t i = 0; i < uniformBuffers.size(); i++) {
-                vkDestroyBuffer(m_device, uniformBuffers[i], nullptr);
-                vkFreeMemory(m_device, uniformBuffersMemory[i], nullptr);
+                vkDestroyBuffer(Gra::m_device, uniformBuffers[i], nullptr);
+                vkFreeMemory(Gra::m_device, uniformBuffersMemory[i], nullptr);
             }
         }
 
@@ -35,5 +35,4 @@ namespace Gra {
                                                       VkDescriptorPool &pool,
                                                       UBOMem &uboMem,
                                                       VkImageView &textureImageView);
-    void cleanupUniform();
 }
