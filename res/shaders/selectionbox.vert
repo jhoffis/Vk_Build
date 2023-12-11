@@ -16,7 +16,7 @@ layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec2 fragTexCoord;
 
 void main() {
-    gl_Position = vec4(inPosition.x, inPosition.yz, 1.0);// ubo.proj * ubo.view * ubo.model * vec4(inPosition, 1.0);
+    gl_Position = vec4(inPosition.xyz, 1.0);// ubo.proj * ubo.view * ubo.model * vec4(inPosition, 1.0);
     gl_Position.x += ubo.pos.x;
     gl_Position.y += -ubo.pos.y;
     gl_Position.x /= ubo.aspect;
@@ -24,8 +24,9 @@ void main() {
     gl_Position.y *= 2.;
     gl_Position.x -= 1.;
     gl_Position.y += 1.;
+    //zoom:
 //    gl_Position.x *= ubo.pos.z;
 //    gl_Position.y *= ubo.pos.z;
-    fragColor = inColor;
+    fragColor = vec3(1,0,0);
     fragTexCoord = inTexCoord;
 }

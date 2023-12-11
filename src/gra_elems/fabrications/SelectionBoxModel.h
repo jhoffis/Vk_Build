@@ -2,4 +2,6 @@
 
 namespace SelectionBox {
     void init();
+
+    void destroy();
 }

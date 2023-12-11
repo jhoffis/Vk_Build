@@ -58,8 +58,14 @@ void Model::init(ModelInfo info) {
 
     descriptorSetLayout = Gra_Uniform::createDescriptorSetLayout(createBindings(info.shaderName)); // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
     pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, createShaderName(info.shaderName));
-    if (info.shaderName == triangle) {
-        uboMem = Gra_Uniform::createUniformBuffers(1, sizeof(Gra::UniformBufferObject));
+    switch (info.shaderName) {
+        case triangle:
+            uboMem = Gra_Uniform::createUniformBuffers(1, sizeof(Gra::UniformBufferObject));
+            break;
+        case selectionBox:
+            uboMem = Gra_Uniform::createUniformBuffers(1, sizeof(Gra::UniformBufferObject));
+            break;
+        default : throw std::invalid_argument("Could not create shader-bindings");
     }
 
     auto w = info.fallbackWidth;

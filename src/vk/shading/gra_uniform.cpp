@@ -21,7 +21,7 @@ namespace Gra_Uniform {
         auto singleSize = sizeOfUBO; // sizeof(UniformBufferObject);
         auto offset = singleSize >= Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment ? singleSize
                                                                                               : Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment;
-        VkDeviceSize bufferSize = (amount - 1) * offset + 2 * amount * singleSize;
+        VkDeviceSize bufferSize = amount * offset;
 
         std::cout << "created ubo with Range " << singleSize << " and offset " << offset << std::endl;
 
@@ -134,8 +134,8 @@ namespace Gra_Uniform {
                     VkDescriptorBufferInfo bufferInfo{};
                     bufferInfo.buffer = uboMem.uniformBuffers[i %
                             Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
-                    bufferInfo.offset = uboMem.offset * static_cast<int>(floor(
-                            static_cast<float>(i) / static_cast<float>(Gra::MAX_FRAMES_IN_FLIGHT)));
+                    bufferInfo.offset = uboMem.offset * static_cast<int>(
+                            floor(static_cast<float>(i) / static_cast<float>(Gra::MAX_FRAMES_IN_FLIGHT)));
                     bufferInfo.range = uboMem.range;
 
                     std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
@@ -166,7 +166,32 @@ namespace Gra_Uniform {
             }
             case selectionBox: {
 
-                break;
+                for (auto i = 0; i < size; i++) {
+
+                    VkDescriptorBufferInfo bufferInfo{};
+                    bufferInfo.buffer = uboMem.uniformBuffers[i %
+                                                              Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
+                    bufferInfo.offset = uboMem.offset * static_cast<int>(
+                            floor(static_cast<float>(i) / static_cast<float>(Gra::MAX_FRAMES_IN_FLIGHT)));
+                    bufferInfo.range = uboMem.range;
+
+                    std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
+
+                    descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+                    descriptorWrites[0].dstSet = descriptorSets[i];
+                    descriptorWrites[0].dstBinding = 0;
+                    descriptorWrites[0].dstArrayElement = 0;
+                    descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+                    descriptorWrites[0].descriptorCount = 1;
+                    descriptorWrites[0].pBufferInfo = &bufferInfo;
+
+                    vkUpdateDescriptorSets(Gra::m_device,
+                                           static_cast<uint32_t>(descriptorWrites.size()),
+                                           descriptorWrites.data(),
+                                           0,
+                                           nullptr);
+                }
+                return;
             }
         }
         throw std::invalid_argument("Could not fill shader descriptor-sets");

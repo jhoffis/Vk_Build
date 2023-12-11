@@ -65,15 +65,15 @@ int main() {
             fpsTime -= 1.;
             fps = 0;
         }
-//#ifdef RM_DEV
-//        std::this_thread::sleep_for(std::chrono::milliseconds(2));
-//#endif
+#ifdef RM_DEV
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+#endif
     }
 
     vkDeviceWaitIdle(Gra::m_device);
 
 //    testModel.destroy();
-
+    SelectionBox::destroy();
     Map::destroy();
     Villager::destroy();
     Gra::cleanup();
