@@ -98,3 +98,10 @@ add_custom_target(copy_assets
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/res ${CMAKE_CURRENT_BINARY_DIR}/res
 )
 add_dependencies(${PROJECT_NAME} copy_assets)
+
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC RMDEV=1)
+elseif(CMAKE_BUILD_TYPE MATCHES Release)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC RMDEV=0)
+endif()

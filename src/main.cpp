@@ -1,4 +1,4 @@
-#define RM_DEV
+//#define RM_DEV
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -16,6 +16,7 @@
 #include "timer_util.h"
 #include "scene_handler.h"
 #include "src/gra_elems/fabrications/SelectionBoxModel.h"
+#include "file_util.h"
 
 
 int main() {
@@ -27,7 +28,9 @@ int main() {
     SceneHandler::create();
     Timer::updateDelta();
     SelectionBox::init();
-
+#ifdef RMDEV
+    watchDir();
+#endif
 //    Model testModel{};
 //    testModel.init("triangle", "grass.png");
 //
@@ -65,12 +68,16 @@ int main() {
             fpsTime -= 1.;
             fps = 0;
         }
-#ifdef RM_DEV
+#ifdef RMDEV
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
 #endif
     }
 
     vkDeviceWaitIdle(Gra::m_device);
+
+#ifdef RMDEV
+    unwatchDir();
+#endif
 
 //    testModel.destroy();
     SelectionBox::destroy();

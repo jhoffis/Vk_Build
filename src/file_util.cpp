@@ -1,8 +1,10 @@
 #include "file_util.h"
-#include <thread>
 #include <stdexcept>
 #include <fstream>
 #include <Windows.h>
+#include <iostream>
+
+HANDLE m_resThread;
 
 std::vector<char> readFile(const std::string &filename) {
     std::ifstream file(filename, std::ios::ate | std::ios::binary);
@@ -22,19 +24,42 @@ std::vector<char> readFile(const std::string &filename) {
     return buffer;
 }
 
-void watchDir(const std::string path) {
+void watchDir() {
 #ifdef WIN32
-    std::thread watcherThread([](auto path) {
-        HANDLE hDirChange = FindFirstChangeNotificationA(
-                path.c_str(),
-                true,
-                FILE_NOTIFY_CHANGE_LAST_WRITE
-        );
-        if (hDirChange == INVALID_HANDLE_VALUE) {
-            throw std::runtime_error("failed to watch directory: " + path);
-        }
+    m_resThread = CreateThread(nullptr,
+                 0,
+                 [](LPVOID lpParam) -> DWORD {
+                     auto hDirChange = FindFirstChangeNotificationA(
+                             "res/shaders",
+                             true,
+                             FILE_NOTIFY_CHANGE_LAST_WRITE
+                     );
+                     if (hDirChange == INVALID_HANDLE_VALUE) {
+                         throw std::runtime_error("failed to watch directory: ");
+                     }
 
-        WaitForSingleObject(hDirChange, INFINITE);
-    }, path);
+                     do {
+                         auto waitResult = WaitForSingleObject(hDirChange, INFINITE);
+
+                         if (waitResult == WAIT_OBJECT_0) {
+                            std::cout << "Noticed change" << std::endl;
+                             // Reissue the FindFirstChangeNotificationA to continue monitoring
+                             FindNextChangeNotification(hDirChange);
+                         } else {
+                             std::cerr << "WaitForSingleObject failed." << std::endl;
+                             break;
+                         }
+
+                     } while (true);
+                     FindCloseChangeNotification(hDirChange);
+                     return 0;
+                 },
+                 nullptr,
+                 0,
+                 nullptr);
 #endif
+}
+
+void unwatchDir() {
+    CloseHandle(m_resThread);
 }
