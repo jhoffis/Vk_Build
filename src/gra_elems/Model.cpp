@@ -7,6 +7,9 @@
 #include "vk/shading/gra_vertex.h"
 
 std::vector<Model*> m_renderModels;
+#ifdef RMDEV
+std::vector<Raster::Pipeline> m_leftoverPipelines;
+#endif
 
 std::vector<VkDescriptorSetLayoutBinding> createBindings(const ShaderName &shader) {
     switch (shader) {
@@ -41,7 +44,7 @@ std::vector<VkDescriptorSetLayoutBinding> createBindings(const ShaderName &shade
     }
 }
 
-std::string createShaderName(const ShaderName &shader) {
+std::string getShaderName(const ShaderName &shader) {
     switch (shader)
     {
         case triangle:     return "triangle";
@@ -56,8 +59,25 @@ void Model::init(ModelInfo info) {
     shaderName = info.shaderName;
     cmdBuffer.init();
 
-    descriptorSetLayout = Gra_Uniform::createDescriptorSetLayout(createBindings(info.shaderName)); // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
-    pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, createShaderName(info.shaderName));
+    // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
+    descriptorSetLayout = Gra_Uniform::createDescriptorSetLayout(createBindings(info.shaderName));
+    createPipeline();
+
+    auto w = info.fallbackWidth;
+    auto h = info.fallbackHeight;
+    if (info.textureName != nullptr) {
+        auto img = Texture::loadImage(info.textureName);  // lik
+        texImageView = Texture::createTexture(img);  // lik
+        if (w == 0)
+            w = static_cast<float>(img.w);
+        if (h == 0)
+            h = static_cast<float>(img.h);
+    }
+    mesh.init(w, h);
+    Gra::createVertexBuffer(&mesh);
+    Gra::createIndexBuffer(&mesh);
+
+    pool = Gra_Uniform::createDescriptorPool(1);
     switch (info.shaderName) {
         case triangle:
             uboMem = Gra_Uniform::createUniformBuffers(1, sizeof(Gra::UniformBufferObject));
@@ -67,24 +87,8 @@ void Model::init(ModelInfo info) {
             break;
         default : throw std::invalid_argument("Could not create shader-bindings");
     }
-
-    auto w = info.fallbackWidth;
-    auto h = info.fallbackHeight;
-
-    if (info.textureName != nullptr) {
-        auto img = Texture::loadImage(info.textureName);
-        texImageView = Texture::createTexture(img);
-        if (w == 0)
-            w = static_cast<float>(img.w);
-        if (h == 0)
-            h = static_cast<float>(img.h);
-    }
-    pool = Gra_Uniform::createDescriptorPool(1);
     descriptorSets = Gra_Uniform::createDescriptorSets(info.shaderName, descriptorSetLayout, pool, uboMem, texImageView);
 
-    mesh.init(w, h);
-    Gra::createVertexBuffer(&mesh);
-    Gra::createIndexBuffer(&mesh);
 }
 
 void Model::destroy() {
@@ -124,4 +128,27 @@ void Model::addEntity(Entity* entity, bool update) {
     if (update)
         recreateUboBuffer();
     entities.emplace_back(entity);
+}
+
+void Model::createPipeline() {
+    pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, getShaderName(shaderName));
+}
+
+void recreateModelPipelines() {
+    for (auto model : m_renderModels) {
+        m_leftoverPipelines.emplace_back(model->pipeline);
+        model->createPipeline();
+    }
+}
+
+void destroyModels() {
+    for (auto model : m_renderModels) {
+        model->destroy();
+    }
+
+#ifdef RMDEV
+    for (auto pipeline : m_leftoverPipelines) {
+        Raster::destroyPipeline(pipeline);
+    }
+#endif
 }

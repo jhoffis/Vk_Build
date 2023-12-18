@@ -68,6 +68,10 @@ namespace Gra {
         Texture::createTextureSampler();
 
         Drawing::createSyncObjects();
+
+#ifdef RMDEV
+        Raster::compilePipelines(false);
+#endif
     }
 
 

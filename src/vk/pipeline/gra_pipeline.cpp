@@ -10,13 +10,13 @@
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "gra_render_passes.h"
 #include "src/vk/shading/gra_vertex.h"
-#include "src/vk/shading/gra_uniform.h"
+#include "gra_elems/Model.h"
 
 namespace Raster {
 
     Pipeline createGraphicsPipeline(VkDescriptorSetLayout descriptorSetLayout, const std::string &shaderName) {
-        auto vertShaderCode = readFile("res/shaders/" + shaderName + "_vert.spv");
-        auto fragShaderCode = readFile("res/shaders/" + shaderName + "_frag.spv");
+        auto vertShaderCode = readFile("res/shaders/compiled/" + shaderName + "_vert.spv");
+        auto fragShaderCode = readFile("res/shaders/compiled/" + shaderName + "_frag.spv");
 
         VkShaderModule vertShaderModule = Shader::createShaderModule(vertShaderCode);
         VkShaderModule fragShaderModule = Shader::createShaderModule(fragShaderCode);
@@ -217,6 +217,16 @@ namespace Raster {
         };
     }
 
+#ifdef RMDEV
+    void compilePipelines(bool recreate) {
+#ifdef WIN32
+        makeSureDirExists("res/shaders/compiled");
+        system("res\\shaders\\compile.bat");
+        if (recreate)
+            recreateModelPipelines();
+#endif
+    }
+#endif
     void destroyPipeline(Pipeline &pipeline) {
         vkDestroyPipeline(Gra::m_device, pipeline.graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(Gra::m_device, pipeline.pipelineLayout, nullptr);

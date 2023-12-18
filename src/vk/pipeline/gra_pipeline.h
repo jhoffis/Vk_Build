@@ -10,6 +10,8 @@ namespace Raster {
     };
 
     Pipeline createGraphicsPipeline(VkDescriptorSetLayout descriptorSetLayout, const std::string &shaderName);
-
+#ifdef RMDEV
+    void compilePipelines(bool recreate);
+#endif
     void destroyPipeline(Pipeline &pipeline);
 }

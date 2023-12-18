@@ -60,10 +60,14 @@ struct Model {
     float height() const {
         return mesh.worldHeight;
     }
+    void createPipeline();
 
     void destroy();
 
 };
+
+void recreateModelPipelines();
+void destroyModels();
 
 extern std::vector<Model *> m_renderModels;
 

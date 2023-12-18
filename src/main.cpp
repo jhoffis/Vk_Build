@@ -17,6 +17,7 @@
 #include "scene_handler.h"
 #include "src/gra_elems/fabrications/SelectionBoxModel.h"
 #include "file_util.h"
+#include "gra_elems/Model.h"
 
 
 int main() {
@@ -80,9 +81,7 @@ int main() {
 #endif
 
 //    testModel.destroy();
-    SelectionBox::destroy();
-    Map::destroy();
-    Villager::destroy();
+    destroyModels();
     Gra::cleanup();
     Window::destroyWindow();
     return 0;
