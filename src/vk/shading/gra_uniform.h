@@ -13,6 +13,7 @@ namespace Gra_Uniform {
         int amount{};
         int offset{};
         int range{};
+        void *uboStruct{};
         std::vector<VkBuffer> uniformBuffers{};
         std::vector<VkDeviceMemory> uniformBuffersMemory{};
 
@@ -26,7 +27,9 @@ namespace Gra_Uniform {
     };
 
     UBOMem createUniformBuffers(int amount, int sizeOfUBO);
-    void updateUniformBuffer(UBOMem uboMem, uint32_t currentSwapImage, uint32_t entityIndex, Entity *entity);
+    void updateUniformBuffer(const UBOMem &uboMem,
+                             uint32_t currentSwapImage,
+                             uint32_t entityIndex);
     VkDescriptorSetLayout createDescriptorSetLayout(std::vector<VkDescriptorSetLayoutBinding> bindings);
 
     VkDescriptorPool createDescriptorPool(int amountEntities);

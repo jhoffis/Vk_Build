@@ -3,6 +3,7 @@
 #include "game/Villagers.h"
 #include "camera.h"
 #include "timer_util.h"
+#include "gra_elems/fabrications/SelectionBoxModel.h"
 
 #include <vector>
 #include <iostream>
@@ -59,6 +60,9 @@ void SceneHandler::create() {
 
         if (action != GLFW_RELEASE) {
             if (button == GLFW_MOUSE_BUTTON_LEFT) {
+
+                SelectionBox::visible(xWorld, yWorld);
+
                 bool found = false;
                 for (auto vill: males) {
                     if (vill->entity.isAbove(xWorld, yWorld)) {
@@ -75,7 +79,9 @@ void SceneHandler::create() {
                 dragging = true;
             }
         } else {
-            if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+            if (button == GLFW_MOUSE_BUTTON_LEFT) {
+                SelectionBox::hide();
+            } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
                 dragging = false;
             }
         }
@@ -93,6 +99,11 @@ void SceneHandler::create() {
         if (dragging) {
             Camera::m_cam.pos.x += xWorldDragCam - xWorld;
             Camera::m_cam.pos.y += yWorldDragCam - yWorld;
+        }
+
+        if (SelectionBox::isVisible()) {
+            SelectionBox::m_ubo.posNew.x = xWorld;
+            SelectionBox::m_ubo.posNew.y = yWorld;
         }
 
 //        std::cout << "mus x: " << xPos << ", y: " << yPos

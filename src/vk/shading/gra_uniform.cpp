@@ -20,7 +20,7 @@ namespace Gra_Uniform {
         // TODO make custom shit, hmmm vel du kan basere deg på en size av en struct som har endret størrelse da! Lag en struct med en vector med components kanskje?
         auto singleSize = sizeOfUBO; // sizeof(UniformBufferObject);
         auto offset = singleSize >= Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment ? singleSize
-                                                                                              : Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment;
+                                                                                                   : Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment;
         VkDeviceSize bufferSize = amount * offset;
 
         std::cout << "created ubo with Range " << singleSize << " and offset " << offset << std::endl;
@@ -34,24 +34,28 @@ namespace Gra_Uniform {
 
         for (size_t i = 0; i < Gra::MAX_FRAMES_IN_FLIGHT; i++) {
             Gra::createBuffer(bufferSize,
-                         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                         uboMem.uniformBuffers[i],
-                         uboMem.uniformBuffersMemory[i]
+                              VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                              uboMem.uniformBuffers[i],
+                              uboMem.uniformBuffersMemory[i]
             );
         }
         return uboMem;
     }
 
 
-    void updateUniformBuffer(UBOMem uboMem, uint32_t currentSwapImage, uint32_t entityIndex, Entity *entity) {
+    void updateUniformBuffer(const UBOMem &uboMem,
+                             const uint32_t currentSwapImage,
+                             const uint32_t entityIndex) {
 
         // TODO move aspect to somewhere else. Should not calculate this every frame nor for every element
 
+/*
         Gra::UniformBufferObject ubo{};
         auto pos = entity->pos;
         ubo.aspect = Gra::m_swapChainAspectRatio;
         ubo.pos = pos - Camera::m_cam.pos;
+*/
 //        ubo.model = glm::mat4(1.0f); //glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(x, x, 1.0f));
 //        ubo.model = glm::translate(ubo.model,
 //                                   glm::vec3(
@@ -76,7 +80,7 @@ namespace Gra_Uniform {
                     0,
                     &data);
         memcpy(data,
-               &ubo,
+               uboMem.uboStruct,
                uboMem.range);
         vkUnmapMemory(Gra::m_device,
                       uboMem.uniformBuffersMemory[currentSwapImage]);
@@ -133,7 +137,7 @@ namespace Gra_Uniform {
 
                     VkDescriptorBufferInfo bufferInfo{};
                     bufferInfo.buffer = uboMem.uniformBuffers[i %
-                            Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
+                                                              Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
                     bufferInfo.offset = uboMem.offset * static_cast<int>(
                             floor(static_cast<float>(i) / static_cast<float>(Gra::MAX_FRAMES_IN_FLIGHT)));
                     bufferInfo.range = uboMem.range;
