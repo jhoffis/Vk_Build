@@ -37,7 +37,7 @@ namespace SelectionBox {
     }
 
     void hide() {
-        m_selectionBoxModel.visible = false;
+//        m_selectionBoxModel.visible = false;
     }
 
     bool isVisible() {

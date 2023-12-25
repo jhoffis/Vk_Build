@@ -8,6 +8,7 @@ namespace SelectionBox {
         alignas(8) Vec2 posOriginal;
         alignas(8) Vec2 posNew;
         alignas(8) Vec2 posCam;
+        alignas(8) Vec2 resolution;
         alignas(4) float aspect{};
     };
 

@@ -4,6 +4,7 @@ layout(binding = 0) uniform UniformBufferObject {
     vec2 posOriginal;
     vec2 posNew;
     vec2 posCam;
+    vec2 resolution;
     float aspect;
 } ubo;
 
@@ -13,6 +14,8 @@ layout(location = 2) in vec2 inTexCoord;
 
 layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec2 fragTexCoord;
+layout(location = 2) out vec2 resolution;
+layout(location = 3) out vec2 size;
 
 vec2 positions[4] = vec2[](
 vec2(-0.5, -0.5),
@@ -40,6 +43,8 @@ void main() {
     //    gl_Position.x *= ubo.pos.z;
     //    gl_Position.y *= ubo.pos.z;
 
+    resolution = ubo.resolution;
+
     switch (gl_VertexIndex) {
         case 0: // top left
         fragColor = vec3(1, 0, 0);
@@ -58,6 +63,16 @@ void main() {
         gl_Position = vec4(ubo.posOriginal.x, -ubo.posNew.y, 0.0, 1.0);
         break;
     }
+
+    if (ubo.posOriginal.x >= ubo.posNew.x)
+        size.x = ubo.posOriginal.x - ubo.posNew.x;
+    else if (ubo.posOriginal.x < ubo.posNew.x)
+        size.x = ubo.posNew.x - ubo.posOriginal.x;
+
+    if (ubo.posOriginal.y >= ubo.posNew.y)
+        size.y = ubo.posOriginal.y - ubo.posNew.y;
+    else if (ubo.posOriginal.y < ubo.posNew.y)
+        size.y = ubo.posNew.y - ubo.posOriginal.y;
 
     gl_Position.x -= ubo.posCam.x;
     gl_Position.y -= -ubo.posCam.y;

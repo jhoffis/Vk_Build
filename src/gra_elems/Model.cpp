@@ -124,6 +124,8 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
             }
             case selectionBox: {
                 SelectionBox::m_ubo.aspect = Gra::m_swapChainAspectRatio;
+                SelectionBox::m_ubo.resolution.x = Window::WIDTH; // kanskje monitor size istedet?
+                SelectionBox::m_ubo.resolution.y = Window::HEIGHT;
                 SelectionBox::m_ubo.posCam.x = Camera::m_cam.pos.x;
                 SelectionBox::m_ubo.posCam.y = Camera::m_cam.pos.y;
                 uboMem.uboStruct = &SelectionBox::m_ubo;
