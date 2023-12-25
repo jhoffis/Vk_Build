@@ -1,0 +1,16 @@
+- få selectionbox til å fange units
+- endre til bare en type villager elns
+- type selectable
+- få selectionbox shader til å være en boks som i age
+- gjør shader compiling kjappere
+- bygning
+- trær
+- lydeffekter
+- pathfinding (først at man høyreklikker en plass 
+               og så flyr units til stedet som et spøkelse
+               deretter at den lager en path)
+- vann
+- kunne høyreklikke tre og sakte minske dens "hp" med 
+  en villager i nærheten (kan utvides senere)
+- lokalt regn
+- "no random actions". Ikke bruk RNG i spillet. Lag heller norner som har 3 threads som bestemmer hva folk gjør.

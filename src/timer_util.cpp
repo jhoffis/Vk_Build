@@ -9,6 +9,14 @@ uint64_t Timer::nowMillis() {
     return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 }
 
+uint64_t Timer::nowMillisFile() {
+    return duration_cast<milliseconds>(file_clock::now().time_since_epoch()).count();
+}
+
+uint64_t Timer::toMillis(std::chrono::time_point<std::chrono::file_clock> timePoint) {
+    return duration_cast<milliseconds>(timePoint.time_since_epoch()).count();
+}
+
 uint64_t Timer::nowNanos() {
     return duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count();
 }

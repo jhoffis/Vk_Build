@@ -131,7 +131,7 @@ void SceneHandler::create() {
 void SceneHandler::update() {
     Camera::m_cam.update();
     if (selected != nullptr && !selected->entity.isAbove(xWorld, yWorld))
-        selected->entity.pos.x += static_cast<float>(.001 * Timer::delta());
+        selected->entity.pos.x += static_cast<float>(.1 * Timer::delta());
 //    for (auto male : males)
 //        male->entity.pos.x += static_cast<float>(.001 * Timer::delta());
 //    std::cout << males[0].vill.entity.pos.x << std::endl;

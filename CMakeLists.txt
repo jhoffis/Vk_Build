@@ -43,7 +43,7 @@ add_executable(${PROJECT_NAME}
         src/game/Vill.cpp
         src/game/Vill.h
         src/timer_util.cpp
-        src/timer_util.h src/game/Bodyparts.cpp src/game/Bodyparts.h src/file_util.cpp src/gra_elems/fabrications/SelectionBoxModel.cpp src/gra_elems/fabrications/SelectionBoxModel.h src/gra_elems/fabrications/VillagerModel.cpp src/gra_elems/fabrications/VillagerModel.h)
+        src/timer_util.h src/game/Bodyparts.cpp src/game/Bodyparts.h src/file_util.cpp src/gra_elems/fabrications/SelectionBoxModel.cpp src/gra_elems/fabrications/SelectionBoxModel.h src/gra_elems/fabrications/VillagerModel.cpp src/gra_elems/fabrications/VillagerModel.h src/math/math_stuff.h)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
