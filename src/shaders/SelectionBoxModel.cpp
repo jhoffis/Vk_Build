@@ -27,7 +27,6 @@ namespace SelectionBox {
         m_selectionBoxModel.addEntity(entity, false);
         m_selectionBoxModel.recreateUboBuffer();
 
-        m_renderModels.emplace_back(&m_selectionBoxModel); // TODO this whole init is very strange..? No?
         hide();
     }
 

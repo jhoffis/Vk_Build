@@ -14,7 +14,6 @@ namespace Villager {
                 }
             );
         m_maleVillModel.recreateUboBuffer();
-        m_renderModels.emplace_back(&m_maleVillModel); // TODO this whole init is very strange..? No?
     }
 
     void spawn(float x, float y) {

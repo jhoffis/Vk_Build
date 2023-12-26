@@ -27,7 +27,6 @@ void Map::create(int xy) {
         }
     }
     grassModel.recreateUboBuffer();
-    m_renderModels.emplace_back(&grassModel);
 }
 
 void Map::destroy() {

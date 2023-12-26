@@ -97,6 +97,7 @@ void Model::init(ModelInfo info) {
     descriptorSets = Gra_Uniform::createDescriptorSets(info.shaderName, descriptorSetLayout, pool, uboMem,
                                                        texImageView);
 
+    m_renderModels.emplace_back(this);
 }
 
 VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
