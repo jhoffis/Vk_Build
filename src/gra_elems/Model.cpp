@@ -5,7 +5,7 @@
 #include "vk/gra_setup.h"
 #include "vk/drawing/gra_drawing.h"
 #include "vk/shading/gra_vertex.h"
-#include "gra_elems/fabrications/SelectionBoxModel.h"
+#include "src/shaders/SelectionBoxModel.h"
 #include "vk/presentation/gra_swap_chain.h"
 #include "camera.h"
 
@@ -153,7 +153,7 @@ void Model::recreateUboBuffer() {
     descriptorSets = Gra_Uniform::createDescriptorSets(shaderName, descriptorSetLayout, pool, uboMem, texImageView);
 }
 
-void Model::addEntity(Entity *entity, bool update) {
+void Model::addEntity(RenderEntity *entity, bool update) {
     if (update)
         recreateUboBuffer();
     entities.emplace_back(entity);

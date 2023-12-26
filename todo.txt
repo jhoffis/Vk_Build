@@ -1,8 +1,9 @@
 - få selectionbox til å fange units
 - endre til bare en type villager elns
 - type selectable
-- få selectionbox shader til å være en boks som i age
-- gjør shader compiling kjappere
+X få selectionbox shader til å være en boks som i age
+X gjør shader compiling kjappere
+- få bare compiling på de som skal compiles
 - bygning
 - trær
 - lydeffekter

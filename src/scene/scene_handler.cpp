@@ -1,23 +1,16 @@
 #include "scene_handler.h"
-#include "game/Map.h"
-#include "game/Villagers.h"
+#include "src/shaders/Map.h"
+#include "src/shaders/Villager.h"
 #include "camera.h"
 #include "timer_util.h"
-#include "gra_elems/fabrications/SelectionBoxModel.h"
+#include "src/shaders/SelectionBoxModel.h"
+#include "scene_data.h"
 
 #include <vector>
 #include <iostream>
 
-int currentScene = 0;
-std::vector<Villager::Vill *> males{};
-Villager::Vill *selected = nullptr;
 static size_t x = 0;
 static size_t y = 0;
-static double xWorld{};
-static double yWorld{};
-double xWorldDragCam{};
-double yWorldDragCam{};
-bool dragging{};
 
 void SceneHandler::create() {
 
@@ -40,11 +33,11 @@ void SceneHandler::create() {
                 break;
             case GLFW_KEY_SPACE:
                 if (action == GLFW_PRESS) {
-                    xWorldDragCam = xWorld;
-                    yWorldDragCam = yWorld;
-                    dragging = true;
+                    SceneData::xWorldDragCam = SceneData::xWorld;
+                    SceneData::yWorldDragCam = SceneData::yWorld;
+                    SceneData::dragging = true;
                 } else if (action == GLFW_RELEASE) {
-                    dragging = false;
+                    SceneData::dragging = false;
                 }
                 break;
             default:
@@ -61,28 +54,18 @@ void SceneHandler::create() {
         if (action != GLFW_RELEASE) {
             if (button == GLFW_MOUSE_BUTTON_LEFT) {
 
-                SelectionBox::visible(xWorld, yWorld);
+                SelectionBox::visible(SceneData::xWorld, SceneData::yWorld);
 
-                bool found = false;
-                for (auto vill: males) {
-                    if (vill->entity.isAbove(xWorld, yWorld)) {
-                        selected = vill;
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                    selected = nullptr;
             } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
-                xWorldDragCam = xWorld;
-                yWorldDragCam = yWorld;
-                dragging = true;
+                SceneData::xWorldDragCam = SceneData::xWorld;
+                SceneData::yWorldDragCam = SceneData::yWorld;
+                SceneData::dragging = true;
             }
         } else {
             if (button == GLFW_MOUSE_BUTTON_LEFT) {
                 SelectionBox::hide();
             } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
-                dragging = false;
+                SceneData::dragging = false;
             }
         }
     });
@@ -93,17 +76,17 @@ void SceneHandler::create() {
 
         // world er basert på høyde av skjermen!
         auto h = static_cast<double>(Window::HEIGHT);
-        xWorld = (xPos / h) + Camera::m_cam.pos.x;
-        yWorld = 1. - (yPos / h) + Camera::m_cam.pos.y;
+        SceneData::xWorld = (xPos / h) + Camera::m_cam.pos.x;
+        SceneData::yWorld = 1. - (yPos / h) + Camera::m_cam.pos.y;
 
-        if (dragging) {
-            Camera::m_cam.pos.x += xWorldDragCam - xWorld;
-            Camera::m_cam.pos.y += yWorldDragCam - yWorld;
+        if (SceneData::dragging) {
+            Camera::m_cam.pos.x += SceneData::xWorldDragCam - SceneData::xWorld;
+            Camera::m_cam.pos.y += SceneData::yWorldDragCam - SceneData::yWorld;
         }
 
         if (SelectionBox::isVisible()) {
-            SelectionBox::m_ubo.posNew.x = xWorld;
-            SelectionBox::m_ubo.posNew.y = yWorld;
+            SelectionBox::m_ubo.posNew.x = SceneData::xWorld;
+            SelectionBox::m_ubo.posNew.y = SceneData::yWorld;
         }
 
 //        std::cout << "mus x: " << xPos << ", y: " << yPos
@@ -122,16 +105,16 @@ void SceneHandler::create() {
 
     Map::create(15);
     Villager::initVillModel();
-    males.emplace_back(Villager::spawnMale(0, 0));
-    males.emplace_back(Villager::spawnMale(1.5f, 1));
-    males.emplace_back(Villager::spawnMale(2, 1));
-    males.emplace_back(Villager::spawnMale(2, 3));
+    Villager::spawn(0, 0);
+    Villager::spawn(1.5f, 1);
+    Villager::spawn(2, 1);
+    Villager::spawn(2, 3);
 }
 
 void SceneHandler::update() {
     Camera::m_cam.update();
-    if (selected != nullptr && !selected->entity.isAbove(xWorld, yWorld))
-        selected->entity.pos.x += static_cast<float>(.1 * Timer::delta());
+//    if (selected != nullptr && !selected->entity.isAbove(xWorld, yWorld))
+//        selected->entity.pos.x += static_cast<float>(.1 * Timer::delta());
 //    for (auto male : males)
 //        male->entity.pos.x += static_cast<float>(.001 * Timer::delta());
 //    std::cout << males[0].vill.entity.pos.x << std::endl;

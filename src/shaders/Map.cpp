@@ -4,7 +4,7 @@
 
 Model grassModel{};
 
-std::vector<Entity *> grass;
+std::vector<RenderEntity *> grass;
 
 void Map::create(int xy) {
     grassModel.init(
@@ -16,7 +16,7 @@ void Map::create(int xy) {
 
     for (int x = 0; x < xy; x++) {
         for (int y = 0; y < xy; y++) {
-            auto entity = new Entity();
+            auto entity = new RenderEntity();
             entity->size.x = grassModel.width();
             entity->size.y = grassModel.height();
             entity->pos.x = static_cast<float>(x) * entity->size.x;

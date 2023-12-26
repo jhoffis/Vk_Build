@@ -18,8 +18,8 @@ add_executable(${PROJECT_NAME}
         src/main.cpp
         src/window.cpp
         src/window.h
-        src/scene_handler.cpp
-        src/scene_handler.h
+        src/scene/scene_handler.cpp
+        src/scene/scene_handler.h
         src/vk/gra_setup.cpp
         src/vk/gra_setup.h
         src/vk/shading/gra_depth.cpp
@@ -32,18 +32,32 @@ add_executable(${PROJECT_NAME}
         src/vk/setup/gra_instance.cpp
         src/vk/setup/gra_debug.cpp
 
-        src/vk/setup/gra_queue_families.cpp.h src/vk/setup/gra_physical_device.h src/vk/setup/gra_logical_device.h src/vk/setup/gra_instance.h src/vk/setup/gra_debug.h src/vk/presentation/gra_swap_chain.cpp src/vk/presentation/gra_swap_chain.h src/vk/presentation/gra_image_views.cpp src/vk/presentation/gra_image_views.h src/vk/pipeline/gra_pipeline.cpp src/vk/pipeline/gra_pipeline.h src/vk/pipeline/gra_shader.cpp src/vk/pipeline/gra_shader.h src/vk/pipeline/gra_render_passes.cpp src/vk/pipeline/gra_render_passes.h src/file_util.h src/vk/drawing/gra_framebuffers.cpp src/vk/drawing/gra_framebuffers.h src/vk/drawing/gra_command_buffers.cpp src/vk/drawing/gra_command_buffers.h src/vk/drawing/gra_drawing.cpp src/vk/drawing/gra_drawing.h src/vk/shading/gra_vertex.cpp src/vk/shading/gra_vertex.h src/vk/shading/gra_fragment.cpp src/vk/shading/gra_fragment.h src/vk/shading/gra_memory_utils.cpp src/vk/shading/gra_memory_utils.h src/camera.cpp src/camera.h src/vk/shading/gra_uniform.cpp src/vk/shading/gra_uniform.h src/vk/shading/gra_texture.cpp src/vk/shading/gra_texture.h
+        src/vk/setup/gra_queue_families.cpp.h
+        src/vk/setup/gra_physical_device.h
+        src/vk/setup/gra_logical_device.h
+        src/vk/setup/gra_instance.h src/vk/setup/gra_debug.h src/vk/presentation/gra_swap_chain.cpp src/vk/presentation/gra_swap_chain.h src/vk/presentation/gra_image_views.cpp src/vk/presentation/gra_image_views.h src/vk/pipeline/gra_pipeline.cpp src/vk/pipeline/gra_pipeline.h src/vk/pipeline/gra_shader.cpp src/vk/pipeline/gra_shader.h src/vk/pipeline/gra_render_passes.cpp src/vk/pipeline/gra_render_passes.h src/file_util.h src/vk/drawing/gra_framebuffers.cpp src/vk/drawing/gra_framebuffers.h src/vk/drawing/gra_command_buffers.cpp src/vk/drawing/gra_command_buffers.h src/vk/drawing/gra_drawing.cpp src/vk/drawing/gra_drawing.h src/vk/shading/gra_vertex.cpp src/vk/shading/gra_vertex.h src/vk/shading/gra_fragment.cpp src/vk/shading/gra_fragment.h src/vk/shading/gra_memory_utils.cpp src/vk/shading/gra_memory_utils.h src/camera.cpp src/camera.h src/vk/shading/gra_uniform.cpp src/vk/shading/gra_uniform.h src/vk/shading/gra_texture.cpp src/vk/shading/gra_texture.h
         src/gra_elems/Model.cpp
         src/gra_elems/Model.h
-        src/gra_elems/Mesh2D.cpp src/gra_elems/Mesh2D.h src/gra_elems/Vertex.cpp src/gra_elems/Vertex.h src/math/Vec3.cpp src/math/Vec3.h src/math/Vec2.cpp src/math/Vec2.h src/gra_elems/Entity.cpp src/gra_elems/Entity.h src/game/Map.cpp src/game/Map.h src/game/Villagers.cpp src/game/Villagers.h src/network/RemoteLan.cpp src/network/RemoteLan.h
-        src/game/Maleness.cpp
-        src/game/Maleness.h
-        src/game/Femaleness.cpp
-        src/game/Femaleness.h
-        src/game/Vill.cpp
-        src/game/Vill.h
+        src/gra_elems/Mesh2D.cpp src/gra_elems/Mesh2D.h
+        src/gra_elems/Vertex.cpp src/gra_elems/Vertex.h
+        src/math/Vec3.cpp src/math/Vec3.h
+        src/math/Vec2.cpp src/math/Vec2.h
+        src/gra_elems/RenderEntity.cpp src/gra_elems/RenderEntity.h
+        src/shaders/Map.cpp src/shaders/Map.h
+        src/shaders/Villager.cpp src/shaders/Villager.h
+        src/network/RemoteLan.cpp src/network/RemoteLan.h
+        src/game/vills/Maleness.cpp
+        src/game/vills/Maleness.h
+        src/game/vills/Femaleness.cpp
+        src/game/vills/Femaleness.h
+        src/game/vills/Vill.cpp
+        src/game/vills/Vill.h
         src/timer_util.cpp
-        src/timer_util.h src/game/Bodyparts.cpp src/game/Bodyparts.h src/file_util.cpp src/gra_elems/fabrications/SelectionBoxModel.cpp src/gra_elems/fabrications/SelectionBoxModel.h src/gra_elems/fabrications/VillagerModel.cpp src/gra_elems/fabrications/VillagerModel.h src/math/math_stuff.h)
+        src/timer_util.h
+        src/game/vills/Bodyparts.cpp src/game/vills/Bodyparts.h
+        src/file_util.cpp
+        src/shaders/SelectionBoxModel.cpp src/shaders/SelectionBoxModel.h
+        src/math/math_stuff.h src/scene/scene_data.h src/scene/scene_data.cpp)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})

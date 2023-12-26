@@ -5,9 +5,9 @@
 #include "vk/pipeline/gra_pipeline.h"
 #include "vk/drawing/gra_command_buffers.h"
 #include "vk/shading/gra_uniform.h"
-#include "Entity.h"
+#include "RenderEntity.h"
 #include "Mesh2D.h"
-#include "ShaderName.h"
+#include "src/shaders/consts/ShaderName.h"
 
 struct UniformStuff {
     // what is common and can be used to generate the rest?
@@ -43,13 +43,13 @@ struct Model {
     VkDescriptorSetLayout descriptorSetLayout;
     std::vector<VkDescriptorSet> descriptorSets{};
 
-    std::vector<Entity*> entities{};
+    std::vector<RenderEntity*> entities{};
     bool visible = true;
 
     void init(ModelInfo info);
 
     void recreateUboBuffer();
-    void addEntity(Entity* entity, bool update);
+    void addEntity(RenderEntity* entity, bool update);
 
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
 

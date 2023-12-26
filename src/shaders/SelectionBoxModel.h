@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "math/Vec2.h"
 
 namespace SelectionBox {
@@ -13,6 +14,7 @@ namespace SelectionBox {
     };
 
     extern SelectionBoxUBO m_ubo;
+    extern std::vector<int> m_selected;
 
     void init();
 

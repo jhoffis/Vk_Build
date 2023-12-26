@@ -11,11 +11,11 @@
 #include <chrono>
 #include "vk/gra_setup.h"
 #include "vk/drawing/gra_drawing.h"
-#include "game/Map.h"
-#include "game/Villagers.h"
+#include "src/shaders/Map.h"
+#include "src/shaders/Villager.h"
 #include "timer_util.h"
-#include "scene_handler.h"
-#include "src/gra_elems/fabrications/SelectionBoxModel.h"
+#include "src/scene/scene_handler.h"
+#include "src/shaders/SelectionBoxModel.h"
 #include "file_util.h"
 #include "gra_elems/Model.h"
 

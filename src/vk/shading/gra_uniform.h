@@ -2,9 +2,9 @@
 
 #include <cstdint>
 #include "window.h"
-#include "gra_elems/Entity.h"
+#include "gra_elems/RenderEntity.h"
 #include "vk/gra_setup.h"
-#include "gra_elems/ShaderName.h"
+#include "src/shaders/consts/ShaderName.h"
 #include <vector>
 
 namespace Gra_Uniform {

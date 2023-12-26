@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include "gra_elems/Entity.h"
+#include "gra_elems/RenderEntity.h"
 
 namespace Villager {
 
@@ -70,7 +70,7 @@ namespace Villager {
         uint8_t blueness{};
         VillSex sex{};
 
-        Entity entity{};
+        RenderEntity entity{};
         char *name{};
 
     };
