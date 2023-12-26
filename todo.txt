@@ -1,8 +1,5 @@
-- få selectionbox til å fange units
 - endre til bare en type villager elns
 - type selectable
-X få selectionbox shader til å være en boks som i age
-X gjør shader compiling kjappere
 - få bare compiling på de som skal compiles
 - bygning
 - trær
@@ -15,3 +12,16 @@ X gjør shader compiling kjappere
   en villager i nærheten (kan utvides senere)
 - lokalt regn
 - "no random actions". Ikke bruk RNG i spillet. Lag heller norner som har 3 threads som bestemmer hva folk gjør.
+
+- Kanskje heller ha structs som utvider entity og så kan man hive en hvilken som helst entity inn i model.
+  så holder funksjonaliteten på resten av metodene der.
+  Poenget er uansett å separere entity vekk fra Model ettersom man har lyst til å manipulere de litt lettere.
+  Antall uniform greier kan oppdateres etterhvert som flere og flere entities blir rendera. Rekkefølge har ikke noe å si.
+  Må ikke utvide entity, men uansett så sendes inn en entity, som viser hvor den skal rendere.
+
+- Ha guder i spillet som påvirker villsa.
+
+====== DONE ======
+X få selectionbox til å fange units
+X få selectionbox shader til å være en boks som i age
+X gjør shader compiling kjappere

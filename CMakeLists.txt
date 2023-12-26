@@ -36,13 +36,13 @@ add_executable(${PROJECT_NAME}
         src/vk/setup/gra_physical_device.h
         src/vk/setup/gra_logical_device.h
         src/vk/setup/gra_instance.h src/vk/setup/gra_debug.h src/vk/presentation/gra_swap_chain.cpp src/vk/presentation/gra_swap_chain.h src/vk/presentation/gra_image_views.cpp src/vk/presentation/gra_image_views.h src/vk/pipeline/gra_pipeline.cpp src/vk/pipeline/gra_pipeline.h src/vk/pipeline/gra_shader.cpp src/vk/pipeline/gra_shader.h src/vk/pipeline/gra_render_passes.cpp src/vk/pipeline/gra_render_passes.h src/file_util.h src/vk/drawing/gra_framebuffers.cpp src/vk/drawing/gra_framebuffers.h src/vk/drawing/gra_command_buffers.cpp src/vk/drawing/gra_command_buffers.h src/vk/drawing/gra_drawing.cpp src/vk/drawing/gra_drawing.h src/vk/shading/gra_vertex.cpp src/vk/shading/gra_vertex.h src/vk/shading/gra_fragment.cpp src/vk/shading/gra_fragment.h src/vk/shading/gra_memory_utils.cpp src/vk/shading/gra_memory_utils.h src/camera.cpp src/camera.h src/vk/shading/gra_uniform.cpp src/vk/shading/gra_uniform.h src/vk/shading/gra_texture.cpp src/vk/shading/gra_texture.h
-        src/gra_elems/Model.cpp
-        src/gra_elems/Model.h
-        src/gra_elems/Mesh2D.cpp src/gra_elems/Mesh2D.h
-        src/gra_elems/Vertex.cpp src/gra_elems/Vertex.h
+        src/rendering/Model.cpp
+        src/rendering/Model.h
+        src/rendering/Mesh2D.cpp src/rendering/Mesh2D.h
+        src/rendering/Vertex.cpp src/rendering/Vertex.h
         src/math/Vec3.cpp src/math/Vec3.h
         src/math/Vec2.cpp src/math/Vec2.h
-        src/gra_elems/RenderEntity.cpp src/gra_elems/RenderEntity.h
+        src/rendering/Entity.cpp src/rendering/Entity.h
         src/shaders/Map.cpp src/shaders/Map.h
         src/shaders/Villager.cpp src/shaders/Villager.h
         src/network/RemoteLan.cpp src/network/RemoteLan.h
@@ -116,6 +116,6 @@ add_dependencies(${PROJECT_NAME} copy_assets)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     target_compile_definitions(${PROJECT_NAME} PUBLIC RMDEV=1)
-elseif(CMAKE_BUILD_TYPE MATCHES Release)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC RMDEV=0)
+#elseif(CMAKE_BUILD_TYPE MATCHES Release)
+#    target_compile_definitions(${PROJECT_NAME} PUBLIC RMDEV=0)
 endif()

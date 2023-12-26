@@ -83,6 +83,7 @@ HANDLE createFolderWatcher(const FolderParams *params) {
 }
 
 void watchDir() {
+#ifdef RMDEV
 #ifdef WIN32
     createFolderWatcher(new FolderParams{
             "../res/shaders",
@@ -108,6 +109,7 @@ void watchDir() {
                 Raster::compilePipelines(true);
             }
     });
+#endif
 #endif
 }
 

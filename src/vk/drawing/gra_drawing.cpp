@@ -9,7 +9,7 @@
 #include "gra_command_buffers.h"
 #include "vk/setup/gra_logical_device.h"
 #include "vk/shading/gra_uniform.h"
-#include "gra_elems/Model.h"
+#include "rendering/Model.h"
 
 namespace Drawing {
 

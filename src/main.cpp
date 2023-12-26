@@ -17,7 +17,7 @@
 #include "src/scene/scene_handler.h"
 #include "src/shaders/SelectionBoxModel.h"
 #include "file_util.h"
-#include "gra_elems/Model.h"
+#include "rendering/Model.h"
 
 
 int main() {

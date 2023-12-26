@@ -239,7 +239,7 @@ namespace http {
                 case precondition_failed:
                     return "Precondition Failed";
                 case request_entity_too_large:
-                    return "Request RenderEntity Too Large";
+                    return "Request Entity Too Large";
                 case request_uri_too_long:
                     return "Request-URI Too Long";
                 case unsupported_media_type:

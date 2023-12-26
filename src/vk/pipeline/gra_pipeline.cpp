@@ -11,7 +11,7 @@
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "gra_render_passes.h"
 #include "src/vk/shading/gra_vertex.h"
-#include "gra_elems/Model.h"
+#include "rendering/Model.h"
 #include <stdlib.h>
 #include <filesystem>
 

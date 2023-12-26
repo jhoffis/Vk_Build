@@ -2,9 +2,9 @@
 
 #include <cstdint>
 #include <memory>
-#include "gra_elems/RenderEntity.h"
-#include "src/game/vills/Femaleness.h"
-#include "src/game/vills/Maleness.h"
+#include "rendering/Entity.h"
+#include "game/vills/Femaleness.h"
+#include "game/vills/Maleness.h"
 
 namespace Villager {
 

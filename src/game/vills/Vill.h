@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include "gra_elems/RenderEntity.h"
+#include <memory>
+#include "rendering/Entity.h"
 
 namespace Villager {
 
@@ -70,8 +71,7 @@ namespace Villager {
         uint8_t blueness{};
         VillSex sex{};
 
-        RenderEntity entity{};
+        const std::shared_ptr<Entity> entity = std::make_shared<Entity>(Entity{});
         char *name{};
-
     };
 }

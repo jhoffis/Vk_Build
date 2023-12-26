@@ -1,5 +1,5 @@
 #include "Villager.h"
-#include "gra_elems/Model.h"
+#include "rendering/Model.h"
 
 namespace Villager {
 
@@ -19,11 +19,11 @@ namespace Villager {
 
     void spawn(float x, float y) {
         auto male = m_vills.emplace_back(std::make_shared<Vill>(Vill{}));
-        m_maleVillModel.addEntity(&male->entity, true);
-        male->entity.size.x = m_maleVillModel.width();
-        male->entity.size.y = m_maleVillModel.height();
-        male->entity.pos.x = x * male->entity.size.x;
-        male->entity.pos.y = y * male->entity.size.y;
+        m_maleVillModel.addEntity(male->entity, true);
+        male->entity->size.x = m_maleVillModel.width();
+        male->entity->size.y = m_maleVillModel.height();
+        male->entity->pos.x = x * male->entity->size.x;
+        male->entity->pos.y = y * male->entity->size.y;
     }
 
     void destroy() {
@@ -34,7 +34,7 @@ namespace Villager {
         std::vector<std::unique_ptr<Vill>> foundVills{};
 
         for (auto &vill : m_vills) {
-            if (vill->entity.isWithin(x0, y0, x1, y1)) {
+            if (vill->entity->isWithin(x0, y0, x1, y1)) {
                 foundVills.push_back(
                         std::make_unique<Vill>(
                                 *vill

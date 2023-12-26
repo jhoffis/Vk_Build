@@ -5,7 +5,7 @@
 #include "vk/pipeline/gra_pipeline.h"
 #include "vk/drawing/gra_command_buffers.h"
 #include "vk/shading/gra_uniform.h"
-#include "RenderEntity.h"
+#include "Entity.h"
 #include "Mesh2D.h"
 #include "src/shaders/consts/ShaderName.h"
 
@@ -43,13 +43,13 @@ struct Model {
     VkDescriptorSetLayout descriptorSetLayout;
     std::vector<VkDescriptorSet> descriptorSets{};
 
-    std::vector<RenderEntity*> entities{};
+    std::vector<std::shared_ptr<Entity>> entities{};
     bool visible = true;
 
     void init(ModelInfo info);
 
     void recreateUboBuffer();
-    void addEntity(RenderEntity* entity, bool update);
+    void addEntity(std::shared_ptr<Entity> entity, bool update);
 
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
 
@@ -65,8 +65,10 @@ struct Model {
     void destroy();
 
 };
-
+#ifdef RMDEV
 void recreateModelPipelines();
+#endif
+
 void destroyModels();
 
 extern std::vector<Model *> m_renderModels;

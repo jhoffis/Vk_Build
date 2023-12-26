@@ -1,7 +1,7 @@
 
 #include <iostream>
 #include "SelectionBoxModel.h"
-#include "src/gra_elems/Model.h"
+#include "rendering/Model.h"
 #include "Villager.h"
 
 namespace SelectionBox {
@@ -18,7 +18,7 @@ namespace SelectionBox {
                         .shaderName = selectionBox,
                 }
         );
-        auto entity = new RenderEntity();
+        auto entity = std::make_shared<Entity>(Entity{});
         entity->size.x = 1.5;
         entity->size.y = 1.5;
         entity->pos.x = -.10;

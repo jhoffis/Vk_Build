@@ -9,7 +9,7 @@
 #include "vk/presentation/gra_swap_chain.h"
 #include "camera.h"
 
-std::vector<Model *> m_renderModels;
+std::vector<Model *> m_renderModels{};
 #ifdef RMDEV
 std::vector<Raster::Pipeline> m_leftoverPipelines;
 #endif
@@ -99,14 +99,6 @@ void Model::init(ModelInfo info) {
 
 }
 
-void Model::destroy() {
-    vkDestroyCommandPool(Gra::m_device, cmdBuffer.commandPool, nullptr);
-    uboMem.destroy();
-    vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
-    Raster::destroyPipeline(pipeline);
-    vkDestroyDescriptorSetLayout(Gra::m_device, descriptorSetLayout, nullptr);
-}
-
 VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
@@ -153,7 +145,7 @@ void Model::recreateUboBuffer() {
     descriptorSets = Gra_Uniform::createDescriptorSets(shaderName, descriptorSetLayout, pool, uboMem, texImageView);
 }
 
-void Model::addEntity(RenderEntity *entity, bool update) {
+void Model::addEntity(std::shared_ptr<Entity> entity, bool update) {
     if (update)
         recreateUboBuffer();
     entities.emplace_back(entity);
@@ -163,12 +155,24 @@ void Model::createPipeline() {
     pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, getShaderName(shaderName));
 }
 
+#ifdef RMDEV
 void recreateModelPipelines() {
     for (auto model: m_renderModels) {
         m_leftoverPipelines.emplace_back(model->pipeline);
         model->createPipeline();
     }
 }
+#endif
+
+
+void Model::destroy() {
+    vkDestroyCommandPool(Gra::m_device, cmdBuffer.commandPool, nullptr);
+    uboMem.destroy();
+    vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
+    Raster::destroyPipeline(pipeline);
+    vkDestroyDescriptorSetLayout(Gra::m_device, descriptorSetLayout, nullptr);
+}
+
 
 void destroyModels() {
     for (auto model: m_renderModels) {
