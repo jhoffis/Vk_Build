@@ -1,6 +1,6 @@
 #include "Mesh2D.h"
 
-constexpr auto basedSize = 800.f; // Best quality for 4k monitors
+constexpr auto basedSize = 128.f * 8; // Best quality for 4k monitors (no not anymore)
 
 void Mesh2D::init(float width, float height) {
     worldWidth = width / basedSize;

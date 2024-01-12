@@ -17,12 +17,13 @@ namespace Villager {
     }
 
     void spawn(float x, float y) {
-        auto male = m_vills.emplace_back(std::make_shared<Vill>(Vill{}));
+        auto male = m_vills.emplace_back(std::make_shared<Vill>(Vill{
+            .entity = std::make_shared<Entity>(Entity{
+                    .pos = {x * m_maleVillModel.width(), y * m_maleVillModel.height()},
+                    .size = {m_maleVillModel.width(), m_maleVillModel.height()},
+            }),
+        }));
         m_maleVillModel.addEntity(male->entity, true);
-        male->entity->size.x = m_maleVillModel.width();
-        male->entity->size.y = m_maleVillModel.height();
-        male->entity->pos.x = x * male->entity->size.x;
-        male->entity->pos.y = y * male->entity->size.y;
     }
 
     void destroy() {

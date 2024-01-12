@@ -18,12 +18,11 @@ namespace SelectionBox {
                         .shaderName = selectionBox,
                 }
         );
-        auto entity = std::make_shared<Entity>(Entity{});
-        entity->size.x = 1.5;
-        entity->size.y = 1.5;
-        entity->pos.x = -.10;
-        entity->pos.y = -.10;
-        entity->visible = true;
+        auto entity = std::make_shared<Entity>(Entity{
+            .pos = {-.1, -.1},
+            .size = {1.5, 1.5},
+            .visible = true
+        });
         m_selectionBoxModel.addEntity(entity, false);
         m_selectionBoxModel.recreateUboBuffer();
 
