@@ -18,17 +18,22 @@ namespace Gra_Uniform {
 
     UBOMem createUniformBuffers(int amount, int sizeOfUBO) {
         // TODO make custom shit, hmmm vel du kan basere deg på en size av en struct som har endret størrelse da! Lag en struct med en vector med components kanskje?
-        auto singleSize = sizeOfUBO; // sizeof(UniformBufferObject);
-        auto offset = singleSize >= Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment ? singleSize
-                                                                                                   : Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment;
+        int singleSize = sizeOfUBO; // sizeof(UniformBufferObject);
+        int offset;
+        if (singleSize <= Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment) {
+           offset = static_cast<int>(Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment);
+        } else {
+           int multiple = std::ceil(static_cast<float>(singleSize) /  static_cast<float>(Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment));
+           offset = multiple * static_cast<int>(Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment);
+        }
         VkDeviceSize bufferSize = amount * offset;
 
         std::cout << "created ubo with Range " << singleSize << " and offset " << offset << std::endl;
 
         UBOMem uboMem{};
         uboMem.amount = amount;
-        uboMem.range = static_cast<int>(singleSize);
-        uboMem.offset = static_cast<int>(offset);
+        uboMem.range = singleSize;
+        uboMem.offset = offset;
         uboMem.uniformBuffers.resize(Gra::MAX_FRAMES_IN_FLIGHT);
         uboMem.uniformBuffersMemory.resize(Gra::MAX_FRAMES_IN_FLIGHT);
 
