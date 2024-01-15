@@ -28,7 +28,6 @@ int main() {
     Gra::initVulkan();
     SceneHandler::create();
     Timer::updateDelta();
-    SelectionBox::init();
 #ifdef RMDEV
     watchDir();
 #endif

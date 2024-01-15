@@ -16,10 +16,13 @@ namespace Villager {
         m_maleVillModel.recreateUboBuffer();
     }
 
+    float z = 0;
+
     void spawn(float x, float y) {
+        z += 0.1f;
         auto male = m_vills.emplace_back(std::make_shared<Vill>(Vill{
             .entity = std::make_shared<Entity>(Entity{
-                    .pos = {x * m_maleVillModel.width(), y * m_maleVillModel.height()},
+                    .pos = {x * m_maleVillModel.width(), y * m_maleVillModel.height(), z},
                     .size = {m_maleVillModel.width(), m_maleVillModel.height()},
             }),
         }));

@@ -107,8 +107,9 @@ void SceneHandler::create() {
     Villager::initVillModel();
     Villager::spawn(0, 0);
     Villager::spawn(1.5f, 1);
+    SelectionBox::init();
     Villager::spawn(2, 1);
-    Villager::spawn(2, 3);
+    Villager::spawn(-2, 3);
 }
 
 void SceneHandler::update() {
