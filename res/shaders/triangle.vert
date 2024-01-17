@@ -24,7 +24,7 @@ void main() {
     gl_Position.y *= 2.;
     gl_Position.x -= 1.;
     gl_Position.y += 1.;
-    gl_Position.z = ubo.pos.z - 1.0;
+    gl_Position.z = ubo.pos.z - 1.;
 //    gl_Position.x *= ubo.pos.z;
 //    gl_Position.y *= ubo.pos.z;
     fragColor = inColor;

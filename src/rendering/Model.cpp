@@ -108,10 +108,13 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
 
         switch (shaderName) {
             case triangle: {
-                Gra::UniformBufferObject ubo{};
                 auto pos = entities[i]->pos;
-                ubo.aspect = Gra::m_swapChainAspectRatio;
-                ubo.pos = pos - Camera::m_cam.pos;
+
+                Gra::UniformBufferObject ubo{
+                    .pos = pos - Camera::m_cam.pos,
+                    .aspect = Gra::m_swapChainAspectRatio,
+                };
+//                ubo.pos.z = .99f - (pos.y / 10.f);
                 uboMem.uboStruct = &ubo;
                 break;
             }

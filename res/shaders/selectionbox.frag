@@ -9,24 +9,24 @@ layout(location = 0) out vec4 outColor;
 
 void main() {
 
-//    const float borderSize = 3.0;
-//
-//    float sizePixelX = size.x * resolution.y;
-//    float sizePixelY = size.y * resolution.y;
-//
-//    vec2 pixelInBox = vec2(
-//    fragTexCoord.x * sizePixelX,
-//    fragTexCoord.y * sizePixelY
-//    );
-//
-//    if (pixelInBox.x <= borderSize
-//    || pixelInBox.y <= borderSize
-//    || sizePixelX - pixelInBox.x <= borderSize
-//    || sizePixelY - pixelInBox.y <= borderSize
-//    ) {
-//
-//        outColor = vec4(1);
-//    } else {
-        outColor = vec4(1, 0.2, 0.6, 0.55);
-//    }
+    const float borderSize = 3.0;
+
+    float sizePixelX = size.x * resolution.y;
+    float sizePixelY = size.y * resolution.y;
+
+    vec2 pixelInBox = vec2(
+    fragTexCoord.x * sizePixelX,
+    fragTexCoord.y * sizePixelY
+    );
+
+    if (pixelInBox.x <= borderSize
+    || pixelInBox.y <= borderSize
+    || sizePixelX - pixelInBox.x <= borderSize
+    || sizePixelY - pixelInBox.y <= borderSize
+    ) {
+
+        outColor = vec4(1);
+    } else {
+        outColor = vec4(1, 0.2, 0.6, 0.15);
+    }
 }

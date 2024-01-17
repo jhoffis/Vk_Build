@@ -50,33 +50,8 @@ namespace Gra_Uniform {
 
 
     void updateUniformBuffer(const UBOMem &uboMem,
-                             const uint32_t currentSwapImage,
+                                   const uint32_t currentSwapImage,
                              const uint32_t entityIndex) {
-
-        // TODO move aspect to somewhere else. Should not calculate this every frame nor for every element
-
-/*
-        Gra::UniformBufferObject ubo{};
-        auto pos = entity->pos;
-        ubo.aspect = Gra::m_swapChainAspectRatio;
-        ubo.pos = pos - Camera::m_cam.pos;
-*/
-//        ubo.model = glm::mat4(1.0f); //glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(x, x, 1.0f));
-//        ubo.model = glm::translate(ubo.model,
-//                                   glm::vec3(
-//                                           -(entity->pos.x - Camera::m_cam.pos.x),
-//                                           -(entity->pos.y - Camera::m_cam.pos.y),
-//                                           -entity->pos.z));
-//
-//        ubo.view = glm::lookAt(glm::vec3(0, .00000000000000001f, 1), glm::vec3(0.0f, 0.0f, 0.0f),
-//                               glm::vec3(0.0f, 0.0f, 1.0f));
-
-//        ubo.proj = glm::ortho(0.0f, aspect, 1.0f, 0.0f, -10.0f, 10.0f);
-
-//        ubo.proj = glm::perspective(glm::radians(80.0f), (float) m_swapChainExtent.width / (float) m_swapChainExtent.height,
-//                                    0.1f, 10.0f);
-//        ubo.proj[1][1] *= -1; // GLM was originally designed for OpenGL, where the Y coordinate of the clip coordinates is inverted.
-
         void *data;
         vkMapMemory(Gra::m_device,
                     uboMem.uniformBuffersMemory[currentSwapImage],
