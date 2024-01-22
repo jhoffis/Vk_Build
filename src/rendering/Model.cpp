@@ -114,7 +114,7 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
                     .pos = pos - Camera::m_cam.pos,
                     .aspect = Gra::m_swapChainAspectRatio,
                 };
-//                ubo.pos.z = .99f - (pos.y / 10.f);
+                ubo.pos.z = (pos.y / 100.f);
                 uboMem.uboStruct = &ubo;
                 break;
             }

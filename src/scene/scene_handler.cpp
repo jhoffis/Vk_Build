@@ -109,6 +109,7 @@ void SceneHandler::create() {
     Villager::spawn(1.5f, 1);
     Villager::spawn(2, 1);
     Villager::spawn(1.75f, 1.33);
+    Villager::spawn(1.7f, .75);
     Villager::spawn(-2, 3);
 }
 
