@@ -53,11 +53,11 @@ struct Model {
 
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
 
-    float width() const {
+    [[nodiscard]] float width() const {
         return mesh.worldWidth;
     }
 
-    float height() const {
+    [[nodiscard]] float height() const {
         return mesh.worldHeight;
     }
     void createPipeline();

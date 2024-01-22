@@ -6,7 +6,7 @@ Model grassModel{};
 void Map::create(int xy) {
     grassModel.init(
             {
-                    .shaderName = triangle,
+                    .shaderName = grass,
                     .textureName = "grass.png",
             }
     );

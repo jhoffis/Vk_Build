@@ -9,7 +9,7 @@ namespace Villager {
     void initVillModel() {
         m_maleVillModel.init(
                 {
-                .shaderName = triangle,
+                .shaderName = grass,
                 .textureName = "unit.png",
                 }
             );

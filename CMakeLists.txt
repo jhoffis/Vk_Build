@@ -57,7 +57,7 @@ add_executable(${PROJECT_NAME}
         src/game/vills/Bodyparts.cpp src/game/vills/Bodyparts.h
         src/file_util.cpp
         src/shaders/SelectionBoxModel.cpp src/shaders/SelectionBoxModel.h
-        src/math/math_stuff.h src/scene/scene_data.h src/scene/scene_data.cpp)
+        src/math/math_stuff.h src/scene/scene_data.h src/scene/scene_data.cpp src/rendering/ShaderSetup.cpp src/rendering/ShaderSetup.h)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})
