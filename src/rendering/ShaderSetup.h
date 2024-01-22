@@ -9,8 +9,8 @@ namespace ShaderSetup {
     Gra_Uniform::UBOMem createMem(const ShaderName &shader);
 
     void updateRenderUbo(const ShaderName &shaderName,
-                         std::shared_ptr<Entity> &entity,
-                         Gra_Uniform::UBOMem *uboMem);
+                         const std::shared_ptr<Entity> &entity,
+                         Gra_Uniform::UBOMem &uboMem);
 
     std::vector<VkDescriptorSetLayoutBinding> createBindings(const ShaderName &shader);
 

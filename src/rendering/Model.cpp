@@ -53,28 +53,7 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     vkResetCommandBuffer(cmd, 0);
     Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, descriptorSets);
     for (auto i = 0; i < entities.size(); i++) {
-        switch (shaderName) {
-            case grass: {
-                auto pos = entities[i]->pos;
-
-                Gra::UniformBufferObject ubo{
-                        .pos = pos - Camera::m_cam.pos,
-                        .aspect = Gra::m_swapChainAspectRatio,
-                };
-                ubo.pos.z = (pos.y / 100.f);
-                uboMem.uboStruct = &ubo;
-                break;
-            }
-            case selectionBox: {
-                SelectionBox::m_ubo.aspect = Gra::m_swapChainAspectRatio;
-                SelectionBox::m_ubo.resolution.x = Window::WIDTH; // kanskje monitor size istedet?
-                SelectionBox::m_ubo.resolution.y = Window::HEIGHT;
-                SelectionBox::m_ubo.posCam.x = Camera::m_cam.pos.x;
-                SelectionBox::m_ubo.posCam.y = Camera::m_cam.pos.y;
-                uboMem.uboStruct = &SelectionBox::m_ubo;
-                break;
-            }
-        }
+        ShaderSetup::updateRenderUbo(shaderName, entities[i], uboMem);
         Gra_Uniform::updateUniformBuffer(uboMem, Drawing::currSwapFrame, i);
     }
     return cmd;

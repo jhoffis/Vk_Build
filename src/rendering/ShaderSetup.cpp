@@ -33,18 +33,18 @@ namespace ShaderSetup {
 
 
     void updateRenderUbo(const ShaderName &shaderName,
-                         std::shared_ptr<Entity> &entity,
-                         Gra_Uniform::UBOMem *uboMem) {
+                         const std::shared_ptr<Entity> &entity,
+                         Gra_Uniform::UBOMem &uboMem) {
         switch (shaderName) {
             case grass: {
                 auto pos = entity->pos;
 
-                Gra::UniformBufferObject ubo{
+                Gra::UniformBufferObject ubo{ // TODO Denne blir slettet...
                         .pos = pos - Camera::m_cam.pos,
                         .aspect = Gra::m_swapChainAspectRatio,
                 };
                 ubo.pos.z = (pos.y / 100.f);
-                uboMem->uboStruct = &ubo;
+                uboMem.uboStruct = &ubo;
                 break;
             }
             case selectionBox: {
@@ -53,7 +53,7 @@ namespace ShaderSetup {
                 SelectionBox::m_ubo.resolution.y = Window::HEIGHT;
                 SelectionBox::m_ubo.posCam.x = Camera::m_cam.pos.x;
                 SelectionBox::m_ubo.posCam.y = Camera::m_cam.pos.y;
-                uboMem->uboStruct = &SelectionBox::m_ubo;
+                uboMem.uboStruct = &SelectionBox::m_ubo;
                 break;
             }
         }
