@@ -4,6 +4,7 @@
 
 
 #include <vector>
+#include <cstring>
 #include "gra_vertex.h"
 #include "src/vk/gra_setup.h"
 #include "gra_memory_utils.h"

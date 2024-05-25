@@ -12,7 +12,7 @@
 struct UniformStuff {
     // what is common and can be used to generate the rest?
     int bindingId;
-    boolean vertexOrFragment;
+    bool vertexOrFragment;
     int type; // like is it image or ubo or smt else?
 };
 

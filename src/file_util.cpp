@@ -14,7 +14,6 @@ struct FolderParams {
     const std::function<void()> folderChange;
 };
 
-std::vector<HANDLE> folderWatcherThreads{};
 std::vector<const FolderParams *> folderParamsThreads{};
 
 
@@ -41,6 +40,9 @@ std::vector<char> readFile(const std::string &filename) {
 
     return buffer;
 }
+#ifdef RMDEV
+#ifdef _WIN32
+std::vector<HANDLE> folderWatcherThreads{};
 
 HANDLE createFolderWatcher(const FolderParams *params) {
     auto thread = CreateThread(nullptr,
@@ -81,10 +83,13 @@ HANDLE createFolderWatcher(const FolderParams *params) {
     folderParamsThreads.emplace_back(params);
     return thread;
 }
+#endif
+#endif
+
 
 void watchDir() {
 #ifdef RMDEV
-#ifdef WIN32
+#ifdef _WIN32
     createFolderWatcher(new FolderParams{
             "../res/shaders",
             []() {
@@ -114,12 +119,17 @@ void watchDir() {
 }
 
 void unwatchDir() {
+#ifdef RMDEV
+#ifdef _WIN32
     for (auto threadHandle: folderWatcherThreads) {
         CloseHandle(threadHandle);
     }
     for (auto params: folderParamsThreads) {
         delete params;
     }
+
+#endif
+#endif
 }
 
 void makeSureDirExists(const char *folder) {
@@ -131,15 +141,19 @@ void makeSureDirExists(const char *folder) {
 std::string getEnvVar(const std::string &varName) {
     char* buf = nullptr;
     size_t sz = 0;
+#ifdef _WIN32
     if (_dupenv_s(&buf, &sz, varName.c_str()) != 0 || buf == nullptr) {
         throw std::runtime_error("Could not find env " + varName);
     }
+#endif
     std::string ret{buf};
     free(buf);
     return ret;
 }
 
+// TODO actually more like run command...
 void runExecutable(std::string command) {
+#ifdef _WIN32
 
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
@@ -169,4 +183,7 @@ void runExecutable(std::string command) {
     // Close process and thread handles.
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
+#elif __linux__
+    std::system(command.c_str());
+#endif
 }
