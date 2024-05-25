@@ -3,7 +3,6 @@
 //
 
 #include <stdexcept>
-#include <format>
 #include "gra_pipeline.h"
 #include "file_util.h"
 #include "gra_shader.h"
@@ -224,7 +223,6 @@ namespace Raster {
 
 #ifdef RMDEV
     void compilePipelines(bool recreate) {
-#ifdef WIN32
         const auto compiledFolder = "res/shaders/compiled/";
         makeSureDirExists(compiledFolder);
         for (const auto &entry: std::filesystem::directory_iterator("res/shaders")) {
@@ -237,19 +235,23 @@ namespace Raster {
 
             auto newPath = getFilename(path);
             newPath.erase(newPath.size() - 5);
+	    if (newPath.find("res/shaders/") != std::string::npos) {
+		    newPath.erase(0, 12);
+	    }
             newPath = compiledFolder + newPath + (vert ? "_vert.spv" : "_frag.spv");
-
+#ifdef _WIN32
             runExecutable(std::format(
                     R"({}/Bin/glslc.exe {} -o {})",
                     getEnvVar("VULKAN_SDK"),
                     path,
                     newPath
                     ));
+#elif __linux__
+	    runExecutable("~/../../bin/glslc " + path + " -o " + newPath);
+#endif
         }
-
         if (recreate)
             recreateModelPipelines();
-#endif
     }
 #endif
     void destroyPipeline(Pipeline &pipeline) {

@@ -3,7 +3,6 @@
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
-
 // Lage et kattespill som er idle in essence MEN som kan fungere som et slukende tradisjonelt spill - F.eks "Mr. Erik Loves Pussy"
 
 #include <iostream>
@@ -22,6 +21,9 @@
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
+#if __linux__
+    std::cout << "Hello, Linux!" << std::endl;
+#endif
     std::srand(Timer::nowMillis());
 
     Window::createWindow(false, false);

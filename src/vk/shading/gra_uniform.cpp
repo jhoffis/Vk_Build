@@ -13,6 +13,7 @@
 #include "camera.h"
 #include <cmath>
 #include <iostream>
+#include <cstring>
 
 namespace Gra_Uniform {
 

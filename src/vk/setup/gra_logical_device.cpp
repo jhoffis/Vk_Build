@@ -7,6 +7,8 @@
 #include <vector>
 #include <stdexcept>
 #include <set>
+#include <cstring>
+#include <iostream>
 
 namespace Gra {
 
@@ -77,6 +79,9 @@ namespace Gra {
             bool layerFound = false;
 
             for (const auto &layerProperties: availableLayers) {
+#ifdef RMDEV
+                std::cout << "LayerName: " << layerName << " ?= Available layer: " << layerProperties.layerName << std::endl;
+#endif
                 if (strcmp(layerName, layerProperties.layerName) == 0) {
                     layerFound = true;
                     break;
