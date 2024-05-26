@@ -39,11 +39,11 @@ namespace ShaderSetup {
             case grass: {
                 auto pos = entity->pos;
 
-                uboMem.uboStruct = new Gra::UniformBufferObject{ // TODO Denne blir slettet...
+                delete static_cast<Gra::UniformBufferObject*>(uboMem.uboStruct);
+                uboMem.uboStruct = new Gra::UniformBufferObject{
                         .pos = pos - Camera::m_cam.pos,
                         .aspect = Gra::m_swapChainAspectRatio,
                 };
-//                uboMem.uboStruct->pos.z = (pos.y / 100.f);
                 break;
             }
             case selectionBox: {
