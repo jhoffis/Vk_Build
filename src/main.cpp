@@ -37,7 +37,7 @@ int main() {
 //    Model testModel{};
 //    testModel.init("triangle", "grass.png");
 //
-//    auto entity2 = testModel.addEntity(false);
+//    auto entity2 = testModel. addEntity(false);
 //    entity2->pos.x = testModel.width() * 1;
 //    entity2->pos.y = testModel.height() * 1;
 //
