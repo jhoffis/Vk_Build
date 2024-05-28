@@ -11,22 +11,20 @@
 struct FolderParams {
     const char *folder;
     const std::function<void()> folderChange;
+    bool end = false;
 };
 
-std::vector<const FolderParams *> folderParamsThreads{};
+std::vector<FolderParams *> folderParamsThreads{};
 
 #include <thread>
 
 #ifdef _WIN32
 std::vector<HANDLE> folderWatcherThreads{};
 #elif __linux__
-
-#include <memory>
-
 std::vector<std::shared_ptr<std::thread>> folderWatcherThreads{};
 #endif
 
-void createFolderWatcher(const FolderParams *params) {
+void createFolderWatcher(FolderParams *params) {
 #ifdef _WIN32
     auto thread = CreateThread(nullptr,
                                0,
@@ -63,20 +61,22 @@ void createFolderWatcher(const FolderParams *params) {
                                0,
                                nullptr);
     folderWatcherThreads.emplace_back(thread);
-    folderParamsThreads.emplace_back(params);
 #elif __linux__
 
     folderWatcherThreads.emplace_back(
             std::make_shared<std::thread>(
                     std::thread([params]() {
                         for(;;) {
+                            if (params->end) break;
                             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                             params->folderChange();
                         }
+                        delete params;
                     })
             )
     );
 #endif
+    folderParamsThreads.emplace_back(params);
 }
 
 
@@ -84,8 +84,9 @@ void watchDir() {
     createFolderWatcher(new FolderParams{
             "../res/shaders",
             []() {
-                auto timeCompare = Timer::nowMillisFile() - 1000;
+                auto timeCompare = Timer::nowMillisFile() - 5000;
                 std::string path = "../res/shaders";
+                bool found = false;
                 for (const auto &entry: std::filesystem::directory_iterator(path)) {
                     auto entryPath = entry.path().string();
                     if (!(entryPath.ends_with(".vert") || entryPath.ends_with(".frag"))) {
@@ -95,14 +96,15 @@ void watchDir() {
                     if (lastWrite < timeCompare) {
                         continue;
                     }
-
+                    found = true;
                     auto newPath = "res/shaders/" + getFilename(entryPath);
                     if (std::filesystem::exists(newPath)) {
                         std::filesystem::remove(newPath);
                     }
                     std::filesystem::copy(entryPath, newPath);
                 }
-                Raster::compilePipelines(true);
+                if (found)
+                    Raster::compilePipelines(true);
             }
     });
 }
@@ -112,14 +114,17 @@ void unwatchDir() {
     for (auto threadHandle: folderWatcherThreads) {
         CloseHandle(threadHandle);
     }
+    for (auto params: folderParamsThreads) {
+        delete params;
+    }
 #elif __linux__
+    for (auto params: folderParamsThreads) {
+        params->end = true;
+    }
     for (auto threadHandle: folderWatcherThreads) {
         threadHandle->join();
     }
 #endif
-    for (auto params: folderParamsThreads) {
-        delete params;
-    }
 }
 
 #endif

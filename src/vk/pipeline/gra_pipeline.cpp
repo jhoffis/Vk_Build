@@ -223,6 +223,7 @@ namespace Raster {
 
 #ifdef RMDEV
     void compilePipelines(bool recreate) {
+        // TODO this method leaks 0.2 MB data.
         const auto compiledFolder = "res/shaders/compiled/";
         makeSureDirExists(compiledFolder);
         for (const auto &entry: std::filesystem::directory_iterator("res/shaders")) {

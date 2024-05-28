@@ -8,9 +8,12 @@
 
 
 std::string getFilename(const std::string &path) {
-    // TODO does not work on linux
     auto slashIndex = path.find_last_of('/');
+    if (slashIndex == std::string::npos) slashIndex = 0;
+
     auto backslashIndex = path.find_last_of('\\');
+    if (backslashIndex == std::string::npos) backslashIndex = 0;
+
     return path.substr(Math::maximus(slashIndex, backslashIndex) + 1);
 }
 
@@ -39,7 +42,7 @@ void makeSureDirExists(const char *folder) {
 }
 
 std::string getEnvVar(const std::string &varName) {
-    char* buf = nullptr;
+    char *buf = nullptr;
     size_t sz = 0;
 #ifdef _WIN32
     if (_dupenv_s(&buf, &sz, varName.c_str()) != 0 || buf == nullptr) {
