@@ -1,23 +1,14 @@
 #include "file_util.h"
-#include "vk/pipeline/gra_pipeline.h"
 #include "math/math_stuff.h"
 #include "timer_util.h"
 #include <stdexcept>
 #include <fstream>
 #include <iostream>
-#include <thread>
 #include <filesystem>
-#include <functional>
-
-struct FolderParams {
-    const char *folder;
-    const std::function<void()> folderChange;
-};
-
-std::vector<const FolderParams *> folderParamsThreads{};
 
 
 std::string getFilename(const std::string &path) {
+    // TODO does not work on linux
     auto slashIndex = path.find_last_of('/');
     auto backslashIndex = path.find_last_of('\\');
     return path.substr(Math::maximus(slashIndex, backslashIndex) + 1);
@@ -39,97 +30,6 @@ std::vector<char> readFile(const std::string &filename) {
     file.close();
 
     return buffer;
-}
-#ifdef RMDEV
-#ifdef _WIN32
-std::vector<HANDLE> folderWatcherThreads{};
-
-HANDLE createFolderWatcher(const FolderParams *params) {
-    auto thread = CreateThread(nullptr,
-                               0,
-                               [](LPVOID lpParam) -> DWORD {
-                                   auto folderParams = (FolderParams *) lpParam;
-                                   HANDLE hDirChange = FindFirstChangeNotificationA(
-                                           folderParams->folder,
-                                           false,
-                                           FILE_NOTIFY_CHANGE_LAST_WRITE
-                                   );
-                                   if (hDirChange == INVALID_HANDLE_VALUE) {
-                                       throw std::runtime_error(std::format("failed to watch directory: {}", folderParams->folder));
-                                   }
-                                   do {
-                                       DWORD waitResult = WaitForSingleObject(hDirChange, INFINITE);
-                                       if (waitResult == WAIT_OBJECT_0) {
-                                           std::cout << "Noticed change" << std::endl;
-
-                                           folderParams->folderChange();
-
-                                           // Wait so you don't redo the same message and
-                                           // reissue the FindFirstChangeNotificationA to continue monitoring
-                                           std::this_thread::sleep_for(std::chrono::milliseconds(500));
-                                           FindNextChangeNotification(hDirChange);
-                                       } else {
-                                           std::cerr << "WaitForSingleObject failed." << std::endl;
-                                           break;
-                                       }
-                                   } while (true);
-                                   FindCloseChangeNotification(hDirChange);
-                                   return 0;
-                               },
-                               (LPVOID) params,
-                               0,
-                               nullptr);
-    folderWatcherThreads.emplace_back(thread);
-    folderParamsThreads.emplace_back(params);
-    return thread;
-}
-#endif
-#endif
-
-
-void watchDir() {
-#ifdef RMDEV
-#ifdef _WIN32
-    createFolderWatcher(new FolderParams{
-            "../res/shaders",
-            []() {
-                auto timeCompare = Timer::nowMillisFile() - 1000;
-                std::string path = "../res/shaders";
-                for (const auto &entry: std::filesystem::directory_iterator(path)) {
-                    auto entryPath = entry.path().string();
-                    if (!(entryPath.ends_with(".vert") || entryPath.ends_with(".frag"))) {
-                        continue;
-                    }
-                    auto lastWrite = Timer::toMillis(entry.last_write_time());
-                    if (lastWrite < timeCompare) {
-                        continue;
-                    }
-
-                    auto newPath = "res/shaders/" + getFilename(entryPath);
-                    if (std::filesystem::exists(newPath)) {
-                        std::filesystem::remove(newPath);
-                    }
-                    std::filesystem::copy(entryPath, newPath);
-                }
-                Raster::compilePipelines(true);
-            }
-    });
-#endif
-#endif
-}
-
-void unwatchDir() {
-#ifdef RMDEV
-#ifdef _WIN32
-    for (auto threadHandle: folderWatcherThreads) {
-        CloseHandle(threadHandle);
-    }
-    for (auto params: folderParamsThreads) {
-        delete params;
-    }
-
-#endif
-#endif
 }
 
 void makeSureDirExists(const char *folder) {

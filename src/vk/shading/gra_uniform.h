@@ -18,11 +18,11 @@ namespace Gra_Uniform {
         std::vector<VkBuffer> uniformBuffers{};
         std::vector<VkDeviceMemory> uniformBuffersMemory{};
 
-        ~UBOMem() {
-            // Free dynamically allocated UniformBufferObject, if any
-            // This prevents memory leaks when UBOMem is destroyed
-            delete static_cast<Gra::UniformBufferObject*>(uboStruct);
-        }
+//        ~UBOMem() {
+//            // Free dynamically allocated UniformBufferObject, if any
+//            // This prevents memory leaks when UBOMem is destroyed
+//            delete static_cast<Gra::UniformBufferObject*>(uboStruct);
+//        }
 
         void destroy() {
             for (size_t i = 0; i < uniformBuffers.size(); i++) {

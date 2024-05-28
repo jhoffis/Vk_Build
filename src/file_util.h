@@ -7,8 +7,6 @@
 std::string getFilename(const std::string &path);
 
 std::vector<char> readFile(const std::string &filename);
-void watchDir();
-void unwatchDir();
 
 void makeSureDirExists(const char *folder);
 

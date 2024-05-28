@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <iostream>
 #include "Model.h"
 
 #include "vk/shading/gra_uniform.h"
