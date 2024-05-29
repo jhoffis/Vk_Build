@@ -12,5 +12,4 @@ namespace UBOComponent {
 
 namespace ImageComponent {
     VkDescriptorSetLayoutBinding binding(uint32_t binding);
-    VkDescriptorImageInfo imageInfo()
 }
