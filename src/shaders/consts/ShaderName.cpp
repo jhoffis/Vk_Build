@@ -1,4 +1,5 @@
 #include "ShaderName.h"
+#include <stdexcept>
 
 namespace UBOComponent {
     VkDescriptorSetLayoutBinding binding(uint32_t binding) {
@@ -22,4 +23,15 @@ namespace ImageComponent {
         };
     }
 
+}
+
+std::string getShaderName(const ShaderName &shader) {
+    switch (shader) {
+        case grass:
+            return "grass";
+        case selectionBox:
+            return "selectionbox";
+        default:
+            throw std::invalid_argument("Could not create shader-name");
+    }
 }

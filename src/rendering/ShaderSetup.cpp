@@ -10,76 +10,6 @@
 // TODO handle the in aspects of the shaders.
 namespace ShaderSetup {
 
-    struct ComponentUBO {
-
-        // sizeofUBO
-
-//        {
-//            .binding = 0,
-//            .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-//            .descriptorCount = 1,
-//            .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-//            .pImmutableSamplers = nullptr // only relevant for image sampling related descriptor,
-//        },
-//
-//        VkDescriptorBufferInfo bufferInfo{};
-//        bufferInfo.buffer = uboMem.uniformBuffers[i % Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
-//        bufferInfo.offset = uboMem.offset * static_cast<int>(
-//                floor(static_cast<float>(i) / static_cast<float>(Gra::MAX_FRAMES_IN_FLIGHT)));
-//        bufferInfo.range = uboMem.range;
-//
-//        std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
-//
-//        descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-//        descriptorWrites[0].dstSet = descriptorSets[i];
-//        descriptorWrites[0].dstBinding = 0;
-//        descriptorWrites[0].dstArrayElement = 0;
-//        descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-//        descriptorWrites[0].descriptorCount = 1;
-//        descriptorWrites[0].pBufferInfo = &bufferInfo;
-//
-//        vkUpdateDescriptorSets(Gra::m_device,
-//        static_cast<uint32_t>(descriptorWrites.size()),
-//        descriptorWrites.data(),
-//        0,
-//        nullptr);
-    };
-
-    struct ComponentImage {
-//        {
-//            .binding = 1,
-//            .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-//            .descriptorCount = 1,
-//            .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT, // fragment shader.  It is possible to use texture sampling in the vertex shader, for example to dynamically deform a grid of vertices by a heightmap
-//            .pImmutableSamplers = nullptr,
-//        }
-//
-//        VkDescriptorImageInfo imageInfo{};
-//        imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-//        imageInfo.imageView = textureImageView;
-//        imageInfo.sampler = Texture::m_textureSampler;
-//
-//        descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-//        descriptorWrites[1].dstSet = descriptorSets[i];
-//        descriptorWrites[1].dstBinding = 1;
-//        descriptorWrites[1].dstArrayElement = 0;
-//        descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-//        descriptorWrites[1].descriptorCount = 1;
-//        descriptorWrites[1].pImageInfo = &imageInfo;
-    };
-
-    // Yes. This is related to the filename
-    std::string getShaderName(const ShaderName &shader) {
-        switch (shader) {
-            case grass:
-                return "grass";
-            case selectionBox:
-                return "selectionbox";
-            default:
-                throw std::invalid_argument("Could not create shader-name");
-        }
-    }
-
     // Yes. This is related to the shader-file's UBO. Could later be expanded to include more uniforms.
     // Could it be expanded to be able to change the contents of  a sampler2D also?
     // No repeat. Different for each?
@@ -141,18 +71,47 @@ namespace ShaderSetup {
     }
 
     struct FillDescriptor {
+        ShaderName name{};
         bool ubo = false;
         bool image = false;
         VkDescriptorImageInfo imageInfo{};
     };
 
+    const constexpr FillDescriptor grassShader{
+        .name = grass,
+        .ubo = true,
+        .image = true
+    };
+
+    const constexpr FillDescriptor selectionBoxShader{
+        .name = selectionBox,
+        .ubo = true,
+    };
+
+
     // Yes. UBO is filled above. Creates buffers and initializes uniforms.
     // The loop and the adding of UBO is the exact same for both, except grass has 2 with image.
-    void shaderFillDescriptorSets(const ShaderName &shader,
-                                  const Gra_Uniform::UBOMem &uboMem,
-                                  const VkImageView &textureImageView,
-                                  int size,
-                                  const std::vector<VkDescriptorSet> &descriptorSets) {
+    std::vector<VkDescriptorSet> createDescriptorSets(const ShaderName &shader,
+                                                      VkDescriptorSetLayout &layout,
+                                                      VkDescriptorPool &pool,
+                                                      Gra_Uniform::UBOMem &uboMem,
+                                                      VkImageView &textureImageView) {
+        auto size = Gra::MAX_FRAMES_IN_FLIGHT * uboMem.amount;
+        std::vector<VkDescriptorSetLayout> layouts(size, layout);
+        VkDescriptorSetAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocInfo.descriptorPool = pool;
+        allocInfo.descriptorSetCount = static_cast<uint32_t>(size);
+        allocInfo.pSetLayouts = layouts.data();
+
+        std::vector<VkDescriptorSet> descriptorSets{};
+        descriptorSets.resize(size);
+        auto res = vkAllocateDescriptorSets(Gra::m_device, &allocInfo, descriptorSets.data());
+        if (res != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate descriptor sets!");
+        }
+
+
         FillDescriptor fillDescriptor{};
         switch (shader) {
             case grass: {
@@ -213,6 +172,8 @@ namespace ShaderSetup {
                                    0,
                                    nullptr);
         }
+
+        return descriptorSets;
     }
 
 } // Shader

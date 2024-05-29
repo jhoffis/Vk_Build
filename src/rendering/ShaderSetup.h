@@ -4,8 +4,6 @@
 
 namespace ShaderSetup {
 
-    std::string getShaderName(const ShaderName &shader);
-
     Gra_Uniform::UBOMem createMem(const ShaderName &shader);
 
     void updateRenderUbo(const ShaderName &shaderName,
@@ -14,9 +12,9 @@ namespace ShaderSetup {
 
     std::vector<VkDescriptorSetLayoutBinding> createBindings(const ShaderName &shader);
 
-    void shaderFillDescriptorSets(const ShaderName &shader,
-                                  const Gra_Uniform::UBOMem &uboMem,
-                                  const VkImageView &textureImageView,
-                                  int size,
-                                  const std::vector<VkDescriptorSet> &descriptorSets);
+    std::vector<VkDescriptorSet> createDescriptorSets(const ShaderName &shader,
+                                                      VkDescriptorSetLayout &layout,
+                                                      VkDescriptorPool &pool,
+                                                      Gra_Uniform::UBOMem &uboMem,
+                                                      VkImageView &textureImageView);
 }

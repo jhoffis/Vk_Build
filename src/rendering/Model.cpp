@@ -19,32 +19,37 @@ std::vector<Raster::Pipeline> m_leftoverPipelines;
 
 void Model::init(ModelInfo info) {
     // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og attributes. Feks at de først har uniform buffer og så image sampler.
-    shaderName = info.shaderName;
     cmdBuffer.init();
-
-    // TODO endre her til å binde komponenter senere. ATM er det ubo og 2dsample som er hardkodet.
-    descriptorSetLayout = Gra_Uniform::createDescriptorSetLayout(ShaderSetup::createBindings(info.shaderName));
-    createPipeline();
-
-    auto w = info.fallbackWidth;
-    auto h = info.fallbackHeight;
-    if (info.textureName != nullptr) {
-        auto img = Texture::loadImage(info.textureName);  // lik
-        texImageView = Texture::createTexture(img);  // lik
-        if (w == 0)
-            w = static_cast<float>(img.w);
-        if (h == 0)
-            h = static_cast<float>(img.h);
-    }
-    mesh.init(w, h);
-    uboMem = ShaderSetup::createMem(info.shaderName);
-    Gra::createVertexBuffer(&mesh);
-    Gra::createIndexBuffer(&mesh);
 
     pool = Gra_Uniform::createDescriptorPool(1);
 
-    descriptorSets = Gra_Uniform::createDescriptorSets(info.shaderName, descriptorSetLayout, pool, uboMem,
-                                                       texImageView);
+    { // Shader stuff
+        shaderName = info.shaderName;
+
+        {// TODO add to image component
+            auto w = info.fallbackWidth;
+            auto h = info.fallbackHeight;
+            if (info.textureName != nullptr) {
+                auto img = Texture::loadImage(info.textureName);  // lik
+                texImageView = Texture::createTexture(img);  // lik
+                if (w == 0)
+                    w = static_cast<float>(img.w);
+                if (h == 0)
+                    h = static_cast<float>(img.h);
+            }
+            mesh.init(w, h);
+        }
+        uboMem = ShaderSetup::createMem(info.shaderName);
+        Gra::createVertexBuffer(&mesh);
+        Gra::createIndexBuffer(&mesh);
+
+
+        // These two can be combined
+        descriptorSetLayout = Gra_Uniform::createDescriptorSetLayout(ShaderSetup::createBindings(info.shaderName));
+        descriptorSets = ShaderSetup::createDescriptorSets(info.shaderName, descriptorSetLayout, pool, uboMem,
+                                                           texImageView);
+    }
+    createPipeline();
 
     m_renderModels.emplace_back(this);
 }
@@ -72,7 +77,7 @@ void Model::recreateUboBuffer() {
     pool = Gra_Uniform::createDescriptorPool(amount);
     uboMem.destroy();
     uboMem = Gra_Uniform::createUniformBuffers(amount, uboMem.range);
-    descriptorSets = Gra_Uniform::createDescriptorSets(shaderName, descriptorSetLayout, pool, uboMem, texImageView);
+    descriptorSets = ShaderSetup::createDescriptorSets(shaderName, descriptorSetLayout, pool, uboMem, texImageView);
 }
 
 void Model::addEntity(std::shared_ptr<Entity> entity, bool update) {
@@ -82,7 +87,7 @@ void Model::addEntity(std::shared_ptr<Entity> entity, bool update) {
 }
 
 void Model::createPipeline() {
-    pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, ShaderSetup::getShaderName(shaderName));
+    pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, getShaderName(shaderName));
 }
 
 #ifdef RMDEV

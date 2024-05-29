@@ -103,30 +103,4 @@ namespace Gra_Uniform {
         return pool;
     }
 
-    std::vector<VkDescriptorSet> createDescriptorSets(const ShaderName &shader,
-                                                      VkDescriptorSetLayout &layout,
-                                                      VkDescriptorPool &pool,
-                                                      UBOMem &uboMem,
-                                                      VkImageView &textureImageView) {
-        auto size = Gra::MAX_FRAMES_IN_FLIGHT * uboMem.amount;
-        std::vector<VkDescriptorSetLayout> layouts(size, layout);
-        VkDescriptorSetAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.descriptorPool = pool;
-        allocInfo.descriptorSetCount = static_cast<uint32_t>(size);
-        allocInfo.pSetLayouts = layouts.data();
-
-        std::vector<VkDescriptorSet> descriptorSets{};
-        descriptorSets.resize(size);
-        auto res = vkAllocateDescriptorSets(Gra::m_device, &allocInfo, descriptorSets.data());
-        if (res != VK_SUCCESS) {
-            throw std::runtime_error("failed to allocate descriptor sets!");
-        }
-
-        ShaderSetup::shaderFillDescriptorSets(shader, uboMem, textureImageView, size, descriptorSets);
-
-        return descriptorSets;
-    }
-
-
 } // Gra

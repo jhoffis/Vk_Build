@@ -11,18 +11,12 @@
 namespace Gra_Uniform {
 
     struct UBOMem {
-        int amount{};
-        int offset{};
-        int range{};
-        void *uboStruct{};
+        int amount{}; // number of allocations after each other. Division of the buffer.
+        int offset{}; // distance between each allocated n mem. Not less than minUniformBufferOffsetAlignment.
+        int range{};  // bytes actually allocated
+        void *uboStruct{}; // the data the buffer is filled with.
         std::vector<VkBuffer> uniformBuffers{};
         std::vector<VkDeviceMemory> uniformBuffersMemory{};
-
-//        ~UBOMem() {
-//            // Free dynamically allocated UniformBufferObject, if any
-//            // This prevents memory leaks when UBOMem is destroyed
-//            delete static_cast<Gra::UniformBufferObject*>(uboStruct);
-//        }
 
         void destroy() {
             for (size_t i = 0; i < uniformBuffers.size(); i++) {
@@ -40,9 +34,4 @@ namespace Gra_Uniform {
     VkDescriptorSetLayout createDescriptorSetLayout(std::vector<VkDescriptorSetLayoutBinding> bindings);
 
     VkDescriptorPool createDescriptorPool(int amountEntities);
-    std::vector<VkDescriptorSet> createDescriptorSets(const ShaderName &shader,
-                                                      VkDescriptorSetLayout &layout,
-                                                      VkDescriptorPool &pool,
-                                                      UBOMem &uboMem,
-                                                      VkImageView &textureImageView);
 }
