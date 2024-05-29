@@ -15,6 +15,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 file(COPY ${CMAKE_SOURCE_DIR}/res DESTINATION ${PROJECT_BINARY_DIR})
 
 add_executable(${PROJECT_NAME}
+        src/shaders/consts/ShaderName.cpp
         src/file_watcher.cpp
         src/file_watcher.h
         src/main.cpp

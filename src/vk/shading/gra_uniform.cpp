@@ -50,7 +50,7 @@ namespace Gra_Uniform {
         return uboMem;
     }
 
-
+    // this is how one copies memory to a uniform?
     void updateUniformBuffer(const UBOMem &uboMem,
                                    const uint32_t currentSwapImage,
                              const uint32_t entityIndex) {
