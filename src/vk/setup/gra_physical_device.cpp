@@ -67,7 +67,7 @@ auto rateDeviceSuitability(
     score += deviceProperties.limits.maxImageDimension2D;
 
     QueueFamilyIndices indices = Gra::findQueueFamilies(device);
-    // Application can't function without geometry shaders
+    // Application can't function without geometry models
     if (!deviceFeatures.geometryShader || !indices.isComplete() || !isDeviceSuitable(device))
         return 0;
     return score;

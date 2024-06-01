@@ -7,6 +7,10 @@ enum ShaderName {
     grass, selectionBox
 };
 
+enum ShaderComponentOrder {
+    vert_ubo, frag_image
+};
+
 // Yes. This is related to the filename
 std::string getShaderName(const ShaderName &shader);
 

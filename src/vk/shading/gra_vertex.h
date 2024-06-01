@@ -2,6 +2,7 @@
 
 #include "rendering/Mesh2D.h"
 #include "rendering/Vertex.h"
+#include "gra_uniform.h"
 #include <vector>
 
 namespace Gra {

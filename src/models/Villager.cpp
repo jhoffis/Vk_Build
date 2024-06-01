@@ -1,19 +1,13 @@
 #include "Villager.h"
 #include "rendering/Model.h"
+#include "shaders/Shaders.h"
 
 namespace Villager {
 
-    Model m_maleVillModel{};
     std::vector<std::shared_ptr<Vill>> m_vills{};
 
     void initVillModel() {
-        m_maleVillModel.init(
-                {
-                .shaderName = grass,
-                .textureName = "unit.png",
-                }
-            );
-        m_maleVillModel.recreateUboBuffer();
+        Shaders::m_villModel.recreateUboBuffer();
     }
 
     float z = 0;
@@ -22,15 +16,15 @@ namespace Villager {
         z += 0.1f;
         auto male = m_vills.emplace_back(std::make_shared<Vill>(Vill{
             .entity = std::make_shared<Entity>(Entity{
-                    .pos = {x * m_maleVillModel.width(), y * m_maleVillModel.height(), z},
-                    .size = {m_maleVillModel.width(), m_maleVillModel.height()},
+                    .pos = {x * Shaders::m_villModel.width(), y * Shaders::m_villModel.height(), z},
+                    .size = {Shaders::m_villModel.width(), Shaders::m_villModel.height()},
             }),
         }));
-        m_maleVillModel.addEntity(male->entity, true);
+        Shaders::m_villModel.addEntity(male->entity, true);
     }
 
     void destroy() {
-        m_maleVillModel.destroy();
+        Shaders::m_villModel.destroy();
     }
 
     std::vector<std::unique_ptr<Vill>> villsWithinBounds(float x0, float y0, float x1, float y1) {

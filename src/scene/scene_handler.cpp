@@ -1,9 +1,9 @@
 #include "scene_handler.h"
-#include "src/shaders/Map.h"
-#include "src/shaders/Villager.h"
+#include "models/Map.h"
+#include "models/Villager.h"
 #include "camera.h"
 #include "timer_util.h"
-#include "src/shaders/SelectionBoxModel.h"
+#include "models/SelectionBoxModel.h"
 #include "scene_data.h"
 
 #include <vector>

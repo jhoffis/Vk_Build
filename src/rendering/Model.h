@@ -7,15 +7,8 @@
 #include "vk/shading/gra_uniform.h"
 #include "Entity.h"
 #include "Mesh2D.h"
-#include "src/shaders/consts/ShaderName.h"
-
-struct UniformStuff {
-    // what is common and can be used to generate the rest?
-    int bindingId;
-    bool vertexOrFragment;
-    int type; // like is it image or ubo or smt else?
-};
-
+#include "models/consts/ShaderName.h"
+#include <functional>
 
 struct ModelInfo {
     const float fallbackWidth{0.f}, fallbackHeight{0.f};
@@ -31,25 +24,35 @@ struct ModelInfo {
 */
 struct Model {
 
-    ShaderName shaderName;
+    std::string shaderName;
 
     Mesh2D mesh{};
     Gra::CmdBuffer cmdBuffer{};
     Gra_Uniform::UBOMem uboMem{};
 
     Raster::Pipeline pipeline{};
-    VkImageView texImageView;
-    VkDescriptorPool pool;
-    VkDescriptorSetLayout descriptorSetLayout;
+    std::vector<VkImageView> texImageViews{};
+    VkDescriptorPool pool{};
+    VkDescriptorSetLayout descriptorSetLayout{};
     std::vector<VkDescriptorSet> descriptorSets{};
 
     std::vector<std::shared_ptr<Entity>> entities{};
     bool visible = true;
 
-    void init(ModelInfo info);
+    const std::function<void(Gra_Uniform::UBOMem &, const std::shared_ptr<Entity> &)> updateRenderUbo;
+    const std::vector<ShaderComponentOrder> &order;
 
+    Model(std::string shaderName,
+          const std::function<void(Gra_Uniform::UBOMem&, const std::shared_ptr<Entity> &entity)>& updateRenderUbo,
+          const std::vector<ShaderComponentOrder> &order,
+          int sizeOfUBO,
+          float overrideWidth,
+          float overrideHeight,
+          const std::vector<std::string> &textures);
+
+    std::vector<VkDescriptorSet> createDescriptorSets() const;
     void recreateUboBuffer();
-    void addEntity(std::shared_ptr<Entity> entity, bool update);
+    void addEntity(const std::shared_ptr<Entity>& entity, bool update);
 
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
 

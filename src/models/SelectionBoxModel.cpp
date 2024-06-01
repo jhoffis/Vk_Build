@@ -3,34 +3,27 @@
 #include "SelectionBoxModel.h"
 #include "rendering/Model.h"
 #include "Villager.h"
+#include "shaders/Shaders.h"
 
 namespace SelectionBox {
 
-    Model m_selectionBoxModel{};
     SelectionBoxUBO m_ubo{};
     std::vector<int> m_selected{};
 
     void init() {
-        m_selectionBoxModel.init(
-                {
-                        .fallbackWidth = 128.f,
-                        .fallbackHeight = 128.f,
-                        .shaderName = selectionBox,
-                }
-        );
         auto entity = std::make_shared<Entity>(Entity{
             .pos = {-.1, -.1},
             .size = {1.5, 1.5},
             .visible = true
         });
-        m_selectionBoxModel.addEntity(entity, false);
-        m_selectionBoxModel.recreateUboBuffer();
+        Shaders::m_selectionBoxModel.addEntity(entity, false);
+        Shaders::m_selectionBoxModel.recreateUboBuffer();
 
         hide();
     }
 
     void visible(float x, float y) {
-        m_selectionBoxModel.visible = true;
+        Shaders::m_selectionBoxModel.visible = true;
         m_ubo.posOriginal.x = x;
         m_ubo.posOriginal.y = y;
         m_ubo.posNew.x = x;
@@ -38,7 +31,7 @@ namespace SelectionBox {
     }
 
     void hide() {
-        m_selectionBoxModel.visible = false;
+        Shaders::m_selectionBoxModel.visible = false;
         m_selected.clear();
 
         float x0, y0, x1, y1;
@@ -67,10 +60,10 @@ namespace SelectionBox {
     }
 
     bool isVisible() {
-        return m_selectionBoxModel.visible;
+        return Shaders::m_selectionBoxModel.visible;
     }
 
     void destroy() {
-        m_selectionBoxModel.destroy();
+        Shaders::m_selectionBoxModel.destroy();
     }
 }

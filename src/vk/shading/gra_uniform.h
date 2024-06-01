@@ -4,7 +4,7 @@
 #include "window.h"
 #include "rendering/Entity.h"
 #include "vk/gra_setup.h"
-#include "shaders/consts/ShaderName.h"
+#include "models/consts/ShaderName.h"
 #include "gra_vertex.h"
 #include <vector>
 

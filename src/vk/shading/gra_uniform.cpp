@@ -11,7 +11,6 @@
 #include "src/vk/gra_setup.h"
 #include "vk/setup/gra_physical_device.h"
 #include "camera.h"
-#include "rendering/ShaderSetup.h"
 #include <cmath>
 #include <iostream>
 #include <cstring>
