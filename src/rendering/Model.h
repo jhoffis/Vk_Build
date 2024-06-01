@@ -24,7 +24,13 @@ struct ModelInfo {
 */
 struct Model {
 
-    std::string shaderName;
+    const std::string shaderName;
+    const std::function<void(Gra_Uniform::UBOMem &, const std::shared_ptr<Entity> &)> updateRenderUbo;
+    const std::vector<ShaderComponentOrder> &order;
+    const int sizeOfUBO;
+    const float overrideWidth;
+    const float overrideHeight;
+    const std::vector<std::string> &textures;
 
     Mesh2D mesh{};
     Gra::CmdBuffer cmdBuffer{};
@@ -39,18 +45,17 @@ struct Model {
     std::vector<std::shared_ptr<Entity>> entities{};
     bool visible = true;
 
-    const std::function<void(Gra_Uniform::UBOMem &, const std::shared_ptr<Entity> &)> updateRenderUbo;
-    const std::vector<ShaderComponentOrder> &order;
-
     Model(std::string shaderName,
           const std::function<void(Gra_Uniform::UBOMem&, const std::shared_ptr<Entity> &entity)>& updateRenderUbo,
           const std::vector<ShaderComponentOrder> &order,
           int sizeOfUBO,
           float overrideWidth,
           float overrideHeight,
-          const std::vector<std::string> &textures);
+          std::vector<std::string> textures);
 
-    std::vector<VkDescriptorSet> createDescriptorSets() const;
+    void init();
+
+    [[nodiscard]] std::vector<VkDescriptorSet> createDescriptorSets() const;
     void recreateUboBuffer();
     void addEntity(const std::shared_ptr<Entity>& entity, bool update);
 
@@ -74,6 +79,10 @@ void recreateModelPipelines();
 
 void destroyModels();
 
-extern std::vector<Model *> m_renderModels;
+extern std::vector<std::shared_ptr<Model>> m_renderModels;
 
-
+namespace Shaders {
+    extern Model m_grassModel;
+    extern Model m_villModel;
+    extern Model m_selectionBoxModel;
+}

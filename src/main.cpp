@@ -17,6 +17,7 @@
 #include "file_util.h"
 #include "rendering/Model.h"
 #include "file_watcher.h"
+#include "shaders/Shaders.h"
 
 
 int main() {
@@ -28,25 +29,15 @@ int main() {
 
     Window::createWindow(false, false);
     Gra::initVulkan();
-    SceneHandler::create();
+    Shaders::init();
+
+//    SceneHandler::create();
     SelectionBox::init();
     Timer::updateDelta();
 #ifdef RMDEV
     watchDir();
 #endif
-//    Model testModel{};
-//    testModel.init("triangle", "grass.png");
-//
-//    auto entity2 = testModel. addEntity(false);
-//    entity2->pos.x = testModel.width() * 1;
-//    entity2->pos.y = testModel.height() * 1;
-//
-//    auto entity = testModel.addEntity(false);
-//    entity->pos.x = testModel.width() * 0;
-//    entity->pos.y = testModel.height() * 1;
-//
-//    testModel.updateUboBuffer();
-//    m_renderModels.emplace_back(&testModel);
+
 
     int fps = 0;
     double fpsTime = 0;
