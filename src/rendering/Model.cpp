@@ -11,15 +11,15 @@
 #include "vk/presentation/gra_swap_chain.h"
 #include "camera.h"
 
-void grassUpdateRenderUbo(Gra_Uniform::UBOMem &uboMem,
-                                   const std::shared_ptr<Entity> &entity) {
-    delete static_cast<Gra::UniformBufferObject *>(uboMem.uboStruct);
-    uboMem.uboStruct = new Gra::UniformBufferObject{
+void grassUpdateRenderUbo(Gra_Uniform::UBOMem* uboMem,
+                          const std::shared_ptr<Entity> &entity) {
+    delete static_cast<Gra::UniformBufferObject *>(uboMem->uboStruct);
+    uboMem->uboStruct = new Gra::UniformBufferObject{
             .pos = entity->pos - Camera::m_cam.pos,
             .aspect = Gra::m_swapChainAspectRatio,
     };
 }
-std::vector<std::shared_ptr<Model>> m_renderModels{};
+std::vector<Model*> m_renderModels{};
 Model Shaders::m_grassModel(
         "grass",
         grassUpdateRenderUbo,
@@ -56,7 +56,7 @@ Model Shaders::m_selectionBoxModel{
             SelectionBox::m_ubo.resolution.y = Window::HEIGHT;
             SelectionBox::m_ubo.posCam.x = Camera::m_cam.pos.x;
             SelectionBox::m_ubo.posCam.y = Camera::m_cam.pos.y;
-            uboMem.uboStruct = &SelectionBox::m_ubo;
+            uboMem->uboStruct = &SelectionBox::m_ubo;
         }, {
                 vert_ubo,
         },
@@ -89,11 +89,11 @@ std::vector<VkDescriptorSet> Model::createDescriptorSets() const {
     // setup phase
     std::vector<VkDescriptorImageInfo> imageInfos{texImageViews.size()};
     for (int i = 0; i < imageInfos.size(); i++) {
-        imageInfos.emplace_back(VkDescriptorImageInfo {
-            .sampler = Texture::m_textureSampler,
-            .imageView = texImageViews[i],
-            .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-        });
+        imageInfos[i] = VkDescriptorImageInfo{
+                .sampler = Texture::m_textureSampler,
+                .imageView = texImageViews[i],
+                .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+        };
     }
 
     for (auto i = 0; i < size; i++) {
@@ -138,20 +138,20 @@ std::vector<VkDescriptorSet> Model::createDescriptorSets() const {
 }
 
 Model::Model(std::string shaderName,
-             const std::function<void(Gra_Uniform::UBOMem&, const std::shared_ptr<Entity> &entity)>& updateRenderUbo,
-             const std::vector<ShaderComponentOrder> &order,
+             std::function<void(Gra_Uniform::UBOMem*, const std::shared_ptr<Entity> &entity)> updateRenderUbo,
+             std::vector<ShaderComponentOrder> order,
              const int sizeOfUBO,
              const float overrideWidth,
              const float overrideHeight,
              std::vector<std::string> textures)
              : shaderName(std::move(shaderName)),
-               updateRenderUbo(updateRenderUbo),
-               order(order),
+               updateRenderUbo(std::move(updateRenderUbo)),
+               order(std::move(order)),
                sizeOfUBO(sizeOfUBO),
                overrideWidth(overrideWidth),
                overrideHeight(overrideHeight),
                textures(std::move(textures)) {
-    m_renderModels.emplace_back(static_cast<const std::shared_ptr<Model>>(this));
+    m_renderModels.emplace_back(this);
 }
 
 void Model::init() {
@@ -184,7 +184,7 @@ void Model::init() {
                     bindings.emplace_back(UBOComponent::binding(i));
                     break;
                 case frag_image:
-                    ImageComponent::binding(i);
+                    bindings.emplace_back(ImageComponent::binding(i));
                     break;
             }
         }
@@ -200,7 +200,7 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     vkResetCommandBuffer(cmd, 0);
     Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, descriptorSets);
     for (auto i = 0; i < entities.size(); i++) {
-        updateRenderUbo(uboMem, entities[i]);
+        updateRenderUbo(&uboMem, entities[i]);
         Gra_Uniform::updateUniformBuffer(uboMem, Drawing::currSwapFrame, i);
     }
     return cmd;

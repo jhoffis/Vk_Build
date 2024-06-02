@@ -31,7 +31,7 @@ int main() {
     Gra::initVulkan();
     Shaders::init();
 
-//    SceneHandler::create();
+    SceneHandler::create();
     SelectionBox::init();
     Timer::updateDelta();
 #ifdef RMDEV

@@ -25,12 +25,12 @@ struct ModelInfo {
 struct Model {
 
     const std::string shaderName;
-    const std::function<void(Gra_Uniform::UBOMem &, const std::shared_ptr<Entity> &)> updateRenderUbo;
-    const std::vector<ShaderComponentOrder> &order;
+    const std::function<void(Gra_Uniform::UBOMem*, const std::shared_ptr<Entity> &)> updateRenderUbo;
+    const std::vector<ShaderComponentOrder> order;
     const int sizeOfUBO;
     const float overrideWidth;
     const float overrideHeight;
-    const std::vector<std::string> &textures;
+    const std::vector<std::string> textures;
 
     Mesh2D mesh{};
     Gra::CmdBuffer cmdBuffer{};
@@ -46,8 +46,8 @@ struct Model {
     bool visible = true;
 
     Model(std::string shaderName,
-          const std::function<void(Gra_Uniform::UBOMem&, const std::shared_ptr<Entity> &entity)>& updateRenderUbo,
-          const std::vector<ShaderComponentOrder> &order,
+          std::function<void(Gra_Uniform::UBOMem*, const std::shared_ptr<Entity> &entity)> updateRenderUbo,
+          std::vector<ShaderComponentOrder> order,
           int sizeOfUBO,
           float overrideWidth,
           float overrideHeight,
@@ -79,7 +79,7 @@ void recreateModelPipelines();
 
 void destroyModels();
 
-extern std::vector<std::shared_ptr<Model>> m_renderModels;
+extern std::vector<Model *> m_renderModels;
 
 namespace Shaders {
     extern Model m_grassModel;
