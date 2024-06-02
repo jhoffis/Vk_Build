@@ -105,12 +105,12 @@ void SceneHandler::create() {
 
     Map::create(15);
     Villager::initVillModel();
-    Villager::spawn(0, 0);
+    Villager::spawn(-2, 3);
+    Villager::spawn(1.75f, 1.33);
     Villager::spawn(1.5f, 1);
     Villager::spawn(2, 1);
-    Villager::spawn(1.75f, 1.33);
     Villager::spawn(1.7f, .75);
-    Villager::spawn(-2, 3);
+    Villager::spawn(0, 0);
 }
 
 void SceneHandler::update() {

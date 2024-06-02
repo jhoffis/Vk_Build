@@ -24,9 +24,12 @@ void main() {
     gl_Position.y *= 2.;
     gl_Position.x -= 1.;
     gl_Position.y += 1.;
-    gl_Position.z = .5*ubo.pos.y + .1; 
+
+    fragColor.r = ubo.pos.z*.005*ubo.pos.y;
+   // fragColor.r = .5*ubo.pos.y + .1;
+    gl_Position.z = .5*ubo.pos.y + .1;
+   gl_Position.z = 0;
 //    gl_Position.x *= ubo.pos.z;
 //    gl_Position.y *= ubo.pos.z;
-    fragColor = gl_Position.zzz;
     fragTexCoord = inTexCoord;
 }

@@ -13,7 +13,7 @@ namespace Villager {
     float z = 0;
 
     void spawn(float x, float y) {
-        z += 0.1f;
+        z = 0.1f;
         auto male = m_vills.emplace_back(std::make_shared<Vill>(Vill{
             .entity = std::make_shared<Entity>(Entity{
                     .pos = {x * Shaders::m_villModel.width(), y * Shaders::m_villModel.height(), z},

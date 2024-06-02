@@ -9,7 +9,7 @@ namespace Camera {
         std::bitset<4> movement;
 
         Cam() {
-            pos.z = -1.;
+            pos.z = -0.;
         }
 
         void update();

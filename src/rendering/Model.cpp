@@ -35,7 +35,7 @@ Model Shaders::m_grassModel(
 );
 
 Model Shaders::m_villModel{
-        "grass",
+        "vill",
         grassUpdateRenderUbo,
         {
                 vert_ubo,
