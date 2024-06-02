@@ -3,6 +3,7 @@
 layout(binding = 0) uniform UniformBufferObject {
     vec3 pos;
     float aspect;
+    int selected;
 //    mat4 model;
 //    mat4 view;
 //    mat4 proj;
@@ -25,11 +26,10 @@ void main() {
     gl_Position.x -= 1.;
     gl_Position.y += 1.;
 
-    //fragColor.r = 1.0-ubo.pos.z*.005*ubo.pos.y;
-    fragColor.r = 0.5*ubo.pos.y + .1 + ubo.pos.z;
-    gl_Position.z = .5*ubo.pos.y + .1 + ubo.pos.z;
-   gl_Position.z = fragColor.r;
-//    gl_Position.x *= ubo.pos.z;
-//    gl_Position.y *= ubo.pos.z;
+   // fragColor.r = 0.5*ubo.pos.y + .1 + ubo.pos.z;
+ //  gl_Position.z = fragColor.r;
+
+    fragColor.rgb = ubo.selected == 1 ? vec3(1.0) : vec3(0.0);
+    gl_Position.z = 0.5*ubo.pos.y + .1 + ubo.pos.z;
     fragTexCoord = inTexCoord;
 }

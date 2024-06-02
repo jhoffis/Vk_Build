@@ -52,9 +52,10 @@ namespace SelectionBox {
             y0 = m_ubo.posNew.y;
         }
 
-        const auto& vills =
-                Villager::villsWithinBounds(x0, y0, x1, y1);
+        Villager::unselectAll();
+        const auto& vills = Villager::villsWithinBounds(x0, y0, x1, y1);
         for (auto &vill : vills) {
+            vill->entity->selected = true;
             std::cout << "vill: " << vill->age << std::endl;
         }
     }

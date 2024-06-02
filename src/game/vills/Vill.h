@@ -74,4 +74,6 @@ namespace Villager {
         const std::shared_ptr<Entity> entity = std::make_shared<Entity>(Entity{});
         char *name{};
     };
+
+    void unselectAll();
 }

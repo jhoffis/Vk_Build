@@ -8,6 +8,7 @@ struct Entity {
     Vec3 pos{};
     Vec2 size{};
     bool visible{};
+    bool selected{};
 
     [[nodiscard]] constexpr
     bool isAbove(float x, float y) const {

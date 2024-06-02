@@ -17,6 +17,7 @@ void grassUpdateRenderUbo(Gra_Uniform::UBOMem* uboMem,
     uboMem->uboStruct = new Gra::UniformBufferObject{
             .pos = entity->pos - Camera::m_cam.pos,
             .aspect = Gra::m_swapChainAspectRatio,
+            .selected = entity->selected,
     };
 }
 std::vector<Model*> m_renderModels{};

@@ -43,4 +43,10 @@ namespace Villager {
         return foundVills;
     }
 
+    void unselectAll() {
+        for (auto vill : m_vills) {
+            vill->entity->selected = false;
+        }
+    }
+
 }
