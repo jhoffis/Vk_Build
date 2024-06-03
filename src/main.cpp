@@ -19,13 +19,18 @@
 #include "file_watcher.h"
 #include "shaders/Shaders.h"
 
-
+#if RMDEV
+#include <cstring>
+#include "test/test_selection.h"
+int main(int argc, char *argv[]) {
+    if (argc > 1 && strcmp(argv[1], "test") == 0) {
+        Test::run();
+        return 0;
+    }
+#else
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-#if __linux__
-    std::cout << "Hello, Linux!" << std::endl;
 #endif
-    std::srand(Timer::nowMillis());
+//    std::srand(Timer::nowMillis());
 
     Window::createWindow(false, false);
     Gra::initVulkan();

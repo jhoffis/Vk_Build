@@ -15,6 +15,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 file(COPY ${CMAKE_SOURCE_DIR}/res DESTINATION ${PROJECT_BINARY_DIR})
 
 add_executable(${PROJECT_NAME}
+        src/test/test_selection.cpp
+        src/test/test_selection.h
         src/shaders/Shaders.cpp
         src/shaders/Shaders.h
         src/models/Component.cpp
@@ -132,6 +134,6 @@ add_dependencies(${PROJECT_NAME} copy_assets)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     target_compile_definitions(${PROJECT_NAME} PUBLIC RMDEV=1)
-#elseif(CMAKE_BUILD_TYPE MATCHES Release)
-#    target_compile_definitions(${PROJECT_NAME} PUBLIC RMDEV=0)
+elseif(CMAKE_BUILD_TYPE MATCHES Release)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC RMDEV=0)
 endif()
