@@ -59,6 +59,8 @@ struct Model {
     void recreateUboBuffer();
     void addEntity(const std::shared_ptr<Entity>& entity, bool update);
 
+    void sort();
+
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
 
     [[nodiscard]] float width() const {

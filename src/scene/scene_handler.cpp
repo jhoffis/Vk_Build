@@ -5,6 +5,7 @@
 #include "timer_util.h"
 #include "models/SelectionBoxModel.h"
 #include "scene_data.h"
+#include "rendering/Model.h"
 
 #include <vector>
 #include <iostream>
@@ -117,10 +118,13 @@ void SceneHandler::create() {
     Villager::spawn(2, 1);
     Villager::spawn(1.7f, .75);
     Villager::spawn(0, 0);
+    Villager::spawn(0, 0);
 }
 
 void SceneHandler::update() {
     Camera::m_cam.update();
+    Shaders::m_villModel.sort();
+    Villager::sort();
 //    if (selected != nullptr && !selected->entity.isAbove(xWorld, yWorld))
 //        selected->entity.pos.x += static_cast<float>(.1 * Timer::delta());
 //    for (auto male : males)

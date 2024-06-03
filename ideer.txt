@@ -12,5 +12,14 @@ Spilleren skal ha full kontroll over folket sitt og sånt slik som i aoe2.
 Ha sånn at man trykker en knapp for reproduksjon og så selecter man et motsatt kjønn.
 Kan også ha knapp for mass reproduksjon elns.
 Eller ha en reproduksjonsbygning? For vills er litt vanskeligere å trykke siden de beveger seg så mye.
+Eller kanskje du binder relasjoner og så spawner de barn automatisk?
+Implement a system where villagers have a chance to reproduce if they are in close proximity, regardless of their relationship.
+Maybe if you send a vill inside a house then he/she becomes a "resource" which is manpower or smt and then that can be used in a stable etc.
+Manpower can be released again, and while they are manpower they can do stuff off screen? Maybe not... Well... wood, food, gold and stone are in magic banks.
+
+Maybe you queue vills like in age but the queue is a call for two vills to reproduce.
+When a vill is born it is magically born out of the tc?
+
+Sperm: quantity, mobility and morphology. Affected by diet, obesity, stress, overheating crotch
 
 Oppgraderinger er kunnskap som er i hodene til beboerne dine og bøkene dine.

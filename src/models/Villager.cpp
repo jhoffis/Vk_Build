@@ -35,12 +35,19 @@ namespace Villager {
                                                          bool store) {
         std::vector<std::unique_ptr<Vill>> foundVills{};
         auto sizeOfBox = std::abs((x0 - x1) + (y0 - y1));
-        bool selectOne = sizeOfBox < 0.01;
 
-        for (auto &vill : m_vills) {
-            if (vill->entity->isWithin(x0, y0, x1, y1)) {
-                foundVills.push_back(std::make_unique<Vill>(*vill));
-                if (selectOne) break;
+        if (sizeOfBox < 0.01) { // select one
+            for (unsigned long i = m_vills.size() - 1; i < m_vills.size(); i--) {
+                if (m_vills[i]->entity->isWithin(x0, y0, x1, y1)) {
+                    foundVills.emplace_back(std::make_unique<Vill>(*m_vills[i]));
+                    break;
+                }
+            }
+        } else {
+            for (unsigned long i = m_vills.size() - 1; i < m_vills.size(); i--) {
+                if (m_vills[i]->entity->isWithin(x0, y0, x1, y1)) {
+                    foundVills.emplace_back(std::make_unique<Vill>(*m_vills[i]));
+                }
             }
         }
         if (store) {
@@ -51,6 +58,13 @@ namespace Villager {
         }
 
         return foundVills;
+    }
+
+    void sort() {
+        std::sort(m_vills.begin(), m_vills.end(),
+                  [](auto a, auto b) {
+            return a->entity->pos.y > b->entity->pos.y;
+        });
     }
 
     void unselectAll() {

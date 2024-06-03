@@ -1,6 +1,7 @@
 #include <iostream>
 #include "test_selection.h"
 #include "rendering/Entity.h"
+#include "models/Villager.h"
 
 const std::vector<std::function<void()>> m_tests{
     []() {
@@ -12,7 +13,15 @@ const std::vector<std::function<void()>> m_tests{
         assert(e.isWithin(.1, .1, .1, .1));
         assert(e.isWithin(-.1, .1, .1, .1));
         assert(!e.isWithin(-.1, -.1, -.1, -.1));
-    }
+    },
+    []() {
+//        Villager::sort({
+//               .entity = std::make_shared<Entity>(Entity{
+//                       .pos = {x * Shaders::m_villModel.width(), y * Shaders::m_villModel.height(), z},
+//                       .size = {Shaders::m_villModel.width(), Shaders::m_villModel.height()},
+//               }
+//        });
+    },
 };
 
 void Test::run() {

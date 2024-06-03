@@ -254,6 +254,12 @@ void Model::destroy() {
     vkDestroyDescriptorSetLayout(Gra::m_device, descriptorSetLayout, nullptr);
 }
 
+void Model::sort() {
+    std::sort(entities.begin(), entities.end(),
+              [](auto a, auto b) {
+                  return a->pos.y > b->pos.y;
+              });
+}
 
 
 void destroyModels() {
