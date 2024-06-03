@@ -11,7 +11,10 @@ namespace Villager {
     void initVillModel();
     void spawn(float x, float y);
 
-    std::vector<std::unique_ptr<Vill>> villsWithinBounds(float x0, float y0, float x1, float y1);
-
+    std::vector<std::unique_ptr<Vill>> villsWithinBounds(float x0,
+                                                         float y0,
+                                                         float x1,
+                                                         float y1,
+                                                         bool store);
     void destroy();
 }

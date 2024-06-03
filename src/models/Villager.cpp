@@ -5,6 +5,7 @@
 namespace Villager {
 
     std::vector<std::shared_ptr<Vill>> m_vills{};
+    std::vector<std::shared_ptr<Vill>> m_selectedVills{}; //TODO should it be selected entities instead? Hm...
 
     void initVillModel() {
         Shaders::m_villModel.recreateUboBuffer();
@@ -27,16 +28,25 @@ namespace Villager {
         Shaders::m_villModel.destroy();
     }
 
-    std::vector<std::unique_ptr<Vill>> villsWithinBounds(float x0, float y0, float x1, float y1) {
+    std::vector<std::unique_ptr<Vill>> villsWithinBounds(float x0,
+                                                         float y0,
+                                                         float x1,
+                                                         float y1,
+                                                         bool store) {
         std::vector<std::unique_ptr<Vill>> foundVills{};
+        auto sizeOfBox = std::abs((x0 - x1) + (y0 - y1));
+        bool selectOne = sizeOfBox < 0.01;
 
         for (auto &vill : m_vills) {
             if (vill->entity->isWithin(x0, y0, x1, y1)) {
-                foundVills.push_back(
-                        std::make_unique<Vill>(
-                                *vill
-                                )
-                                );
+                foundVills.push_back(std::make_unique<Vill>(*vill));
+                if (selectOne) break;
+            }
+        }
+        if (store) {
+            m_selectedVills.clear();
+            for (auto &vill : foundVills) {
+                m_selectedVills.emplace_back(std::make_shared<Vill>(*vill));
             }
         }
 

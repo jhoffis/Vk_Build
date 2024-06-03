@@ -4,6 +4,7 @@
 #include <memory>
 #include "rendering/Entity.h"
 
+// TODO combine this Vill.h and Villager.h
 namespace Villager {
 
     struct Deeds {
@@ -74,6 +75,8 @@ namespace Villager {
         const std::shared_ptr<Entity> entity = std::make_shared<Entity>(Entity{});
         char *name{};
     };
+
+    extern std::vector<std::shared_ptr<Vill>> m_selectedVills;
 
     void unselectAll();
 }

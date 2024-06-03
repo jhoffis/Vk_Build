@@ -53,7 +53,7 @@ namespace SelectionBox {
         }
 
         Villager::unselectAll();
-        const auto& vills = Villager::villsWithinBounds(x0, y0, x1, y1);
+        const auto& vills = Villager::villsWithinBounds(x0, y0, x1, y1, true);
         for (auto &vill : vills) {
             vill->entity->selected = true;
             std::cout << "vill: " << vill->age << std::endl;

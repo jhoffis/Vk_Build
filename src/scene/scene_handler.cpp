@@ -60,7 +60,13 @@ void SceneHandler::create() {
                 SceneData::xWorldDragCam = SceneData::xWorld;
                 SceneData::yWorldDragCam = SceneData::yWorld;
                 SceneData::dragging = true;
+            } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+                for (auto vill : Villager::m_selectedVills) {
+                    vill->entity->pos.x = SceneData::xWorld;
+                    vill->entity->pos.y = SceneData::yWorld;
+                }
             }
+
         } else {
             if (button == GLFW_MOUSE_BUTTON_LEFT) {
                 SelectionBox::hide();
