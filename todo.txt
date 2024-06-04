@@ -1,12 +1,14 @@
+
+Now:
+- pathfinding
+
+Later:
 - endre til bare en type villager elns
 - type selectable
 - få bare compiling på de som skal compiles
 - bygning
 - trær
 - lydeffekter
-- pathfinding (først at man høyreklikker en plass 
-               og så flyr units til stedet som et spøkelse
-               deretter at den lager en path)
 - vann
 - kunne høyreklikke tre og sakte minske dens "hp" med 
   en villager i nærheten (kan utvides senere)

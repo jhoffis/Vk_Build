@@ -70,7 +70,7 @@ void SceneHandler::create() {
 
         } else {
             if (button == GLFW_MOUSE_BUTTON_LEFT) {
-                SelectionBox::hide();
+                SelectionBox::hide(true);
             } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
                 SceneData::dragging = false;
             }
@@ -110,7 +110,7 @@ void SceneHandler::create() {
 //    });
 
 
-    Map::create(15);
+    Map::createVisual(15);
     Villager::initVillModel();
     Villager::spawn(-2, 3);
     Villager::spawn(1.75f, 1.33);

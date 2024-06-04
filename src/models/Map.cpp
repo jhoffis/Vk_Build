@@ -2,7 +2,7 @@
 #include "rendering/Model.h"
 #include "shaders/Shaders.h"
 
-void Map::create(int xy) {
+void Map::createVisual(int xy) {
 
     for (int x = 0; x < xy; x++) {
         for (int y = 0; y < xy; y++) {

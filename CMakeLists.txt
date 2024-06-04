@@ -15,6 +15,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 file(COPY ${CMAKE_SOURCE_DIR}/res DESTINATION ${PROJECT_BINARY_DIR})
 
 add_executable(${PROJECT_NAME}
+        src/path_finding.cpp
+        src/path_finding.h
         src/test/test_selection.cpp
         src/test/test_selection.h
         src/shaders/Shaders.cpp

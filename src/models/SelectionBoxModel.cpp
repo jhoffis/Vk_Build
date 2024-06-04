@@ -19,7 +19,7 @@ namespace SelectionBox {
         Shaders::m_selectionBoxModel.addEntity(entity, false);
         Shaders::m_selectionBoxModel.recreateUboBuffer();
 
-        hide();
+        hide(false);
     }
 
     void visible(float x, float y) {
@@ -30,9 +30,11 @@ namespace SelectionBox {
         m_ubo.posNew.y = y;
     }
 
-    void hide() {
+    void hide(bool select) {
         Shaders::m_selectionBoxModel.visible = false;
         m_selected.clear();
+
+        if (!select) return;
 
         float x0, y0, x1, y1;
 

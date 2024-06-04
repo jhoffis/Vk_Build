@@ -19,7 +19,7 @@ namespace SelectionBox {
     void init();
 
     void visible(float x, float y);
-    void hide();
+    void hide(bool select);
     bool isVisible();
 
     void destroy();
