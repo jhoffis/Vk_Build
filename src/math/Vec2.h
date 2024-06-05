@@ -25,6 +25,10 @@ struct Vec2 {
         return std::abs(x+y) > std::abs(other.x+other.y);
     }
 
+    constexpr bool operator==(const Vec2& other) const {
+        return x==other.x && y==other.y;
+    }
+
 
     [[nodiscard]] constexpr float magnitude() const {
         return MyMath::fast_sqrt((x*x) + (y*y));

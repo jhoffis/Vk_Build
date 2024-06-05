@@ -12,10 +12,13 @@ bool PathFinder::findPath(Vec2 startPos, Vec2 targetPos, Map::Map map, std::vect
 
     int x = static_cast<int>(std::floor(startPos.x));
     int y = static_cast<int>(std::floor(startPos.y));
+    int targetX = static_cast<int>(std::floor(targetPos.x));
+    int targetY = static_cast<int>(std::floor(targetPos.y));
+    if (x == targetX && y == targetY) return false;
+
     auto mapDimension = map.xy;
     int startIndex = x + y * mapDimension;
-    int targetIndex = static_cast<int>(std::floor(targetPos.x))
-            + static_cast<int>(std::floor(targetPos.y)) * mapDimension;
+    int targetIndex = targetX + targetY * mapDimension;
     paths[startIndex] = startIndex;
     int pathIndex = startIndex;
 
@@ -80,6 +83,7 @@ bool PathFinder::findPath(Vec2 startPos, Vec2 targetPos, Map::Map map, std::vect
         tempOutPath.emplace_back(pathIndex);
         pathIndex = paths[pathIndex];
     }
+    tempOutPath.emplace_back(startIndex);
     std::reverse(tempOutPath.begin(), tempOutPath.end());
 
     int lastDirection{};
