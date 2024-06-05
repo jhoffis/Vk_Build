@@ -1,7 +1,7 @@
 #include "path_finding.h"
 #include <vector>
 
-bool PathFinder::findPath(Entity entity, Vec2 targetPos, Map::Map map, std::vector<int> &outPath) {
+bool PathFinder::findPath(Vec2 startPos, Vec2 targetPos, Map::Map map, std::vector<int> &outPath) {
     // List containing which path point to check next. The first elements are the closest to Start which ensures shortest path
     std::vector<int> checkList(map.map.size(), -1);
     int checkIndex = 0;
@@ -10,11 +10,12 @@ bool PathFinder::findPath(Entity entity, Vec2 targetPos, Map::Map map, std::vect
     // History for traversing back to where you started
     std::vector<int> paths(checkList);
 
-    int x = static_cast<int>(entity.pos.x);
-    int y = static_cast<int>(entity.pos.y);
+    int x = static_cast<int>(std::floor(startPos.x));
+    int y = static_cast<int>(std::floor(startPos.y));
     auto mapDimension = map.xy;
     int startIndex = x + y * mapDimension;
-    int targetIndex = static_cast<int>(targetPos.x) + static_cast<int>(targetPos.y) * mapDimension;
+    int targetIndex = static_cast<int>(std::floor(targetPos.x))
+            + static_cast<int>(std::floor(targetPos.y)) * mapDimension;
     paths[startIndex] = startIndex;
     int pathIndex = startIndex;
 
@@ -98,7 +99,7 @@ void PathFinder::convertMapPathToWorldPath(Map::Map &map,
                                            std::vector<int> &inPath,
                                            std::vector<Vec2> &outPath) {
     outPath.clear();
-    for (auto &point : inPath) {
-        outPath.emplace_back(map.indexToWorld(point));
+    for (int i = static_cast<int>(inPath.size()) - 1; i >= 0; i--) {
+        outPath.emplace_back(map.indexToWorld(inPath[i]));
     }
 }

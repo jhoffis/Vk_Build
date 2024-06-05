@@ -6,6 +6,7 @@
 #include "models/SelectionBoxModel.h"
 #include "scene_data.h"
 #include "rendering/Model.h"
+#include "path_finding.h"
 
 #include <vector>
 #include <iostream>
@@ -14,6 +15,8 @@ static size_t x = 0;
 static size_t y = 0;
 
 void SceneHandler::create() {
+
+    static auto map = Map::createMap(15);
 
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
 //        keyInput(&scenes[currentScene], key, action);
@@ -62,9 +65,25 @@ void SceneHandler::create() {
                 SceneData::yWorldDragCam = SceneData::yWorld;
                 SceneData::dragging = true;
             } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+
+
                 for (auto vill : Villager::m_selectedVills) {
-                    vill->entity->pos.x = SceneData::xWorld;
-                    vill->entity->pos.y = SceneData::yWorld;
+                    std::vector<int> OutPath;
+                    auto start = Map::worldToMapCoordinates(vill->entity->pos.x, vill->entity->pos.y);
+                    auto target = Map::worldToMapCoordinates(SceneData::xWorld, SceneData::yWorld);
+                    auto res3 = PathFinder::findPath(
+                            start,
+                            target,
+                            map,
+                            OutPath
+                    );
+                    if (res3) {
+                        PathFinder::convertMapPathToWorldPath(map, OutPath, (std::vector<Vec2> &) vill->path);
+                    }
+
+
+//                    vill->entity->pos.x = SceneData::xWorld;
+//                    vill->entity->pos.y = SceneData::yWorld;
                 }
             }
 
@@ -110,7 +129,7 @@ void SceneHandler::create() {
 //    });
 
 
-    Map::createVisual(15);
+    Map::createVisual(map.xy);
     Villager::initVillModel();
     Villager::spawn(-2, 3);
     Villager::spawn(1.75f, 1.33);
@@ -125,6 +144,7 @@ void SceneHandler::update() {
     Camera::m_cam.update();
     Shaders::m_villModel.sort();
     Villager::sort();
+    Villager::update();
 //    if (selected != nullptr && !selected->entity.isAbove(xWorld, yWorld))
 //        selected->entity.pos.x += static_cast<float>(.1 * Timer::delta());
 //    for (auto male : males)

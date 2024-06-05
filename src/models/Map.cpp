@@ -23,9 +23,20 @@ void Map::destroy() {
     Shaders::m_grassModel.destroy();
 }
 
+Vec2 Map::worldToMapCoordinates(double x, double y) {
+    return Vec2(x / tileSize, y / tileSize);
+}
+
 Vec2 Map::Map::indexToWorld(int i) const {
     return Vec2(
             static_cast<float>(i % xy) * tileSize,
             static_cast<float>(i / xy) * tileSize
     );
+}
+
+Map::Map Map::createMap(int xy) {
+    Map map{.xy = xy};
+    map.map.resize(xy*xy);
+    std::fill(map.map.begin(), map.map.end(), 1);
+    return map;
 }

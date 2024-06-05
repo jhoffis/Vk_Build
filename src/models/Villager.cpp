@@ -2,6 +2,7 @@
 #include "rendering/Model.h"
 #include "shaders/Shaders.h"
 #include "Map.h"
+#include "timer_util.h"
 
 namespace Villager {
 
@@ -17,10 +18,10 @@ namespace Villager {
     void spawn(float x, float y) {
         z = 0.1f;
         auto male = m_vills.emplace_back(std::make_shared<Vill>(Vill{
-            .entity = std::make_shared<Entity>(Entity{
-                    .pos = {x * Map::tileSize, y * Map::tileSize, z},
-                    .size = {Shaders::m_villModel.width(), Shaders::m_villModel.height()},
-            }),
+                .entity = std::make_shared<Entity>(Entity{
+                        .pos = {x * Map::tileSize, y * Map::tileSize, z},
+                        .size = {Shaders::m_villModel.width(), Shaders::m_villModel.height()},
+                }),
         }));
         Shaders::m_villModel.addEntity(male->entity, true);
     }
@@ -53,7 +54,7 @@ namespace Villager {
         }
         if (store) {
             m_selectedVills.clear();
-            for (auto &vill : foundVills) {
+            for (auto &vill: foundVills) {
                 m_selectedVills.emplace_back(std::make_shared<Vill>(*vill));
             }
         }
@@ -64,25 +65,38 @@ namespace Villager {
     void sort() {
         std::sort(m_vills.begin(), m_vills.end(),
                   [](auto a, auto b) {
-            return a->entity->pos.y > b->entity->pos.y;
-        });
+                      return a->entity->pos.y > b->entity->pos.y;
+                  });
+    }
+
+    void update() {
+        for (auto vill: m_vills) {
+            vill->update(Timer::delta());
+        }
     }
 
     void unselectAll() {
-        for (auto vill : m_vills) {
+        for (auto vill: m_vills) {
             vill->entity->selected = false;
         }
     }
 
-    void Vill::update(float delta) {
-        const float movementSpeed = .1f;
+    void Vill::update(double delta) {
+        if (!path.empty()) {
+            const auto movementSpeed = .1f * delta;
 
-        auto approach = path[0] - entity->pos;
-        approach.normalize();
-        approach *= movementSpeed;
+            auto originalApproach = path[path.size() - 1] - entity->pos;
+            auto approach = originalApproach;
+            approach.normalize();
+            approach *= movementSpeed;
+            if (approach > originalApproach) {
+                approach = originalApproach;
+                path.resize(path.size() - 1);
+            }
 
-        entity->pos.x += approach.x;
-        entity->pos.y += approach.y;
+            entity->pos.x += approach.x;
+            entity->pos.y += approach.y;
+        }
 
 //        auto angle = 90;
 //

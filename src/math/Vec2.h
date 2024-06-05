@@ -1,5 +1,6 @@
 #pragma once
 
+#include <complex>
 #include "Vec3.h"
 #include "math_stuff.h"
 
@@ -19,6 +20,11 @@ struct Vec2 {
         x *= other;
         y *= other;
     }
+
+    constexpr bool operator>(const Vec2& other) const {
+        return std::abs(x+y) > std::abs(other.x+other.y);
+    }
+
 
     [[nodiscard]] constexpr float magnitude() const {
         return MyMath::fast_sqrt((x*x) + (y*y));

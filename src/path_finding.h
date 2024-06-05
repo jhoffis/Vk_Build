@@ -4,7 +4,7 @@
 #include "models/Map.h"
 
 namespace PathFinder {
-    bool findPath(Entity entity, Vec2 targetPos, Map::Map map, std::vector<int> &outPath);
+    bool findPath(Vec2 startPos, Vec2 targetPos, Map::Map map, std::vector<int> &outPath);
 
     void convertMapPathToWorldPath(Map::Map &map,
                                    std::vector<int> &inPath,

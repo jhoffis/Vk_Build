@@ -43,7 +43,7 @@ const std::vector<std::function<void()>> m_tests{
             std::vector<int> OutPath;
 
             auto res0 = PathFinder::findPath(
-                    {.pos = {0, 0, 0}},
+                    {0, 0},
                     {2, 3},
                     {.xy = 10,
                             .map = Map},
@@ -60,7 +60,7 @@ const std::vector<std::function<void()>> m_tests{
 
             OutPath.clear();
             auto res1 = PathFinder::findPath(
-                    {.pos = {0, 0, 0}},
+                    {0, 0},
                     {0, 1},
                     {.xy = 10,
                             .map = Map},
@@ -71,7 +71,7 @@ const std::vector<std::function<void()>> m_tests{
 
             OutPath.clear();
             auto res2 = PathFinder::findPath(
-                    {.pos = {0, 0, 0}},
+                    {0, 0},
                     {9, 9},
                     {.xy = 10,
                             .map = Map},
@@ -88,16 +88,19 @@ const std::vector<std::function<void()>> m_tests{
                     .map = Map};
             Villager::Vill vill{};
             auto res3 = PathFinder::findPath(
-                    *vill.entity,
+                    {0, 0},
                     {9.1, 9.3},
                     map,
                     OutPath
             );
 
-            PathFinder::convertMapPathToWorldPath(map, OutPath, vill.path);
-            vill.update(1);
-            vill.update(1);
-            vill.update(1);
+            assert(map.indexToWorld(9).x == 9*Map::tileSize);
+            assert(map.indexToWorld(10).y == 1*Map::tileSize);
+
+            PathFinder::convertMapPathToWorldPath(map, OutPath, (std::vector<Vec2> &) vill.path);
+            for (int i = 0; i < 100; i++) {
+                vill.update(1);
+            }
 /*
 //    int64_t dimension = 5000;
 //    std::vector<int> Map(dimension*dimension, 1);

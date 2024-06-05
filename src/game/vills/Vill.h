@@ -77,7 +77,7 @@ namespace Villager {
         const std::shared_ptr<Entity> entity = std::make_shared<Entity>(Entity{});
         char *name{};
 
-        void update(float delta);
+        void update(double delta);
     };
 
     extern std::vector<std::shared_ptr<Vill>> m_selectedVills;

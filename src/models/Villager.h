@@ -18,5 +18,6 @@ namespace Villager {
                                                          bool store);
     void sort(std::vector<std::shared_ptr<Vill>> vills);
     void sort();
+    void update();
     void destroy();
 }

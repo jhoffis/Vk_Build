@@ -14,6 +14,9 @@ namespace Map {
         Vec2 indexToWorld(int i) const;
     };
 
+    Vec2 worldToMapCoordinates(double x, double y);
+
+    Map createMap(int xy);
     void createVisual(int xy);
     void destroy();
 }
