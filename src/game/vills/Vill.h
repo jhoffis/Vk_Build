@@ -72,6 +72,7 @@ namespace Villager {
         uint8_t blueness{};
         VillSex sex{};
 
+        int pathIndex;
         std::vector<Vec2> path{};
 
         const std::shared_ptr<Entity> entity = std::make_shared<Entity>(Entity{});
@@ -80,7 +81,7 @@ namespace Villager {
         void update(double delta);
     };
 
-    extern std::vector<std::shared_ptr<Vill>> m_selectedVills;
+    extern std::vector<Vill*> m_selectedVills;
 
     void unselectAll();
 }

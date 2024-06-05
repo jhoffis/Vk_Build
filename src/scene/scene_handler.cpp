@@ -78,6 +78,7 @@ void SceneHandler::create() {
                             OutPath
                     );
                     if (res3) {
+                        vill->pathIndex = 0;
                         PathFinder::convertMapPathToWorldPath(map, OutPath, (std::vector<Vec2> &) vill->path);
                     }
 

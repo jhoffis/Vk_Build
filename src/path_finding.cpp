@@ -83,8 +83,8 @@ bool PathFinder::findPath(Vec2 startPos, Vec2 targetPos, Map::Map map, std::vect
     std::reverse(tempOutPath.begin(), tempOutPath.end());
 
     int lastDirection{};
-    for (auto i = 0; i < tempOutPath.size() - 1; i++) {
-        auto direction = tempOutPath[i + 1] - tempOutPath[i];
+    for (unsigned int i = 0; i < tempOutPath.size() - 1; i++) {
+        auto direction = tempOutPath[i + 1] - tempOutPath[i]; // TODO error when going to same tile as the one you stand on.
         if (direction != lastDirection && i != 0) {
             outPath.emplace_back(tempOutPath[i]);
         }
@@ -99,7 +99,7 @@ void PathFinder::convertMapPathToWorldPath(Map::Map &map,
                                            std::vector<int> &inPath,
                                            std::vector<Vec2> &outPath) {
     outPath.clear();
-    for (int i = static_cast<int>(inPath.size()) - 1; i >= 0; i--) {
+    for (int i = 0; i < inPath.size(); i++) {
         outPath.emplace_back(map.indexToWorld(inPath[i]));
     }
 }
