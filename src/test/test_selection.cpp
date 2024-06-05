@@ -5,53 +5,83 @@
 #include "path_finding.h"
 
 const std::vector<std::function<void()>> m_tests{
-    []() {
-        std::cout << "Entity within bounds" << std::endl;
-        Entity e{
-            .size = {1, 1}
-        };
-        assert(e.isWithin(.0, .0, .0, .0));
-        assert(e.isWithin(.1, .1, .1, .1));
-        assert(e.isWithin(-.1, .1, .1, .1));
-        assert(!e.isWithin(-.1, -.1, -.1, -.1));
-    },
-    []() {
+        []() {
+            std::cout << "Entity within bounds" << std::endl;
+            Entity e{
+                    .size = {1, 1}
+            };
+            assert(e.isWithin(.0, .0, .0, .0));
+            assert(e.isWithin(.1, .1, .1, .1));
+            assert(e.isWithin(-.1, .1, .1, .1));
+            assert(!e.isWithin(-.1, -.1, -.1, -.1));
+        },
+        []() {
 
 
-    std::vector<int> Map = {
-            1, 0, 1, 0, 1, 1, 1, 0, 1, 1,
-            1, 0, 1, 1, 1, 0, 1, 1, 0, 1,
-            1, 0, 0, 0, 1, 0, 0, 1, 1, 1,
-            1, 0, 1, 1, 1, 1, 1, 0, 1, 0,
-            1, 1, 1, 0, 0, 0, 1, 0, 1, 1,
-            0, 0, 1, 1, 1, 0, 1, 0, 0, 1,
-            1, 1, 0, 1, 0, 0, 1, 0, 1, 1,
-            0, 1, 0, 1, 1, 1, 1, 0, 1, 0,
-            0, 1, 1, 1, 0, 0, 1, 0, 1, 1,
-            1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-    };
-    std::vector<int> OutPath;
+            std::vector<int> Map = {
+                    1, 0, 1, 0, 1, 1, 1, 0, 1, 1,
+                    1, 0, 1, 1, 1, 0, 1, 1, 0, 1,
+                    1, 1, 0, 0, 1, 0, 0, 1, 1, 1,
+                    1, 0, 1, 1, 1, 1, 1, 0, 1, 0,
+                    1, 1, 1, 0, 0, 0, 1, 0, 1, 1,
+                    0, 0, 1, 1, 1, 0, 1, 0, 0, 1,
+                    1, 1, 0, 1, 0, 0, 1, 0, 1, 1,
+                    0, 1, 0, 1, 1, 1, 1, 0, 1, 0,
+                    0, 1, 1, 1, 0, 0, 1, 0, 1, 1,
+                    1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+            };
+            std::vector<int> OutPath;
 
-    auto res0 = PathFinder::findPath(
-            {.pos = {0, 0, 0}},
-            {2, 3},
-            {.xy = 10,
-                    .map = Map},
-            OutPath
+            auto res0 = PathFinder::findPath(
+                    {.pos = {0, 0, 0}},
+                    {2, 3},
+                    {.xy = 10,
+                            .map = Map},
+                    OutPath
             );
-    assert(res0);
+            assert(res0);
+            auto expectedResult = {
+                    30, 41, 32 // ult
+//            10, 20, 30, 41, 32 // decent
+// normal           10, 20, 30, 40, 41, 42, 32
+            };
+            assert(std::equal(OutPath.begin(), OutPath.end(),
+                              expectedResult.begin(), expectedResult.end()));
 
-    OutPath.clear();
-    auto res1 = PathFinder::findPath(
-            {.pos = {0, 0, 0}},
-            {0, 1},
-            {.xy = 10,
-                    .map = Map},
-            OutPath
-    );
-    assert(res1);
-    assert(OutPath[0] == 10);
+            OutPath.clear();
+            auto res1 = PathFinder::findPath(
+                    {.pos = {0, 0, 0}},
+                    {0, 1},
+                    {.xy = 10,
+                            .map = Map},
+                    OutPath
+            );
+            assert(res1);
+            assert(OutPath[0] == 10);
 
+            OutPath.clear();
+            auto res2 = PathFinder::findPath(
+                    {.pos = {0, 0, 0}},
+                    {9, 9},
+                    {.xy = 10,
+                            .map = Map},
+                    OutPath
+            );
+            assert(res2);
+            expectedResult = {
+                    30, 41, 42, 24, 14, 5, 38, 48, 59, 69, 78, 88, 99,
+            };
+            assert(std::equal(OutPath.begin(), OutPath.end(),
+                              expectedResult.begin(), expectedResult.end()));
+
+            Villager::Vill vill{};
+            auto res3 = PathFinder::findPath(
+                    *vill.entity,
+                    {9.1, 9.3},
+                    {.xy = 10,
+                            .map = Map},
+                    OutPath
+            );
 /*
 //    int64_t dimension = 5000;
 //    std::vector<int> Map(dimension*dimension, 1);
@@ -109,11 +139,11 @@ const std::vector<std::function<void()>> m_tests{
         */
 
 
-    },
+        },
 };
 
 void Test::run() {
-    for (const auto& test : m_tests) {
+    for (const auto &test: m_tests) {
         test();
     }
     std::cout << "Ended tests successfully" << std::endl;
