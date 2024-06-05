@@ -3,6 +3,7 @@
 #include "rendering/Entity.h"
 #include "models/Villager.h"
 #include "path_finding.h"
+#include "math/math_stuff.h"
 
 const std::vector<std::function<void()>> m_tests{
         []() {
@@ -14,6 +15,15 @@ const std::vector<std::function<void()>> m_tests{
             assert(e.isWithin(.1, .1, .1, .1));
             assert(e.isWithin(-.1, .1, .1, .1));
             assert(!e.isWithin(-.1, -.1, -.1, -.1));
+        },
+        []() {
+            auto sqrt0 = MyMath::fast_sqrt(9);
+            assert((int) sqrt0 == 3);
+            auto sqrt1 = MyMath::fast_sqrt(5434);
+            assert((int) sqrt1 == 73);
+//            auto sqrt3 = MyMath::Q_rsprt(5434);
+//            auto sqrt4 = MyMath::Q_rsprt2(5434);
+//            assert(sqrt3 == sqrt4);
         },
         []() {
 
@@ -74,14 +84,20 @@ const std::vector<std::function<void()>> m_tests{
             assert(std::equal(OutPath.begin(), OutPath.end(),
                               expectedResult.begin(), expectedResult.end()));
 
+            auto map = Map::Map{.xy = 10,
+                    .map = Map};
             Villager::Vill vill{};
             auto res3 = PathFinder::findPath(
                     *vill.entity,
                     {9.1, 9.3},
-                    {.xy = 10,
-                            .map = Map},
+                    map,
                     OutPath
             );
+
+            PathFinder::convertMapPathToWorldPath(map, OutPath, vill.path);
+            vill.update(1);
+            vill.update(1);
+            vill.update(1);
 /*
 //    int64_t dimension = 5000;
 //    std::vector<int> Map(dimension*dimension, 1);

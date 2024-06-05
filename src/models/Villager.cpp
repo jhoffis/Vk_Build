@@ -1,6 +1,7 @@
 #include "Villager.h"
 #include "rendering/Model.h"
 #include "shaders/Shaders.h"
+#include "Map.h"
 
 namespace Villager {
 
@@ -17,7 +18,7 @@ namespace Villager {
         z = 0.1f;
         auto male = m_vills.emplace_back(std::make_shared<Vill>(Vill{
             .entity = std::make_shared<Entity>(Entity{
-                    .pos = {x * Shaders::m_villModel.width(), y * Shaders::m_villModel.height(), z},
+                    .pos = {x * Map::tileSize, y * Map::tileSize, z},
                     .size = {Shaders::m_villModel.width(), Shaders::m_villModel.height()},
             }),
         }));
@@ -73,4 +74,22 @@ namespace Villager {
         }
     }
 
+    void Vill::update(float delta) {
+        const float movementSpeed = .1f;
+
+        auto approach = path[0] - entity->pos;
+        approach.normalize();
+        approach *= movementSpeed;
+
+        entity->pos.x += approach.x;
+        entity->pos.y += approach.y;
+
+//        auto angle = 90;
+//
+//        auto dx = std::cos(angle) * movementSpeed;
+//        auto dy = std::sin(angle) * movementSpeed;
+//
+//        entity->pos.x += dx;
+//        entity->pos.y += dy;
+    }
 }

@@ -72,8 +72,12 @@ namespace Villager {
         uint8_t blueness{};
         VillSex sex{};
 
+        std::vector<Vec2> path{};
+
         const std::shared_ptr<Entity> entity = std::make_shared<Entity>(Entity{});
         char *name{};
+
+        void update(float delta);
     };
 
     extern std::vector<std::shared_ptr<Vill>> m_selectedVills;

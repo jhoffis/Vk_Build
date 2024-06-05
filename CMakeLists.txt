@@ -77,7 +77,8 @@ add_executable(${PROJECT_NAME}
         src/models/SelectionBoxModel.h
         src/math/math_stuff.h
         src/scene/scene_data.h
-        src/scene/scene_data.cpp)
+        src/scene/scene_data.cpp
+        src/math/math_stuff.cpp)
 
 find_package(Vulkan REQUIRED)
 target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIR})

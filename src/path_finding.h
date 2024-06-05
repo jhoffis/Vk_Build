@@ -5,4 +5,8 @@
 
 namespace PathFinder {
     bool findPath(Entity entity, Vec2 targetPos, Map::Map map, std::vector<int> &outPath);
+
+    void convertMapPathToWorldPath(Map::Map &map,
+                                   std::vector<int> &inPath,
+                                   std::vector<Vec2> &outPath);
 }

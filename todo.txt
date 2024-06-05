@@ -1,6 +1,8 @@
 
 Now:
-- pathfinding
+- map coordinates. Spawn based on that. Convert world coordinates <-> map coordinates.
+
+- pathfindingX
 
 Later:
 - endre til bare en type villager elns

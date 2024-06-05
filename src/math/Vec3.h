@@ -7,7 +7,7 @@ struct Vec3 {
             y{0},
             z{0};
 
-    Vec3 operator-(const Vec3& other) const {
+    constexpr Vec3 operator-(const Vec3& other) const {
         return Vec3{
         x - other.x,
         y - other.y,
@@ -15,7 +15,7 @@ struct Vec3 {
         };
     }
 
-    Vec3 operator-() const {
+    constexpr Vec3 operator-() const {
         return Vec3{
                 -x, -y, -z
         };
