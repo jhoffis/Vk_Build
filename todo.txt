@@ -1,8 +1,10 @@
 
 Now:
-- map coordinates. Spawn based on that. Convert world coordinates <-> map coordinates.
+- place a house where my mouse is.
+- then hover a see through house and place the house when I click.
 
-- pathfindingX
+- Xmap coordinates. Spawn based on that. Convert world coordinates <-> map coordinates.
+- Xpathfinding
 
 Later:
 - endre til bare en type villager elns

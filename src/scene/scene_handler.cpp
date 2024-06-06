@@ -7,6 +7,7 @@
 #include "scene_data.h"
 #include "rendering/Model.h"
 #include "path_finding.h"
+#include "models/Building.h"
 
 #include <vector>
 #include <iostream>
@@ -49,6 +50,9 @@ void SceneHandler::create() {
                 } else if (action == GLFW_RELEASE) {
                     SceneData::dragging = false;
                 }
+                break;
+            case GLFW_KEY_E:
+                Building::spawn(SceneData::xWorld, SceneData::yWorld);
                 break;
             default:
                 // do nothing

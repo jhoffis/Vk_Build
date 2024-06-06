@@ -35,8 +35,16 @@ Vec2 Map::worldToMapCoordinates(double x, double y) {
     return Vec2(x / tileSize, y / tileSize);
 }
 
+Vec2 Map::worldToMapCoorFloor(double x, double y) {
+    return Vec2(std::floor(x / tileSize), std::floor(y / tileSize));
+}
+
 Vec2 Map::worldToMapCoordinates(const Vec2 vec2) {
     return Vec2(vec2.x / tileSize, vec2.y / tileSize);
+}
+
+Vec2 Map::mapToWorldCoordinates(Vec2 vec2) {
+    return Vec2(vec2.x * tileSize, vec2.y * tileSize);
 }
 
 Vec2 Map::Map::indexToWorld(int i) const {

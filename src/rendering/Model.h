@@ -74,6 +74,7 @@ struct Model {
 
     void destroy();
 
+    void spawn(float x, float y);
 };
 #ifdef RMDEV
 void recreateModelPipelines();
@@ -85,6 +86,7 @@ extern std::vector<Model *> m_renderModels;
 
 namespace Shaders {
     extern Model m_grassModel;
+    extern Model m_houseModel;
     extern Model m_villModel;
     extern Model m_selectionBoxModel;
 }

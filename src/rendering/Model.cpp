@@ -11,7 +11,7 @@
 #include "vk/presentation/gra_swap_chain.h"
 #include "camera.h"
 
-void grassUpdateRenderUbo(Gra_Uniform::UBOMem* uboMem,
+void grassUpdateRenderUbo(Gra_Uniform::UBOMem *uboMem,
                           const std::shared_ptr<Entity> &entity) {
     delete static_cast<Gra::UniformBufferObject *>(uboMem->uboStruct);
     uboMem->uboStruct = new Gra::UniformBufferObject{
@@ -20,7 +20,8 @@ void grassUpdateRenderUbo(Gra_Uniform::UBOMem* uboMem,
             .selected = entity->selected,
     };
 }
-std::vector<Model*> m_renderModels{};
+
+std::vector<Model *> m_renderModels{};
 Model Shaders::m_grassModel(
         "grass",
         grassUpdateRenderUbo,
@@ -32,6 +33,19 @@ Model Shaders::m_grassModel(
         0, 0,
         {
                 "grass.png"
+        }
+);
+Model Shaders::m_houseModel(
+        "grass",
+        grassUpdateRenderUbo,
+        {
+                vert_ubo,
+                frag_image,
+        },
+        sizeof(Gra::UniformBufferObject),
+        0, 0,
+        {
+                "house.png"
         }
 );
 
@@ -139,19 +153,19 @@ std::vector<VkDescriptorSet> Model::createDescriptorSets() const {
 }
 
 Model::Model(std::string shaderName,
-             std::function<void(Gra_Uniform::UBOMem*, const std::shared_ptr<Entity> &entity)> updateRenderUbo,
+             std::function<void(Gra_Uniform::UBOMem *, const std::shared_ptr<Entity> &entity)> updateRenderUbo,
              std::vector<ShaderComponentOrder> order,
              const int sizeOfUBO,
              const float overrideWidth,
              const float overrideHeight,
              std::vector<std::string> textures)
-             : shaderName(std::move(shaderName)),
-               updateRenderUbo(std::move(updateRenderUbo)),
-               order(std::move(order)),
-               sizeOfUBO(sizeOfUBO),
-               overrideWidth(overrideWidth),
-               overrideHeight(overrideHeight),
-               textures(std::move(textures)) {
+        : shaderName(std::move(shaderName)),
+          updateRenderUbo(std::move(updateRenderUbo)),
+          order(std::move(order)),
+          sizeOfUBO(sizeOfUBO),
+          overrideWidth(overrideWidth),
+          overrideHeight(overrideHeight),
+          textures(std::move(textures)) {
     m_renderModels.emplace_back(this);
 }
 
@@ -165,7 +179,7 @@ void Model::init() {
 
         auto w = overrideWidth;
         auto h = overrideHeight;
-        for (const auto& tex : textures) {
+        for (const auto &tex: textures) {
             auto img = Texture::loadImage(tex.c_str());
             texImageViews.emplace_back(Texture::createTexture(img));
             if (w == 0) w = static_cast<float>(img.w);
@@ -215,8 +229,9 @@ void Model::recreateUboBuffer() {
     auto amount = 2 * uboMem.amount;
     if (amount == 0)
         amount = 1;
-    else while (amount < entitiesSize)
-        amount *= 2;
+    else
+        while (amount < entitiesSize)
+            amount *= 2;
     vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
     pool = Gra_Uniform::createDescriptorPool(amount);
     uboMem.destroy();
@@ -224,10 +239,20 @@ void Model::recreateUboBuffer() {
     descriptorSets = createDescriptorSets();
 }
 
-void Model::addEntity(const std::shared_ptr<Entity>& entity, bool update) {
+void Model::addEntity(const std::shared_ptr<Entity> &entity, bool update) {
     if (update)
         recreateUboBuffer();
     entities.emplace_back(entity);
+}
+
+void Model::spawn(float x, float y) {
+    recreateUboBuffer();
+    entities.emplace_back(
+            std::make_shared<Entity>(
+                    Entity{.pos = {x, y, 0},
+                            .size = {width(), height()}}
+            )
+    );
 }
 
 void Model::createPipeline() {
@@ -260,7 +285,6 @@ void Model::sort() {
                   return a->pos.y > b->pos.y;
               });
 }
-
 
 void destroyModels() {
     for (auto model: m_renderModels) {

@@ -20,7 +20,9 @@ namespace Map {
     extern std::shared_ptr<Map> m_map;
 
     Vec2 worldToMapCoordinates(double x, double y);
-    Vec2 worldToMapCoordinates(const Vec2 vec2);
+    Vec2 worldToMapCoorFloor(double x, double y);
+    Vec2 worldToMapCoordinates(Vec2 vec2);
+    Vec2 mapToWorldCoordinates(Vec2 vec2);
 
     void createMap(int xy);
     void createVisual(int xy);
