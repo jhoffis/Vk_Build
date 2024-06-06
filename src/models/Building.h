@@ -1,5 +1,9 @@
 #pragma once
 
 namespace Building {
-    void spawn(float x, float y);
+    void startHovering(float wX, float wY);
+    void stopHovering();
+    bool isHovering();
+    void updateHovering(float wX, float wY);
+    void place(float wX, float wY);
 }

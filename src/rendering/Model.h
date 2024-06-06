@@ -58,6 +58,8 @@ struct Model {
     [[nodiscard]] std::vector<VkDescriptorSet> createDescriptorSets() const;
     void recreateUboBuffer();
     void addEntity(const std::shared_ptr<Entity>& entity, bool update);
+    void removeEntity(const std::shared_ptr<Entity>&  sharedPtr);
+    void spawn(float x, float y);
 
     void sort();
 
@@ -74,7 +76,6 @@ struct Model {
 
     void destroy();
 
-    void spawn(float x, float y);
 };
 #ifdef RMDEV
 void recreateModelPipelines();

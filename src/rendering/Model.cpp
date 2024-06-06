@@ -245,6 +245,11 @@ void Model::addEntity(const std::shared_ptr<Entity> &entity, bool update) {
     entities.emplace_back(entity);
 }
 
+void Model::removeEntity(const std::shared_ptr<Entity>&  sharedPtr) {
+    entities.erase(std::remove(entities.begin(), entities.end(), sharedPtr), entities.end());
+    recreateUboBuffer();
+}
+
 void Model::spawn(float x, float y) {
     recreateUboBuffer();
     entities.emplace_back(

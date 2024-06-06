@@ -52,7 +52,7 @@ void SceneHandler::create() {
                 }
                 break;
             case GLFW_KEY_E:
-                Building::spawn(SceneData::xWorld, SceneData::yWorld);
+                Building::startHovering(SceneData::xWorld, SceneData::yWorld);
                 break;
             default:
                 // do nothing
@@ -67,15 +67,17 @@ void SceneHandler::create() {
 
         if (action != GLFW_RELEASE) {
             if (button == GLFW_MOUSE_BUTTON_LEFT) {
-
-                SelectionBox::visible(SceneData::xWorld, SceneData::yWorld);
-
+                if (Building::isHovering()) {
+                    Building::place(SceneData::xWorld, SceneData::yWorld);
+                } else {
+                    SelectionBox::visible(SceneData::xWorld, SceneData::yWorld);
+                }
             } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
                 SceneData::xWorldDragCam = SceneData::xWorld;
                 SceneData::yWorldDragCam = SceneData::yWorld;
                 SceneData::dragging = true;
             } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
-
+                Building::stopHovering();
 
                 for (auto vill : Villager::m_selectedVills) {
                     std::vector<int> OutPath;
@@ -156,6 +158,8 @@ void SceneHandler::update() {
     Shaders::m_villModel.sort();
     Villager::sort();
     Villager::update();
+
+    Building::updateHovering(SceneData::xWorld, SceneData::yWorld);
 //    if (selected != nullptr && !selected->entity.isAbove(xWorld, yWorld))
 //        selected->entity.pos.x += static_cast<float>(.1 * Timer::delta());
 //    for (auto male : males)

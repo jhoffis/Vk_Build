@@ -1,7 +1,7 @@
 
 Now:
 - place a house where my mouse is.
-- then hover a see through house and place the house when I click.
+- then hover a see through house and place the house when I left click.
 
 - Xmap coordinates. Spawn based on that. Convert world coordinates <-> map coordinates.
 - Xpathfinding
@@ -26,6 +26,7 @@ Later:
   Må ikke utvide entity, men uansett så sendes inn en entity, som viser hvor den skal rendere.
 
 - Ha guder i spillet som påvirker villsa.
+
 
 ====== DONE ======
 X få selectionbox til å fange units
