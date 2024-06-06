@@ -3,6 +3,7 @@
 #include "shaders/Shaders.h"
 #include "Map.h"
 #include "timer_util.h"
+#include "path_finding.h"
 
 namespace Villager {
 
@@ -82,9 +83,25 @@ namespace Villager {
         }
     }
 
+    /*
+     * TODO
+     * Maybe for each next point, check the latest/last vec2 and see if
+     * a line straight from the current point would hit anything? Maybe.
+     *
+     * Maybe if I want to stick to specific animations and not allow for
+     * floating movement like scouts in aok and aoc, then I can from the
+     * approach variable pick the closest eq predefined normalized vec2.
+     */
     void Vill::update(double delta) {
         if (!path.empty()) {
             const auto movementSpeed = .5f * delta;
+
+//            auto index = PathFinder::nextClearLineTilesDDA(
+//                    *Map::m_map,
+//                    Vec2{entity->pos.x, entity->pos.y},
+//                    path,
+//                    pathIndex
+//            );
 
             auto originalApproach = path[pathIndex] - entity->pos;
             auto approach = originalApproach;

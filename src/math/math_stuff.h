@@ -30,7 +30,8 @@ namespace MyMath {
         return 1.0f / Q_rsprt(number);
     }
 
-    constexpr size_t max(size_t a, size_t b) {
+    constexpr auto max(auto a, auto b) {
         return a > b ? a : b;
     }
+
 }

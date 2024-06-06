@@ -1,8 +1,8 @@
 #pragma once
 
 #include <complex>
-#include "Vec3.h"
 #include "math_stuff.h"
+#include "Vec3.h"
 
 struct Vec2 {
     float

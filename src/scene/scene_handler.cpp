@@ -16,7 +16,13 @@ static size_t y = 0;
 
 void SceneHandler::create() {
 
-    static auto map = Map::createMap(15);
+    Map::createMap(15);
+    Map::m_map->map[17] = 0;
+    Map::m_map->map[18] = 0;
+    Map::m_map->map[19] = 0;
+    Map::m_map->map[47] = 0;
+    Map::m_map->map[48] = 0;
+    Map::m_map->map[49] = 0;
 
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
 //        keyInput(&scenes[currentScene], key, action);
@@ -74,12 +80,12 @@ void SceneHandler::create() {
                     auto res3 = PathFinder::findPath(
                             start,
                             target,
-                            map,
+                            *Map::m_map,
                             OutPath
                     );
                     if (res3) {
                         vill->pathIndex = 0;
-                        PathFinder::convertMapPathToWorldPath(map, OutPath, (std::vector<Vec2> &) vill->path);
+                        PathFinder::convertMapPathToWorldPath(*Map::m_map, OutPath, (std::vector<Vec2> &) vill->path);
                     }
 
 
@@ -130,7 +136,7 @@ void SceneHandler::create() {
 //    });
 
 
-    Map::createVisual(map.xy);
+    Map::createVisual(Map::m_map->xy);
     Villager::initVillModel();
     Villager::spawn(-2, 3);
     Villager::spawn(1.75f, 1.33);

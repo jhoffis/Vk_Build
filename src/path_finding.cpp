@@ -45,13 +45,13 @@ bool PathFinder::findPath(Vec2 startPos, Vec2 targetPos, Map::Map map, std::vect
             auto alreadyChecked = paths[index] >= 0;
             if (i < 4) {
                 closedTile[i] = inaccessible;
-            } else if (i == 4 && (closedTile[0] && closedTile[2])) {
+            } else if (i == 4 && (closedTile[0] || closedTile[2])) {
                 continue;
-            } else if (i == 5 && (closedTile[0] && closedTile[3])) {
+            } else if (i == 5 && (closedTile[0] || closedTile[3])) {
                 continue;
-            } else if (i == 6 && (closedTile[1] && closedTile[2])) {
+            } else if (i == 6 && (closedTile[1] || closedTile[2])) {
                 continue;
-            } else if (i == 7 && (closedTile[1] && closedTile[3])) {
+            } else if (i == 7 && (closedTile[1] || closedTile[3])) {
                 continue;
             }
 
@@ -88,13 +88,14 @@ bool PathFinder::findPath(Vec2 startPos, Vec2 targetPos, Map::Map map, std::vect
 
     int lastDirection{};
     for (unsigned int i = 0; i < tempOutPath.size() - 1; i++) {
-        auto direction = tempOutPath[i + 1] - tempOutPath[i]; // TODO error when going to same tile as the one you stand on.
+        auto direction = tempOutPath[i + 1] - tempOutPath[i];
         if (direction != lastDirection && i != 0) {
             outPath.emplace_back(tempOutPath[i]);
         }
         lastDirection = direction;
     }
     outPath.emplace_back(tempOutPath[tempOutPath.size() - 1]);
+
 
     return true;
 }
@@ -106,4 +107,54 @@ void PathFinder::convertMapPathToWorldPath(Map::Map &map,
     for (int i = 0; i < inPath.size(); i++) {
         outPath.emplace_back(map.indexToWorld(inPath[i]));
     }
+}
+
+std::vector<Vec2> PathFinder::getLineTilesDDA(Vec2 start, Vec2 end) {
+    std::vector<Vec2> tiles;
+
+    auto x0 = start.x;
+    auto y0 = start.y;
+    auto x1 = end.x;
+    auto y1 = end.y;
+
+    auto dx = x1 - x0;
+    auto dy = y1 - y0;
+
+    auto steps = MyMath::max(std::abs(dx), std::abs(dy));
+
+    auto xIncrement = dx / steps;
+    auto yIncrement = dy / steps;
+
+    auto x = x0;
+    auto y = y0;
+
+    for (int i = 0; i <= steps; i++) {
+        tiles.push_back({std::round(x), std::round(y)});
+        x += xIncrement;
+        y += yIncrement;
+    }
+
+    return tiles;
+}
+
+int PathFinder::nextClearLineTilesDDA(Map::Map &map,
+                                      const Vec2 &pos,
+                                       std::vector<Vec2> &inPath,
+                                       int startingIndex) {
+    for (int i = static_cast<int>(inPath.size()) - 1; i >= startingIndex; i--) {
+        auto line = getLineTilesDDA(
+                Map::worldToMapCoordinates(pos),
+                Map::worldToMapCoordinates(inPath[i]));
+        auto open = true;
+        for (auto linePoint : line) {
+            if (map.isMapCoorInaccessible(linePoint)) {
+                open = false;
+                break;
+            }
+        }
+        if (open) {
+            return i;
+        }
+    }
+    return startingIndex;
 }

@@ -4,6 +4,7 @@
 #include "models/Villager.h"
 #include "path_finding.h"
 #include "math/math_stuff.h"
+#include "timer_util.h"
 
 const std::vector<std::function<void()>> m_tests{
         []() {
@@ -15,6 +16,10 @@ const std::vector<std::function<void()>> m_tests{
             assert(e.isWithin(.1, .1, .1, .1));
             assert(e.isWithin(-.1, .1, .1, .1));
             assert(!e.isWithin(-.1, -.1, -.1, -.1));
+        },
+        []() {
+            auto line0 = PathFinder::getLineTilesDDA({0,0}, {10, 7});
+
         },
         []() {
             auto sqrt0 = MyMath::fast_sqrt(9);
@@ -41,6 +46,11 @@ const std::vector<std::function<void()>> m_tests{
                     1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
             };
             std::vector<int> OutPath;
+            auto expectedResult = {
+                    40, 42, 32 // ult
+//            10, 20, 30, 41, 32 // decent
+// normal           10, 20, 30, 40, 41, 42, 32
+            };
 
             auto res0 = PathFinder::findPath(
                     {0, 0},
@@ -50,11 +60,6 @@ const std::vector<std::function<void()>> m_tests{
                     OutPath
             );
             assert(res0);
-            auto expectedResult = {
-                    30, 41, 32 // ult
-//            10, 20, 30, 41, 32 // decent
-// normal           10, 20, 30, 40, 41, 42, 32
-            };
             assert(std::equal(OutPath.begin(), OutPath.end(),
                               expectedResult.begin(), expectedResult.end()));
 
@@ -70,6 +75,7 @@ const std::vector<std::function<void()>> m_tests{
             assert(OutPath[0] == 10);
 
             OutPath.clear();
+            auto s1 = Timer::nowNanos();
             auto res2 = PathFinder::findPath(
                     {0, 0},
                     {9, 9},
@@ -77,9 +83,11 @@ const std::vector<std::function<void()>> m_tests{
                             .map = Map},
                     OutPath
             );
+            auto s2 = Timer::nowNanos();
+            std::cout << "Time path: " << (s2 - s1)  << " ns, " << (s2 - s1)  / 1000000. << " ms" << std::endl;
             assert(res2);
             expectedResult = {
-                    30, 41, 42, 24, 14, 5, 38, 48, 59, 69, 78, 88, 99,
+                    40, 42, 32, 34, 4, 6, 16, 17, 27, 28, 48, 49, 69, 68, 88, 89, 99
             };
             assert(std::equal(OutPath.begin(), OutPath.end(),
                               expectedResult.begin(), expectedResult.end()));
@@ -96,11 +104,19 @@ const std::vector<std::function<void()>> m_tests{
 
             assert(map.indexToWorld(9).x == 9*Map::tileSize);
             assert(map.indexToWorld(10).y == 1*Map::tileSize);
-
             PathFinder::convertMapPathToWorldPath(map, OutPath, (std::vector<Vec2> &) vill.path);
+
+            auto index = PathFinder::nextClearLineTilesDDA(
+                    map,
+                    {0,0},
+                    vill.path,
+                    0
+            );
+
             for (int i = 0; i < 100; i++) {
                 vill.update(1);
             }
+
 /*
 //    int64_t dimension = 5000;
 //    std::vector<int> Map(dimension*dimension, 1);
