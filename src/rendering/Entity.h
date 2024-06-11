@@ -7,7 +7,7 @@
 struct Entity {
     Vec3 pos{};
     Vec2 size{};
-    bool visible{};
+    bool visible{true};
     bool selected{};
 
     [[nodiscard]] constexpr

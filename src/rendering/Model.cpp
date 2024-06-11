@@ -214,16 +214,20 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
     Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, descriptorSets);
+    auto n = 0;
     for (auto i = 0; i < entities.size(); i++) {
+        if (!entities[i]->visible)
+            continue;
         updateRenderUbo(&uboMem, entities[i]);
-        Gra_Uniform::updateUniformBuffer(uboMem, Drawing::currSwapFrame, i);
+        n++;
+        Gra_Uniform::updateUniformBuffer(uboMem, Drawing::currSwapFrame, n);
     }
     return cmd;
 }
 
 void Model::recreateUboBuffer() {
     // liste med alle referanser til ubos - bare utvid vector listen med descSets og så bruk currswapframe for å tegne alle.
-    auto entitiesSize = static_cast<int>(entities.size() + 1);
+    auto entitiesSize = static_cast<int>(entities.size() + 1); // TODO fjern automatisk økning av entities og mem.
     if (entitiesSize < uboMem.amount)
         return;
     auto amount = 2 * uboMem.amount;
