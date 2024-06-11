@@ -3,7 +3,8 @@
 #include "models/Map.h"
 
 namespace Building {
-    std::shared_ptr<Entity> m_hoveringBuilding = std::make_shared<Entity>(Entity{});
+    std::shared_ptr<Entity> m_hoveringBuilding =
+            std::make_shared<Entity>(Entity{.visible = false});
 
     void startHovering(float wX, float wY) {
         if (isHovering()) stopHovering();

@@ -10,6 +10,7 @@
 #include "models/SelectionBoxModel.h"
 #include "vk/presentation/gra_swap_chain.h"
 #include "camera.h"
+#include "timer_util.h"
 
 void grassUpdateRenderUbo(Gra_Uniform::UBOMem *uboMem,
                           const std::shared_ptr<Entity> &entity) {
@@ -209,8 +210,33 @@ void Model::init() {
     createPipeline();
 }
 
+void Model::runRecreateUbo() {
+    if (!queueRecreateUboBuffer) return;
+    queueRecreateUboBuffer = false;
+
+    // liste med alle referanser til ubos - bare utvid vector listen med descSets og så bruk currswapframe for å tegne alle.
+    auto entitiesSize = static_cast<int>(entities.size()); // TODO fjern automatisk økning av entities og mem.
+    auto amount = MyMath::nextPowerOfTwo(entitiesSize);
+    if (amount == uboMem.amount) return;
+    std::cout << "recreates ubo to size " << amount << std::endl;
+
+    auto t0 = Timer::nowNanos();
+    vkDeviceWaitIdle(Gra::m_device);
+    auto t1 = Timer::nowNanos();
+    vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
+    pool = Gra_Uniform::createDescriptorPool(amount);
+    uboMem.destroy();
+    uboMem = Gra_Uniform::createUniformBuffers(amount, uboMem.range);
+    descriptorSets = createDescriptorSets();
+    auto t2 = Timer::nowNanos();
+    Timer::printTimeDiffNanos(t0, t1);
+    Timer::printTimeDiffNanos(t0, t2);
+}
 
 VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
+
+    runRecreateUbo();
+
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
     Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, descriptorSets);
@@ -226,27 +252,13 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
 }
 
 void Model::recreateUboBuffer() {
-    // liste med alle referanser til ubos - bare utvid vector listen med descSets og så bruk currswapframe for å tegne alle.
-    auto entitiesSize = static_cast<int>(entities.size() + 1); // TODO fjern automatisk økning av entities og mem.
-    if (entitiesSize < uboMem.amount)
-        return;
-    auto amount = 2 * uboMem.amount;
-    if (amount == 0)
-        amount = 1;
-    else
-        while (amount < entitiesSize)
-            amount *= 2;
-    vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
-    pool = Gra_Uniform::createDescriptorPool(amount);
-    uboMem.destroy();
-    uboMem = Gra_Uniform::createUniformBuffers(amount, uboMem.range);
-    descriptorSets = createDescriptorSets();
+    queueRecreateUboBuffer = true;
 }
 
 void Model::addEntity(const std::shared_ptr<Entity> &entity, bool update) {
+    entities.emplace_back(entity);
     if (update)
         recreateUboBuffer();
-    entities.emplace_back(entity);
 }
 
 void Model::removeEntity(const std::shared_ptr<Entity>&  sharedPtr) {

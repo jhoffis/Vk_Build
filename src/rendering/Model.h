@@ -44,6 +44,7 @@ struct Model {
 
     std::vector<std::shared_ptr<Entity>> entities{};
     bool visible = true;
+    bool queueRecreateUboBuffer = false;
 
     Model(std::string shaderName,
           std::function<void(Gra_Uniform::UBOMem*, const std::shared_ptr<Entity> &entity)> updateRenderUbo,
@@ -76,6 +77,7 @@ struct Model {
 
     void destroy();
 
+    void runRecreateUbo();
 };
 #ifdef RMDEV
 void recreateModelPipelines();

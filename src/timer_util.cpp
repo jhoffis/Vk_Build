@@ -1,5 +1,7 @@
 #include "timer_util.h"
 #include <chrono>
+#include <iostream>
+
 using namespace std::chrono;
 
 uint64_t m_lastLoopTime{};
@@ -30,4 +32,8 @@ void Timer::updateDelta() {
 
 double Timer::delta() {
     return m_delta;
+}
+
+void Timer::printTimeDiffNanos(uint64_t start, uint64_t end) {
+    std::cout << "Time: " << (end - start) << " ns (" << (static_cast<double>(end - start) / 1000000.0) << " ms)" << std::endl;
 }

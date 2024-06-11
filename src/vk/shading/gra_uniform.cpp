@@ -27,7 +27,7 @@ namespace Gra_Uniform {
            int multiple = std::ceil(static_cast<float>(singleSize) /  static_cast<float>(Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment));
            offset = multiple * static_cast<int>(Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment);
         }
-        VkDeviceSize bufferSize = amount * offset;
+        VkDeviceSize bufferSize = amount * offset + 1;
 
         std::cout << "created ubo with Range " << singleSize << " and offset " << offset << std::endl;
 

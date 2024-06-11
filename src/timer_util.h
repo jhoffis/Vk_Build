@@ -11,4 +11,5 @@ namespace Timer {
     void updateDelta();
     double delta();
 
+    void printTimeDiffNanos(uint64_t start, uint64_t end);
 };

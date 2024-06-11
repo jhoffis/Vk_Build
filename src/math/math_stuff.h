@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <cstddef>
+#include <cmath>
 
 namespace MyMath {
 
@@ -32,6 +33,23 @@ namespace MyMath {
 
     constexpr auto max(auto a, auto b) {
         return a > b ? a : b;
+    }
+
+    constexpr int nextPowerOfTwo(int n) {
+        n = (n <= 0) ? 1 : n;
+
+        // Decrement n (to ensure we get the next power of 2 if n is already a power of 2)
+        n -= 1;
+
+        // Set all bits after the highest set bit
+        n |= n >> 1;
+        n |= n >> 2;
+        n |= n >> 4;
+        n |= n >> 8;
+        n |= n >> 16;
+
+        // Increment n to get the next power of 2
+        return 2*(n + 1);
     }
 
 }
