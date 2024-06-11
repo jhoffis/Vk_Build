@@ -6,3 +6,6 @@
 /.vs/
 /debug/
 /release/
+
+*-autosave.kra
+*~
