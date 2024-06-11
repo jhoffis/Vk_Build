@@ -15,7 +15,9 @@ namespace Map {
         Vec2 indexToWorld(int i) const;
 
         int mapCoorToIndex(Vec2 vec2);
+        int mapCoorToIndex(int x, int y);
         bool isMapCoorInaccessible(Vec2 vec2);
+        void setInaccessible(bool inaccessible, int x, int y);
     };
     extern std::shared_ptr<Map> m_map;
 

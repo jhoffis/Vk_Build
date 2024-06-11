@@ -22,7 +22,7 @@ struct Vec2 {
     }
 
     constexpr bool operator>(const Vec2& other) const {
-        return std::abs(x+y) > std::abs(other.x+other.y);
+        return (std::abs(x)+std::abs(y)) > (std::abs(other.x)+std::abs(other.y));
     }
 
     constexpr bool operator==(const Vec2& other) const {

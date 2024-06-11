@@ -215,13 +215,13 @@ void Model::runRecreateUbo() {
     queueRecreateUboBuffer = false;
 
     // liste med alle referanser til ubos - bare utvid vector listen med descSets og så bruk currswapframe for å tegne alle.
-    auto entitiesSize = static_cast<int>(entities.size()); // TODO fjern automatisk økning av entities og mem.
+    auto entitiesSize = static_cast<int>(entities.size());
     auto amount = MyMath::nextPowerOfTwo(entitiesSize);
     if (amount == uboMem.amount) return;
     std::cout << "recreates ubo to size " << amount << std::endl;
 
     auto t0 = Timer::nowNanos();
-    vkDeviceWaitIdle(Gra::m_device);
+    vkDeviceWaitIdle(Gra::m_device); // TODO maybe replace this
     auto t1 = Timer::nowNanos();
     vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
     pool = Gra_Uniform::createDescriptorPool(amount);
@@ -239,14 +239,20 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
 
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
-    Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, descriptorSets);
+    Gra::recordCommandBuffer(cmd,
+                             imageIndex,
+                             mesh,
+                             pipeline,
+                             descriptorSets);
     auto n = 0;
     for (auto i = 0; i < entities.size(); i++) {
         if (!entities[i]->visible)
             continue;
         updateRenderUbo(&uboMem, entities[i]);
         n++;
-        Gra_Uniform::updateUniformBuffer(uboMem, Drawing::currSwapFrame, n);
+        Gra_Uniform::updateUniformBuffer(uboMem,
+                                         Drawing::currSwapFrame,
+                                         n);
     }
     return cmd;
 }

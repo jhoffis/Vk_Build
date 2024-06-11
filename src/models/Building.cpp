@@ -34,6 +34,10 @@ namespace Building {
         auto mapCoor = Map::worldToMapCoorFloor(wX, wY);
         auto worldCoor = Map::mapToWorldCoordinates(mapCoor);
         Shaders::m_houseModel.spawn(worldCoor.x, worldCoor.y);
+        Map::m_map->setInaccessible(true, mapCoor.x, mapCoor.y);
+        Map::m_map->setInaccessible(true, mapCoor.x+1, mapCoor.y);
+        Map::m_map->setInaccessible(true, mapCoor.x+1, mapCoor.y+1);
+        Map::m_map->setInaccessible(true, mapCoor.x, mapCoor.y+1);
     }
 
 }

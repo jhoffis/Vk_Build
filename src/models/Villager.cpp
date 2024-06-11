@@ -107,7 +107,8 @@ namespace Villager {
             auto approach = originalApproach;
             approach.normalize();
             approach *= movementSpeed;
-            if (approach > originalApproach || (originalApproach.x == 0 && originalApproach.y == 0)) {
+            // TODO handle if it lags and it will predict when it should actually hit the right frame.
+            if (approach > originalApproach || (Vec2{0.001, 0.001} > originalApproach)) {
                 approach = originalApproach;
                 pathIndex++;
                 if (pathIndex == path.size()) {

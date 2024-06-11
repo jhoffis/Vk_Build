@@ -18,12 +18,6 @@ static size_t y = 0;
 void SceneHandler::create() {
 
     Map::createMap(15);
-    Map::m_map->map[17] = 0;
-    Map::m_map->map[18] = 0;
-    Map::m_map->map[19] = 0;
-    Map::m_map->map[47] = 0;
-    Map::m_map->map[48] = 0;
-    Map::m_map->map[49] = 0;
 
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
 //        keyInput(&scenes[currentScene], key, action);
@@ -143,9 +137,8 @@ void SceneHandler::create() {
 
 
 //    Map::createVisual(Map::m_map->xy);
-//    Villager::initVillModel();
-    Villager::spawn(1.75f, 1.33);
-    Villager::spawn(1.5f, 1);
+//    Villager::spawn(1.75f, 1.33);
+//    Villager::spawn(1.5f, 1);
 //    Villager::spawn(2, 1);
 //    Villager::spawn(1.7f, .75);
 //    Villager::spawn(0, 0);

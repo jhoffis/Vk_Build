@@ -58,7 +58,15 @@ int Map::Map::mapCoorToIndex(Vec2 vec2) {
     return static_cast<int>(std::floor(vec2.x)) + static_cast<int>(std::floor(vec2.y)) * xy;
 }
 
+int Map::Map::mapCoorToIndex(int x, int y) {
+    return x + y * xy;
+}
+
 bool Map::Map::isMapCoorInaccessible(Vec2 vec2) {
     return map[mapCoorToIndex(vec2)] == 0;
+}
+
+void Map::Map::setInaccessible(bool inaccessible, int x, int y) {
+    map[mapCoorToIndex(x, y)] = !inaccessible;
 }
 
