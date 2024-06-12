@@ -67,9 +67,9 @@ namespace Gra_Uniform {
                       uboMem.uniformBuffersMemory[currentSwapImage]);
     }
 
-    void clearUniformBuffer(const UBOMem &uboMem,
-                            const uint32_t currentSwapImage,
-                            const uint32_t startEntityIndex) {
+    void clearRestUniformBuffer(const UBOMem &uboMem,
+                                uint32_t currentSwapImage,
+                                uint32_t startEntityIndex) {
         void *data;
         vkMapMemory(Gra::m_device,
                     uboMem.uniformBuffersMemory[currentSwapImage],

@@ -16,7 +16,7 @@ namespace Gra_Uniform {
         int range{};  // bytes actually allocated
         void *uboStruct{}; // the data the buffer is filled with.
         std::vector<VkBuffer> uniformBuffers{};
-        std::vector<VkDeviceMemory> uniformBuffersMemory{};
+        std::vector<VkDeviceMemory> uniformBuffersMemory{}; // Actual memory location
 
         void destroy() {
             for (size_t i = 0; i < uniformBuffers.size(); i++) {
@@ -24,16 +24,15 @@ namespace Gra_Uniform {
                 vkFreeMemory(Gra::m_device, uniformBuffersMemory[i], nullptr);
             }
         }
-
     };
 
     UBOMem createUniformBuffers(int amount, int sizeOfUBO);
     void updateUniformBuffer(const UBOMem &uboMem,
                              uint32_t currentSwapImage,
                              uint32_t entityIndex);
-    void clearUniformBuffer(const UBOMem &uboMem,
-                            uint32_t currentSwapImage,
-                            uint32_t startEntityIndex);
+    void clearRestUniformBuffer(const UBOMem &uboMem,
+                                uint32_t currentSwapImage,
+                                uint32_t startEntityIndex);
     VkDescriptorSetLayout createDescriptorSetLayout(std::vector<VkDescriptorSetLayoutBinding> bindings);
 
     VkDescriptorPool createDescriptorPool(int amountEntities);

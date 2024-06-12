@@ -32,15 +32,33 @@ struct Model {
     const float overrideHeight;
     const std::vector<std::string> textures;
 
-    Mesh2D mesh{};
     Gra::CmdBuffer cmdBuffer{};
+
+    /* These are what is put into the cmdbuffer:
+       Like maybe this should all be somehow referred to in each entity or smt?
+       Because I want one entity to be oversized and one to have a different texture,
+       but they still use the same shader and are of the same "type"
+       I just want to say like hey, create this dude or thing,
+       it is this big atm and he uses this texture, and he is here.
+       I don't want to deal with models and so on, unless I have to.
+       Like just auto dude = model.spawn(size: {2,2}, pos: {1, 1}, tex: "dude");
+
+       whereas now I have to write like auto male = m_vills.emplace_back(Vill{
+                .entity = std::make_shared<Entity>(Entity{
+                        .pos = {x * Map::tileSize, y * Map::tileSize, z},
+                        .size = {Shaders::m_villModel.width(), Shaders::m_villModel.height()},
+                }),
+        });
+        Shaders::m_villModel.addEntity(male.entity, true);
+    */
+    Mesh2D mesh{};
     Gra_Uniform::UBOMem uboMem{};
+    std::vector<VkImageView> texImageViews{};
+    std::vector<VkDescriptorSet> descriptorSets{};
 
     Raster::Pipeline pipeline{};
-    std::vector<VkImageView> texImageViews{};
     VkDescriptorPool pool{};
     VkDescriptorSetLayout descriptorSetLayout{};
-    std::vector<VkDescriptorSet> descriptorSets{};
 
     std::vector<std::shared_ptr<Entity>> entities{};
     bool visible = true;

@@ -236,18 +236,11 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
         runRecreateUbo();
     }
 
-    auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
-    vkResetCommandBuffer(cmd, 0);
-    Gra::recordCommandBuffer(cmd,
-                             imageIndex,
-                             mesh,
-                             pipeline,
-                             descriptorSets);
     auto n = 0;
-    for (auto i = 0; i < entities.size(); i++) {
-        if (!entities[i]->visible)
+    for (auto &entity: entities) {
+        if (!entity->visible)
             continue;
-        updateRenderUbo(&uboMem, entities[i]); // TODO maybe just return a ubostruct?
+        updateRenderUbo(&uboMem, entity); // TODO maybe just return a ubostruct?
         Gra_Uniform::updateUniformBuffer(uboMem,
                                          Drawing::currSwapFrame,
                                          n);
@@ -255,9 +248,18 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
         n++;
     }
 
-    Gra_Uniform::clearUniformBuffer(uboMem,
-                                    Drawing::currSwapFrame,
-                                    n);
+    Gra_Uniform::clearRestUniformBuffer(uboMem,
+                                        Drawing::currSwapFrame,
+                                        n);
+
+    auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
+    vkResetCommandBuffer(cmd, 0);
+    Gra::recordCommandBuffer(cmd,
+                             imageIndex,
+                             mesh,
+                             pipeline,
+                             descriptorSets);
+
 
     return cmd;
 }
