@@ -60,13 +60,9 @@ namespace Gra_Uniform {
                     uboMem.range,
                     0,
                     &data);
-        if (uboMem.uboStruct == nullptr) {
-            memset(data, 0, uboMem.range);
-        } else {
-            memcpy(data,
-                   uboMem.uboStruct,
-                   uboMem.range);
-        }
+        memcpy(data,
+               uboMem.uboStruct,
+               uboMem.range);
         vkUnmapMemory(Gra::m_device,
                       uboMem.uniformBuffersMemory[currentSwapImage]);
     }
