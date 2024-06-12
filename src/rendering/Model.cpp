@@ -114,8 +114,7 @@ std::vector<VkDescriptorSet> Model::createDescriptorSets() const {
 
     for (auto i = 0; i < size; i++) {
         VkDescriptorBufferInfo bufferInfo{};
-        bufferInfo.buffer = uboMem.uniformBuffers[i %
-                                                  Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
+        bufferInfo.buffer = uboMem.uniformBuffers[i % Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er bindingen til ubo o.l.
         bufferInfo.offset = uboMem.offset * static_cast<int>(std::floor(
                 static_cast<float>(i) / static_cast<float>(Gra::MAX_FRAMES_IN_FLIGHT)));
         bufferInfo.range = uboMem.range;
@@ -140,6 +139,7 @@ std::vector<VkDescriptorSet> Model::createDescriptorSets() const {
                 descriptorWrites[a].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
                 descriptorWrites[a].descriptorCount = 1;
                 descriptorWrites[a].pImageInfo = &imageInfos[nImg];
+                nImg++;
             }
         }
 
@@ -211,9 +211,6 @@ void Model::init() {
 }
 
 void Model::runRecreateUbo() {
-    if (!queueRecreateUboBuffer) return;
-    queueRecreateUboBuffer = false;
-
     // liste med alle referanser til ubos - bare utvid vector listen med descSets og så bruk currswapframe for å tegne alle.
     auto entitiesSize = static_cast<int>(entities.size());
     auto amount = MyMath::nextPowerOfTwo(entitiesSize);
@@ -234,8 +231,10 @@ void Model::runRecreateUbo() {
 }
 
 VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
-
-    runRecreateUbo();
+    if (queueRecreateUboBuffer) {
+        queueRecreateUboBuffer = false;
+        runRecreateUbo();
+    }
 
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
@@ -252,6 +251,7 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
         Gra_Uniform::updateUniformBuffer(uboMem,
                                          Drawing::currSwapFrame,
                                          n);
+        // TODO update other uniforms here like imgs
         n++;
     }
 
@@ -316,6 +316,15 @@ void Model::sort() {
               [](auto a, auto b) {
                   return a->pos.y > b->pos.y;
               });
+}
+
+void Model::setTextures(const std::vector<std::string> &textures) {
+    texImageViews.clear();
+    for (const auto &tex: textures) {
+        auto img = Texture::loadImage(tex.c_str());
+        texImageViews.emplace_back(Texture::createTexture(img));
+    }
+    queueRecreateUboBuffer = true;
 }
 
 void destroyModels() {

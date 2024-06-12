@@ -46,7 +46,10 @@ void SceneHandler::create() {
                 }
                 break;
             case GLFW_KEY_E:
-                Building::startHovering(SceneData::xWorld, SceneData::yWorld);
+                Building::startHovering(0, SceneData::xWorld, SceneData::yWorld);
+                break;
+            case GLFW_KEY_W:
+                Building::startHovering(1, SceneData::xWorld, SceneData::yWorld);
                 break;
             default:
                 // do nothing

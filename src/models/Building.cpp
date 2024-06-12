@@ -6,8 +6,16 @@ namespace Building {
     std::shared_ptr<Entity> m_hoveringBuilding =
             std::make_shared<Entity>(Entity{.visible = false});
 
-    void startHovering(float wX, float wY) {
+    void startHovering(int i, float wX, float wY) {
         if (isHovering()) stopHovering();
+        switch (i) {
+            case 0:
+                Shaders::m_houseModel.setTextures({"house.png"});
+                break;
+            case 1:
+                Shaders::m_houseModel.setTextures({"mill.png"});
+                break;
+        }
         m_hoveringBuilding->visible = true;
         m_hoveringBuilding->pos.x = wX;
         m_hoveringBuilding->pos.y = wY;
@@ -35,9 +43,9 @@ namespace Building {
         auto worldCoor = Map::mapToWorldCoordinates(mapCoor);
         Shaders::m_houseModel.spawn(worldCoor.x, worldCoor.y);
         Map::m_map->setInaccessible(true, mapCoor.x, mapCoor.y);
-        Map::m_map->setInaccessible(true, mapCoor.x+1, mapCoor.y);
-        Map::m_map->setInaccessible(true, mapCoor.x+1, mapCoor.y+1);
-        Map::m_map->setInaccessible(true, mapCoor.x, mapCoor.y+1);
+        Map::m_map->setInaccessible(true, mapCoor.x + 1, mapCoor.y);
+        Map::m_map->setInaccessible(true, mapCoor.x + 1, mapCoor.y + 1);
+        Map::m_map->setInaccessible(true, mapCoor.x, mapCoor.y + 1);
     }
 
 }

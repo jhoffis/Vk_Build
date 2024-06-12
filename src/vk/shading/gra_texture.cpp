@@ -227,7 +227,7 @@ namespace Texture {
         vkFreeMemory(Gra::m_device, stagingBufferMemory, nullptr);
     }
 
-    VkImageView createTexture(ImageData &img) {
+    VkImageView createTexture(ImageData &img) { // TODO Maybe save imgs for later in case they're used more than once
         TextureData data{};
         createTextureImage(img, &data);
         data.textureImageView = Gra::createImageView(data.textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
