@@ -248,12 +248,17 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     for (auto i = 0; i < entities.size(); i++) {
         if (!entities[i]->visible)
             continue;
-        updateRenderUbo(&uboMem, entities[i]);
-        n++;
+        updateRenderUbo(&uboMem, entities[i]); // TODO maybe just return a ubostruct?
         Gra_Uniform::updateUniformBuffer(uboMem,
                                          Drawing::currSwapFrame,
                                          n);
+        n++;
     }
+
+    Gra_Uniform::clearUniformBuffer(uboMem,
+                                    Drawing::currSwapFrame,
+                                    n);
+
     return cmd;
 }
 
@@ -267,7 +272,7 @@ void Model::addEntity(const std::shared_ptr<Entity> &entity, bool update) {
         recreateUboBuffer();
 }
 
-void Model::removeEntity(const std::shared_ptr<Entity>&  sharedPtr) {
+void Model::removeEntity(const std::shared_ptr<Entity> &sharedPtr) {
     entities.erase(std::remove(entities.begin(), entities.end(), sharedPtr), entities.end());
     recreateUboBuffer();
 }

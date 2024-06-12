@@ -31,6 +31,9 @@ namespace Gra_Uniform {
     void updateUniformBuffer(const UBOMem &uboMem,
                              uint32_t currentSwapImage,
                              uint32_t entityIndex);
+    void clearUniformBuffer(const UBOMem &uboMem,
+                            uint32_t currentSwapImage,
+                            uint32_t startEntityIndex);
     VkDescriptorSetLayout createDescriptorSetLayout(std::vector<VkDescriptorSetLayoutBinding> bindings);
 
     VkDescriptorPool createDescriptorPool(int amountEntities);

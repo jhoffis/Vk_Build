@@ -51,7 +51,7 @@ namespace Gra_Uniform {
 
     // this is how one copies memory to a uniform?
     void updateUniformBuffer(const UBOMem &uboMem,
-                                   const uint32_t currentSwapImage,
+                             const uint32_t currentSwapImage,
                              const uint32_t entityIndex) {
         void *data;
         vkMapMemory(Gra::m_device,
@@ -60,9 +60,31 @@ namespace Gra_Uniform {
                     uboMem.range,
                     0,
                     &data);
-        memcpy(data,
-               uboMem.uboStruct,
-               uboMem.range);
+        if (uboMem.uboStruct == nullptr) {
+            memset(data, 0, uboMem.range);
+        } else {
+            memcpy(data,
+                   uboMem.uboStruct,
+                   uboMem.range);
+        }
+        vkUnmapMemory(Gra::m_device,
+                      uboMem.uniformBuffersMemory[currentSwapImage]);
+    }
+
+    void clearUniformBuffer(const UBOMem &uboMem,
+                            const uint32_t currentSwapImage,
+                            const uint32_t startEntityIndex) {
+        void *data;
+        vkMapMemory(Gra::m_device,
+                    uboMem.uniformBuffersMemory[currentSwapImage],
+                    startEntityIndex * uboMem.offset,
+                    (uboMem.amount - startEntityIndex) * uboMem.offset,
+                    0,
+                    &data);
+        // Calculate the size of the memory to clear
+        size_t clearSize = (uboMem.amount - startEntityIndex) * uboMem.offset;
+        // Clear the memory to zero
+        memset(data, 0, clearSize);
         vkUnmapMemory(Gra::m_device,
                       uboMem.uniformBuffersMemory[currentSwapImage]);
     }

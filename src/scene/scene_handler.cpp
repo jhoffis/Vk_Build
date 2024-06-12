@@ -136,13 +136,13 @@ void SceneHandler::create() {
 //    });
 
 
-//    Map::createVisual(Map::m_map->xy);
-//    Villager::spawn(1.75f, 1.33);
-//    Villager::spawn(1.5f, 1);
-//    Villager::spawn(2, 1);
-//    Villager::spawn(1.7f, .75);
-//    Villager::spawn(0, 0);
-//    Villager::spawn(0, 0);
+    Map::createVisual(Map::m_map->xy);
+    Villager::spawn(1.75f, 1.33);
+    Villager::spawn(1.5f, 1);
+    Villager::spawn(2, 1);
+    Villager::spawn(1.7f, .75);
+    Villager::spawn(0, 0);
+    Villager::spawn(0, 0);
 }
 
 void SceneHandler::update() {
