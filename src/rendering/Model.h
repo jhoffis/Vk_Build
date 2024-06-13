@@ -51,6 +51,8 @@ struct Model {
         });
         Shaders::m_villModel.addEntity(male.entity, true);
     */
+    Entity spawn(Vec2 mapPos, std::string texture);
+
     Mesh2D mesh{};
     Gra_Uniform::UBOMem uboMem{};
     std::vector<VkImageView> texImageViews{};

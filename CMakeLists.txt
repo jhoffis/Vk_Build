@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
 project(Vulkan)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(CMAKE_CXX_STANDARD 23)
 
 # strongly encouraged to enable this globally to avoid conflicts between

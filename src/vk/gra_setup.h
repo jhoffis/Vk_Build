@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "src/window.h"
+#include "window.h"
 
 namespace Gra {
 

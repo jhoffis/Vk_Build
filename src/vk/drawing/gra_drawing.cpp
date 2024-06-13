@@ -76,7 +76,7 @@ namespace Drawing {
             cmds.emplace_back(model->renderMeshes(imageIndex));
             clear = false;
         }
-
+        
         // TODO change this to VkSubmitInfo2 ?
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

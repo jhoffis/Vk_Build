@@ -6,6 +6,7 @@
 /.vs/
 /debug/
 /release/
+/cmake/
 
 *-autosave.kra
 *~
