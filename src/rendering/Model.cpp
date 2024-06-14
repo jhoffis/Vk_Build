@@ -88,66 +88,68 @@ void Model::setTextures(const std::vector<std::string> &textures) {
   queueRecreateUboBuffer = true;
 }
 
-void updateDescriptorSet(int i, const std::vector<VkImageView> &texImageViews,
+void updateDescriptorSet(int index,
+                         const std::vector<VkImageView> &texImageViews,
                          const Gra_Uniform::UBOMem &uboMem,
                          const std::vector<ShaderComponentOrder> &order,
                          const std::vector<VkDescriptorSet> &descriptorSets) {
-
-  // setup phase
-  std::vector<VkDescriptorImageInfo> imageInfos{texImageViews.size()};
-  for (int i = 0; i < imageInfos.size(); i++) {
-    imageInfos[i] = VkDescriptorImageInfo{
-        .sampler = Texture::m_textureSampler,
-        .imageView = texImageViews[i],
-        .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-    };
-  }
-
-  VkDescriptorBufferInfo bufferInfo{};
-  bufferInfo.buffer =
-      uboMem.uniformBuffers[i % Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er
-                                                            // bindingen til
-                                                            // ubo o.l.
-  bufferInfo.offset =
-      uboMem.offset *
-      static_cast<int>(std::floor(
-          static_cast<float>(i) / // Here it picks out the mem it refers to!
-          static_cast<float>(Gra::MAX_FRAMES_IN_FLIGHT)));
-  bufferInfo.range = uboMem.range;
-
-  std::vector<VkWriteDescriptorSet> descriptorWrites{
-      static_cast<size_t>(order.size())};
-
-  int nImg = 0; // gjør dette for hver entity basically.
-  for (auto a = 0; a < order.size(); a++) {
-    if (order[a] == vert_ubo) {
-      descriptorWrites[a].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      descriptorWrites[a].dstSet = descriptorSets[i];
-      descriptorWrites[a].dstBinding = a;
-      descriptorWrites[a].dstArrayElement = 0;
-      descriptorWrites[a].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-      descriptorWrites[a].descriptorCount = 1;
-      descriptorWrites[a].pBufferInfo = &bufferInfo;
-    } else if (order[a] == frag_image) {
-      descriptorWrites[a].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-      descriptorWrites[a].dstSet = descriptorSets[i];
-      descriptorWrites[a].dstBinding = a;
-      descriptorWrites[a].dstArrayElement = 0;
-      descriptorWrites[a].descriptorType =
-          VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-      descriptorWrites[a].descriptorCount = 1;
-      descriptorWrites[a].pImageInfo = &imageInfos[nImg];
-      nImg++;
+  for (int x = 0; x < 2; x++) {
+    auto n = 2 * index + x;
+    // setup phase
+    std::vector<VkDescriptorImageInfo> imageInfos{texImageViews.size()};
+    for (int i = 0; i < imageInfos.size(); i++) {
+      imageInfos[i] = VkDescriptorImageInfo{
+          .sampler = Texture::m_textureSampler,
+          .imageView = texImageViews[i],
+          .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+      };
     }
+
+    VkDescriptorBufferInfo bufferInfo{};
+    bufferInfo.buffer =
+        uboMem.uniformBuffers[n % Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er
+                                                              // bindingen til
+                                                              // ubo o.l.
+    bufferInfo.offset =
+        uboMem.offset *
+        static_cast<int>(std::floor(
+            static_cast<float>(n) / // Here it picks out the mem it refers to!
+            static_cast<float>(Gra::MAX_FRAMES_IN_FLIGHT)));
+    bufferInfo.range = uboMem.range;
+
+    std::vector<VkWriteDescriptorSet> descriptorWrites{
+        static_cast<size_t>(order.size())};
+
+    int nImg = 0; // gjør dette for hver entity basically.
+    for (auto a = 0; a < order.size(); a++) {
+      if (order[a] == vert_ubo) {
+        descriptorWrites[a].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrites[a].dstSet = descriptorSets[n];
+        descriptorWrites[a].dstBinding = a;
+        descriptorWrites[a].dstArrayElement = 0;
+        descriptorWrites[a].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descriptorWrites[a].descriptorCount = 1;
+        descriptorWrites[a].pBufferInfo = &bufferInfo;
+      } else if (order[a] == frag_image) {
+        descriptorWrites[a].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrites[a].dstSet = descriptorSets[n];
+        descriptorWrites[a].dstBinding = a;
+        descriptorWrites[a].dstArrayElement = 0;
+        descriptorWrites[a].descriptorType =
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        descriptorWrites[a].descriptorCount = 1;
+        descriptorWrites[a].pImageInfo = &imageInfos[nImg];
+        nImg++;
+      }
+    }
+
+    // IT SAYS UPDATE. Can I run update on a singular desciptor without having
+    // to delete and recreate everything?
+    vkUpdateDescriptorSets(Gra::m_device,
+                           static_cast<uint32_t>(descriptorWrites.size()),
+                           descriptorWrites.data(), 0, nullptr);
   }
-
-  // IT SAYS UPDATE. Can I run update on a singular desciptor without having to
-  // delete and recreate everything?
-  vkUpdateDescriptorSets(Gra::m_device,
-                         static_cast<uint32_t>(descriptorWrites.size()),
-                         descriptorWrites.data(), 0, nullptr);
 }
-
 /*
  * Extremely slow method here.
  */
@@ -175,16 +177,15 @@ std::vector<VkDescriptorSet> Model::createDescriptorSets() const {
     throw std::runtime_error("failed to allocate descriptor sets!");
   }
 
-  for (auto i = 0; i < size;
-       i++) { // TODO here we can change the imageInfo to the one you want
-              // because the var size is the amount of entities!!!
+  for (auto i = 0; i < uboMem.amount; i++) {
+    // TODO here we can change the imageInfo to the one you want
+    // because the var size is the amount of entities!!!
     updateDescriptorSet(i, texImageViews, uboMem, order, descriptorSets);
   }
 
   std::vector<VkImageView> texImageViews2{};
   replaceTextures({"house.png"}, texImageViews2);
   updateDescriptorSet(0, texImageViews2, uboMem, order, descriptorSets);
-  updateDescriptorSet(1, texImageViews2, uboMem, order, descriptorSets);
   return descriptorSets;
 }
 
