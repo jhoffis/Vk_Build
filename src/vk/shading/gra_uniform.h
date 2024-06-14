@@ -13,7 +13,7 @@ namespace Gra_Uniform {
     struct UBOMem {
         int amount{}; // number of allocations after each other. Division of the buffer.
         int offset{}; // distance between each allocated n mem. Not less than minUniformBufferOffsetAlignment.
-        int range{};  // bytes actually allocated
+        int range{};  // bytes actually allocated (size)
         void *uboStruct{}; // the data the buffer is filled with.
         std::vector<VkBuffer> uniformBuffers{};
         std::vector<VkDeviceMemory> uniformBuffersMemory{}; // Actual memory location

@@ -6,4 +6,4 @@ if ! [ -z "$1" ]; then
     cmake -DCMAKE_BUILD_TYPE=Debug ..
 fi
 make
-seer --start Vulkan
+./Vulkan

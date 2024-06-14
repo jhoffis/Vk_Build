@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <vector>
 #include "rendering/Entity.h"
 
 // TODO combine this Vill.h and Villager.h

@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include "test_selection.h"
 #include "rendering/Entity.h"

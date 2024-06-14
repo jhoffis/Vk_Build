@@ -30,6 +30,10 @@ namespace MyMath {
         return 1.0f / Q_rsprt(number);
     }
 
+    constexpr auto min(auto a, auto b) {
+        return a < b ? a : b;
+    }
+
     constexpr auto max(auto a, auto b) {
         return a > b ? a : b;
     }

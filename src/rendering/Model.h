@@ -51,7 +51,7 @@ struct Model {
         });
         Shaders::m_villModel.addEntity(male.entity, true);
     */
-    Entity spawn(Vec2 mapPos, std::string texture);
+    std::shared_ptr<Entity> spawn(Vec2 mapPos, std::string texture);
 
     Mesh2D mesh{};
     Gra_Uniform::UBOMem uboMem{};
@@ -79,6 +79,7 @@ struct Model {
     [[nodiscard]] std::vector<VkDescriptorSet> createDescriptorSets() const;
     void recreateUboBuffer();
     void addEntity(const std::shared_ptr<Entity>& entity, bool update);
+    void addEntity(const std::shared_ptr<Entity>& entity);
     void removeEntity(const std::shared_ptr<Entity>&  sharedPtr);
     void spawn(float x, float y);
     void sort();

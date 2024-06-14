@@ -34,6 +34,6 @@ double Timer::delta() {
     return m_delta;
 }
 
-void Timer::printTimeDiffNanos(uint64_t start, uint64_t end) {
-    std::cout << "Time: " << (end - start) << " ns (" << (static_cast<double>(end - start) / 1000000.0) << " ms)" << std::endl;
+void Timer::printTimeDiffNanos(uint64_t start, uint64_t end, std::string id) {
+    std::cout << "Time: " << id << (end - start) << " ns (" << (static_cast<double>(end - start) / 1000000.0) << " ms)" << std::endl;
 }

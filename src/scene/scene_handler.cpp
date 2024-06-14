@@ -1,112 +1,115 @@
 #include "scene_handler.h"
-#include "models/Map.h"
-#include "models/Villager.h"
 #include "camera.h"
-#include "timer_util.h"
-#include "models/SelectionBoxModel.h"
-#include "scene_data.h"
-#include "rendering/Model.h"
-#include "path_finding.h"
 #include "models/Building.h"
+#include "models/Map.h"
+#include "models/SelectionBoxModel.h"
+#include "models/Villager.h"
+#include "path_finding.h"
+#include "rendering/Model.h"
+#include "scene_data.h"
+#include "timer_util.h"
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 static size_t x = 0;
 static size_t y = 0;
 
 void SceneHandler::create() {
 
-    Map::createMap(15);
+  Map::createMap(15);
 
-    glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode, auto action, auto mods) {
-//        keyInput(&scenes[currentScene], key, action);
-        std::cout << "tast key: " << key << ", scancode: " << scancode << ", action: " << action << std::endl;
+  glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode,
+                                          auto action, auto mods) {
+    //        keyInput(&scenes[currentScene], key, action);
+    std::cout << "tast key: " << key << ", scancode: " << scancode
+              << ", action: " << action << std::endl;
 
-        switch (key) {
-            case GLFW_KEY_UP:
-                Camera::m_cam.up(action != GLFW_RELEASE);
-                break;
-            case GLFW_KEY_DOWN:
-                Camera::m_cam.down(action != GLFW_RELEASE);
-                break;
-            case GLFW_KEY_LEFT:
-                Camera::m_cam.left(action != GLFW_RELEASE);
-                break;
-            case GLFW_KEY_RIGHT:
-                Camera::m_cam.right(action != GLFW_RELEASE);
-                break;
-            case GLFW_KEY_SPACE:
-                if (action == GLFW_PRESS) {
-                    SceneData::xWorldDragCam = SceneData::xWorld;
-                    SceneData::yWorldDragCam = SceneData::yWorld;
-                    SceneData::dragging = true;
-                } else if (action == GLFW_RELEASE) {
-                    SceneData::dragging = false;
-                }
-                break;
-            case GLFW_KEY_E:
-                Building::startHovering(0, SceneData::xWorld, SceneData::yWorld);
-                break;
-            case GLFW_KEY_W:
-                Building::startHovering(1, SceneData::xWorld, SceneData::yWorld);
-                break;
-            default:
-                // do nothing
-                break;
-        }
-        std::cout << "camera world x: " << Camera::m_cam.pos.x << ", y: " << Camera::m_cam.pos.y << std::endl;
-    });
+    switch (key) {
+    case GLFW_KEY_UP:
+      Camera::m_cam.up(action != GLFW_RELEASE);
+      break;
+    case GLFW_KEY_DOWN:
+      Camera::m_cam.down(action != GLFW_RELEASE);
+      break;
+    case GLFW_KEY_LEFT:
+      Camera::m_cam.left(action != GLFW_RELEASE);
+      break;
+    case GLFW_KEY_RIGHT:
+      Camera::m_cam.right(action != GLFW_RELEASE);
+      break;
+    case GLFW_KEY_SPACE:
+      if (action == GLFW_PRESS) {
+        SceneData::xWorldDragCam = SceneData::xWorld;
+        SceneData::yWorldDragCam = SceneData::yWorld;
+        SceneData::dragging = true;
+      } else if (action == GLFW_RELEASE) {
+        SceneData::dragging = false;
+      }
+      break;
+    case GLFW_KEY_E:
+      Building::startHovering(0, SceneData::xWorld, SceneData::yWorld);
+      break;
+    case GLFW_KEY_W:
+      Building::startHovering(1, SceneData::xWorld, SceneData::yWorld);
+      break;
+    default:
+      // do nothing
+      break;
+    }
+    std::cout << "camera world x: " << Camera::m_cam.pos.x
+              << ", y: " << Camera::m_cam.pos.y << std::endl;
+  });
 
-    glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button, auto action, auto mods) {
-//        mouseButtonInput(&scenes[currentScene], button, action, x, y);
-        std::cout << "museklikk x: " << x << ", y: " << y << ", knapp: " << button << std::endl;
+  glfwSetMouseButtonCallback(Window::m_window, [](auto window, auto button,
+                                                  auto action, auto mods) {
+    //        mouseButtonInput(&scenes[currentScene], button, action, x, y);
+    std::cout << "museklikk x: " << x << ", y: " << y << ", knapp: " << button
+              << std::endl;
 
-        if (action != GLFW_RELEASE) {
-            if (button == GLFW_MOUSE_BUTTON_LEFT) {
-                if (Building::isHovering()) {
-                    Building::place(SceneData::xWorld, SceneData::yWorld);
-                } else {
-                    SelectionBox::visible(SceneData::xWorld, SceneData::yWorld);
-                }
-            } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
-                SceneData::xWorldDragCam = SceneData::xWorld;
-                SceneData::yWorldDragCam = SceneData::yWorld;
-                SceneData::dragging = true;
-            } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
-                Building::stopHovering();
-
-                for (auto vill : Villager::m_selectedVills) {
-                    std::vector<int> OutPath;
-                    auto start = Map::worldToMapCoordinates(vill->entity->pos.x, vill->entity->pos.y);
-                    auto target = Map::worldToMapCoordinates(SceneData::xWorld, SceneData::yWorld);
-                    auto res3 = PathFinder::findPath(
-                            start,
-                            target,
-                            *Map::m_map,
-                            OutPath
-                    );
-                    if (res3) {
-                        vill->pathIndex = 0;
-                        PathFinder::convertMapPathToWorldPath(*Map::m_map, OutPath, (std::vector<Vec2> &) vill->path);
-                    }
-
-
-//                    vill->entity->pos.x = SceneData::xWorld;
-//                    vill->entity->pos.y = SceneData::yWorld;
-                }
-            }
-
+    if (action != GLFW_RELEASE) {
+      if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (Building::isHovering()) {
+          Building::place(SceneData::xWorld, SceneData::yWorld);
         } else {
-            if (button == GLFW_MOUSE_BUTTON_LEFT) {
-                SelectionBox::hide(true);
-            } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
-                SceneData::dragging = false;
-            }
+          SelectionBox::visible(SceneData::xWorld, SceneData::yWorld);
         }
-    });
+      } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+        SceneData::xWorldDragCam = SceneData::xWorld;
+        SceneData::yWorldDragCam = SceneData::yWorld;
+        SceneData::dragging = true;
+      } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        Building::stopHovering();
 
-    glfwSetCursorPosCallback(Window::m_window, [](auto window, auto xPos, auto yPos) {
+        for (auto vill : Villager::m_selectedVills) {
+          std::vector<int> OutPath;
+          auto start = Map::worldToMapCoordinates(vill->entity->pos.x,
+                                                  vill->entity->pos.y);
+          auto target =
+              Map::worldToMapCoordinates(SceneData::xWorld, SceneData::yWorld);
+          auto res3 = PathFinder::findPath(start, target, *Map::m_map, OutPath);
+          if (res3) {
+            vill->pathIndex = 0;
+            PathFinder::convertMapPathToWorldPath(
+                *Map::m_map, OutPath, (std::vector<Vec2> &)vill->path);
+          }
+
+          //                    vill->entity->pos.x = SceneData::xWorld;
+          //                    vill->entity->pos.y = SceneData::yWorld;
+        }
+      }
+
+    } else {
+      if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        SelectionBox::hide(true);
+      } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+        SceneData::dragging = false;
+      }
+    }
+  });
+
+  glfwSetCursorPosCallback(
+      Window::m_window, [](auto window, auto xPos, auto yPos) {
         x = xPos;
         y = yPos;
 
@@ -116,52 +119,56 @@ void SceneHandler::create() {
         SceneData::yWorld = 1. - (yPos / h) + Camera::m_cam.pos.y;
 
         if (SceneData::dragging) {
-            Camera::m_cam.pos.x += SceneData::xWorldDragCam - SceneData::xWorld;
-            Camera::m_cam.pos.y += SceneData::yWorldDragCam - SceneData::yWorld;
+          Camera::m_cam.pos.x += SceneData::xWorldDragCam - SceneData::xWorld;
+          Camera::m_cam.pos.y += SceneData::yWorldDragCam - SceneData::yWorld;
         }
 
         if (SelectionBox::isVisible()) {
-            SelectionBox::m_ubo.posNew.x = SceneData::xWorld;
-            SelectionBox::m_ubo.posNew.y = SceneData::yWorld;
+          SelectionBox::m_ubo.posNew.x = SceneData::xWorld;
+          SelectionBox::m_ubo.posNew.y = SceneData::yWorld;
         }
 
-//        std::cout << "mus x: " << xPos << ", y: " << yPos
-//                  << ", world x: " << xWorld << ", y: " << yWorld << std::endl;
-    });
+        //        std::cout << "mus x: " << xPos << ", y: " << yPos
+        //                  << ", world x: " << xWorld << ", y: " << yWorld <<
+        //                  std::endl;
+      });
 
-//    glfwSetScrollCallback(Window::m_window, [](auto window, auto xoffset, auto yoffset) {
-//        Camera::m_cam.pos.z *= 1+.125*yoffset;
-//        if (Camera::m_cam.pos.z < -2.)
-//            Camera::m_cam.pos.z = -2.;
-//        else if (Camera::m_cam.pos.z > -.5)
-//            Camera::m_cam.pos.z = -.5;
-//        std::cout << "scroll x: " << xoffset << ", y: " << yoffset << "cam z: " << Camera::m_cam.pos.z << std::endl;
-//    });
+  //    glfwSetScrollCallback(Window::m_window, [](auto window, auto xoffset,
+  //    auto yoffset) {
+  //        Camera::m_cam.pos.z *= 1+.125*yoffset;
+  //        if (Camera::m_cam.pos.z < -2.)
+  //            Camera::m_cam.pos.z = -2.;
+  //        else if (Camera::m_cam.pos.z > -.5)
+  //            Camera::m_cam.pos.z = -.5;
+  //        std::cout << "scroll x: " << xoffset << ", y: " << yoffset << "cam
+  //        z: " << Camera::m_cam.pos.z << std::endl;
+  //    });
 
+  Map::createVisual(Map::m_map->xy);
+  Villager::spawn(1.75f, 1.33);
+  Villager::spawn(1.5f, 1);
+  Villager::spawn(2, 1);
+  Villager::spawn(1.7f, .75);
+  Villager::spawn(0, 0);
+  Villager::spawn(0, 0);
 
-    Map::createVisual(Map::m_map->xy);
-    Villager::spawn(1.75f, 1.33);
-    Villager::spawn(1.5f, 1);
-    Villager::spawn(2, 1);
-    Villager::spawn(1.7f, .75);
-    Villager::spawn(0, 0);
-    Villager::spawn(0, 0);
+  auto bob = Shaders::m_villModel.spawn({3, 4}, "base_male");
+  // Villager::
 }
 
 void SceneHandler::update() {
-    Camera::m_cam.update();
-    Shaders::m_villModel.sort();
-    Villager::sort();
-    Villager::update();
+  Camera::m_cam.update();
+  Shaders::m_villModel.sort();
+  Villager::sort();
+  Villager::update();
 
-    Building::updateHovering(SceneData::xWorld, SceneData::yWorld);
-//    if (selected != nullptr && !selected->entity.isAbove(xWorld, yWorld))
-//        selected->entity.pos.x += static_cast<float>(.1 * Timer::delta());
-//    for (auto male : males)
-//        male->entity.pos.x += static_cast<float>(.001 * Timer::delta());
-//    std::cout << males[0].vill.entity.pos.x << std::endl;
+  Building::updateHovering(SceneData::xWorld, SceneData::yWorld);
+  //    if (selected != nullptr && !selected->entity.isAbove(xWorld, yWorld))
+  //        selected->entity.pos.x += static_cast<float>(.1 * Timer::delta());
+  //    for (auto male : males)
+  //        male->entity.pos.x += static_cast<float>(.001 * Timer::delta());
+  //    std::cout << males[0].vill.entity.pos.x << std::endl;
 }
-
 
 /*
 SceneHandler::SceneHandler(std::vector<SceneEnvir> &scenes) : scenes(scenes) {
@@ -188,7 +195,8 @@ void SceneHandler::changeScene(int scenenr, bool logCurrent) {
             do {
                 scenenr = Scenes::HISTORY.top();
                 Scenes::HISTORY.pop();
-            } while (!Scenes::HISTORY.empty() && (Scenes::HISTORY.top() == scenenr || scenenr == Scenes::CURRENT));
+            } while (!Scenes::HISTORY.empty() && (Scenes::HISTORY.top() ==
+scenenr || scenenr == Scenes::CURRENT));
         }
         Scenes::HISTORY.push(Scenes::CURRENT);
     }
@@ -208,8 +216,8 @@ void SceneHandler::keyInput(int keycode, int action) {
     std::cout << keycode <<  std::endl;
 }
 
-void SceneHandler::mouseButtonInput(int button, int action, double x, double y) {
-    std::cout << action << ' ' << x << ' ' << y << std::endl;
+void SceneHandler::mouseButtonInput(int button, int action, double x, double y)
+{ std::cout << action << ' ' << x << ' ' << y << std::endl;
 }
 
 void SceneHandler::mousePosInput(double x, double y) {

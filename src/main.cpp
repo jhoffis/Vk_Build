@@ -67,18 +67,16 @@ int main() {
             fpsTime -= 1.;
             fps = 0;
         }
-#ifdef RMDEV
-        std::this_thread::sleep_for(std::chrono::milliseconds(2));
-#endif
+//#if RMDEV
+//        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+//#endif
     }
-
     vkDeviceWaitIdle(Gra::m_device);
 
-#ifdef RMDEV
+#if RMDEV
     unwatchDir();
 #endif
 
-//    testModel.destroy();
     destroyModels();
     Gra::cleanup();
     Window::destroyWindow();
