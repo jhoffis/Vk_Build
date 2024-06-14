@@ -55,7 +55,6 @@ struct Model {
 
     Mesh2D mesh{};
     Gra_Uniform::UBOMem uboMem{};
-    std::vector<VkImageView> texImageViews{};
     std::vector<VkDescriptorSet> descriptorSets{};
 
     Raster::Pipeline pipeline{};
@@ -83,8 +82,6 @@ struct Model {
     void removeEntity(const std::shared_ptr<Entity>&  sharedPtr);
     void spawn(float x, float y);
     void sort();
-
-    void setTextures(const std::vector<std::string> &textures);
 
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
 

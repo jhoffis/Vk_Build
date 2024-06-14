@@ -10,10 +10,10 @@ namespace Building {
         if (isHovering()) stopHovering();
         switch (i) {
             case 0:
-                Shaders::m_houseModel.setTextures({"house.png"});
+                m_hoveringBuilding->sprite = {"house.png"};
                 break;
             case 1:
-                Shaders::m_houseModel.setTextures({"mill.png"});
+                m_hoveringBuilding->sprite = {"mill.png"};
                 break;
         }
         m_hoveringBuilding->visible = true;

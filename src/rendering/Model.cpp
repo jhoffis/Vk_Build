@@ -77,15 +77,10 @@ std::vector<Raster::Pipeline> m_leftoverPipelines;
 void replaceTextures(const std::vector<std::string> &textures,
                      std::vector<VkImageView> &texImageViews) {
   texImageViews.clear();
-  for (const auto &tex : textures) {
-    auto img = Texture::loadImage(tex.c_str());
-    texImageViews.emplace_back(Texture::createTexture(img));
+  auto newTexs = Texture::getTexImageViews(textures);
+  for (const auto &tex : newTexs) {
+    texImageViews.emplace_back(tex);
   }
-}
-
-void Model::setTextures(const std::vector<std::string> &textures) {
-  replaceTextures(textures, texImageViews);
-  queueRecreateUboBuffer = true;
 }
 
 void updateDescriptorSet(int index,
@@ -93,62 +88,60 @@ void updateDescriptorSet(int index,
                          const Gra_Uniform::UBOMem &uboMem,
                          const std::vector<ShaderComponentOrder> &order,
                          const std::vector<VkDescriptorSet> &descriptorSets) {
-  for (int x = 0; x < 2; x++) {
-    auto n = 2 * index + x;
-    // setup phase
-    std::vector<VkDescriptorImageInfo> imageInfos{texImageViews.size()};
-    for (int i = 0; i < imageInfos.size(); i++) {
-      imageInfos[i] = VkDescriptorImageInfo{
-          .sampler = Texture::m_textureSampler,
-          .imageView = texImageViews[i],
-          .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-      };
-    }
-
-    VkDescriptorBufferInfo bufferInfo{};
-    bufferInfo.buffer =
-        uboMem.uniformBuffers[n % Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er
-                                                              // bindingen til
-                                                              // ubo o.l.
-    bufferInfo.offset =
-        uboMem.offset *
-        static_cast<int>(std::floor(
-            static_cast<float>(n) / // Here it picks out the mem it refers to!
-            static_cast<float>(Gra::MAX_FRAMES_IN_FLIGHT)));
-    bufferInfo.range = uboMem.range;
-
-    std::vector<VkWriteDescriptorSet> descriptorWrites{
-        static_cast<size_t>(order.size())};
-
-    int nImg = 0; // gjør dette for hver entity basically.
-    for (auto a = 0; a < order.size(); a++) {
-      if (order[a] == vert_ubo) {
-        descriptorWrites[a].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptorWrites[a].dstSet = descriptorSets[n];
-        descriptorWrites[a].dstBinding = a;
-        descriptorWrites[a].dstArrayElement = 0;
-        descriptorWrites[a].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descriptorWrites[a].descriptorCount = 1;
-        descriptorWrites[a].pBufferInfo = &bufferInfo;
-      } else if (order[a] == frag_image) {
-        descriptorWrites[a].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptorWrites[a].dstSet = descriptorSets[n];
-        descriptorWrites[a].dstBinding = a;
-        descriptorWrites[a].dstArrayElement = 0;
-        descriptorWrites[a].descriptorType =
-            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        descriptorWrites[a].descriptorCount = 1;
-        descriptorWrites[a].pImageInfo = &imageInfos[nImg];
-        nImg++;
-      }
-    }
-
-    // IT SAYS UPDATE. Can I run update on a singular desciptor without having
-    // to delete and recreate everything?
-    vkUpdateDescriptorSets(Gra::m_device,
-                           static_cast<uint32_t>(descriptorWrites.size()),
-                           descriptorWrites.data(), 0, nullptr);
+  auto n = 2 * index + Drawing::currSwapFrame;
+  // setup phase
+  std::vector<VkDescriptorImageInfo> imageInfos{texImageViews.size()};
+  for (int i = 0; i < imageInfos.size(); i++) {
+    imageInfos[i] = VkDescriptorImageInfo{
+        .sampler = Texture::m_textureSampler,
+        .imageView = texImageViews[i],
+        .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+    };
   }
+
+  VkDescriptorBufferInfo bufferInfo{};
+  bufferInfo.buffer =
+      uboMem.uniformBuffers[n % Gra::MAX_FRAMES_IN_FLIGHT]; // TODO Her er
+                                                            // bindingen til
+                                                            // ubo o.l.
+  bufferInfo.offset =
+      uboMem.offset *
+      static_cast<int>(std::floor(
+          static_cast<float>(n) / // Here it picks out the mem it refers to!
+          static_cast<float>(Gra::MAX_FRAMES_IN_FLIGHT)));
+  bufferInfo.range = uboMem.range;
+
+  std::vector<VkWriteDescriptorSet> descriptorWrites{
+      static_cast<size_t>(order.size())};
+
+  int nImg = 0; // gjør dette for hver entity basically.
+  for (auto a = 0; a < order.size(); a++) {
+    if (order[a] == vert_ubo) {
+      descriptorWrites[a].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      descriptorWrites[a].dstSet = descriptorSets[n];
+      descriptorWrites[a].dstBinding = a;
+      descriptorWrites[a].dstArrayElement = 0;
+      descriptorWrites[a].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+      descriptorWrites[a].descriptorCount = 1;
+      descriptorWrites[a].pBufferInfo = &bufferInfo;
+    } else if (order[a] == frag_image) {
+      descriptorWrites[a].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+      descriptorWrites[a].dstSet = descriptorSets[n];
+      descriptorWrites[a].dstBinding = a;
+      descriptorWrites[a].dstArrayElement = 0;
+      descriptorWrites[a].descriptorType =
+          VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+      descriptorWrites[a].descriptorCount = 1;
+      descriptorWrites[a].pImageInfo = &imageInfos[nImg];
+      nImg++;
+    }
+  }
+
+  // IT SAYS UPDATE. Can I run update on a singular desciptor without having
+  // to delete and recreate everything?
+  vkUpdateDescriptorSets(Gra::m_device,
+                         static_cast<uint32_t>(descriptorWrites.size()),
+                         descriptorWrites.data(), 0, nullptr);
 }
 /*
  * Extremely slow method here.
@@ -177,15 +170,29 @@ std::vector<VkDescriptorSet> Model::createDescriptorSets() const {
     throw std::runtime_error("failed to allocate descriptor sets!");
   }
 
+  std::vector<VkImageView> texImageViews{};
+  std::vector<VkImageView> texImageViews2{};
+  replaceTextures({"house.png"}, texImageViews2);
+  
+    auto ogSwapFrame = Drawing::currSwapFrame;
+
   for (auto i = 0; i < uboMem.amount; i++) {
     // TODO here we can change the imageInfo to the one you want
     // because the var size is the amount of entities!!!
+    if (order.size() == 2) {
+    Drawing::currSwapFrame = 0;
+    updateDescriptorSet(i, texImageViews2, uboMem, order, descriptorSets);
+    Drawing::currSwapFrame = 1;
+    updateDescriptorSet(i, texImageViews2, uboMem, order, descriptorSets);
+    } else {
+    Drawing::currSwapFrame = 0;
     updateDescriptorSet(i, texImageViews, uboMem, order, descriptorSets);
+    Drawing::currSwapFrame = 1;
+    updateDescriptorSet(i, texImageViews, uboMem, order, descriptorSets);
+    }
   }
 
-  std::vector<VkImageView> texImageViews2{};
-  replaceTextures({"house.png"}, texImageViews2);
-  updateDescriptorSet(0, texImageViews2, uboMem, order, descriptorSets);
+  Drawing::currSwapFrame = ogSwapFrame;
   return descriptorSets;
 }
 
@@ -214,9 +221,8 @@ void Model::init() {
 
     auto w = overrideWidth;
     auto h = overrideHeight;
-    for (const auto &tex : textures) {
+    for (const auto &tex : textures) { // FIXME!
       auto img = Texture::loadImage(tex.c_str());
-      texImageViews.emplace_back(Texture::createTexture(img));
       if (w == 0)
         w = static_cast<float>(img.w);
       if (h == 0)
@@ -248,8 +254,9 @@ void Model::init() {
 std::shared_ptr<Entity> Model::spawn(Vec2 mapPos, std::string texture) {
   mapPos = Map::mapToWorldCoordinates(mapPos);
 
-  auto entity = std::make_shared<Entity>(
-      Entity{.pos = {mapPos.x, mapPos.y, 0}, .size = {width(), height()}});
+  auto entity = std::make_shared<Entity>(Entity{.pos = {mapPos.x, mapPos.y, 0},
+                                                .size = {width(), height()},
+                                                .sprite = {texture}});
   addEntity(entity);
   return entity;
 }
@@ -287,26 +294,40 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
   if (queueRecreateUboBuffer) {
     queueRecreateUboBuffer = false;
     runRecreateUbo();
+  std::cout << "step-1" << std::endl;
   }
   if (entities.size() == 0)
     return nullptr;
-
+  std::cout << "step0" << std::endl;
   auto n = 0;
-  for (auto &entity : entities) {
-    if (!entity->visible)
+  for (auto i = 0; i < entities.size(); i++) {
+    if (!entities[i]->visible)
       continue;
-    updateRenderUbo(&uboMem, entity); // TODO maybe just return a ubostruct?
+  std::cout << "step1" << std::endl;
+    updateRenderUbo(&uboMem,
+                    entities[i]); // TODO maybe just return a ubostruct?
     Gra_Uniform::updateUniformBuffer(uboMem, Drawing::currSwapFrame, n);
     // TODO update other uniforms here like imgs
+    // Vel, ved bare 1 entity så går fps fra 7000 til 2400.
+  std::cout << "step2" << std::endl;
+    if (entities[i]->sprite.size() > 0 && !queueRecreateUboBuffer) {
+  std::cout << "step3" << std::endl;
+      updateDescriptorSet(i, Texture::getTexImageViews(entities[i]->sprite),
+                          uboMem, order, descriptorSets);
+    }
     n++;
   }
 
+  std::cout << "step4" << std::endl;
   Gra_Uniform::clearRestUniformBuffer(uboMem, Drawing::currSwapFrame, n);
 
+  std::cout << "step5" << std::endl;
   auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
   vkResetCommandBuffer(cmd, 0);
+  std::cout << "step6" << std::endl;
   Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, descriptorSets);
 
+  std::cout << "step7" << std::endl;
   return cmd;
 }
 

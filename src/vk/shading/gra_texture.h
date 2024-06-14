@@ -27,6 +27,8 @@ namespace Texture {
                      VkDeviceMemory &imageMemory
     );
 
+    std::vector<VkImageView> getTexImageViews(std::vector<std::string> textures);
+
     ImageData loadImage(const char *name);
     void createTextureSampler();
     GLFWimage createGLFWImage(const char *path);

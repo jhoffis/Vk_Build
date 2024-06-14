@@ -106,6 +106,9 @@ void drawFrame() {
   submitInfo.signalSemaphoreCount = 1;
   submitInfo.pSignalSemaphores = signalSemaphores;
 
+  
+// validation layer: Validation Error: [ VUID-vkQueueSubmit-fence-00063 ] Object 0: handle = 0x55b68b4e33c0, type = VK_OBJECT_TYPE_QUEUE; Object 1: handle = 0x2cfba2000000001c, type = VK_OBJECT_TYPE_FENCE; | MessageID = 0x6f35a2b3 | vkQueueSubmit():  (VkFence 0x2cfba2000000001c[]) submitted in SIGNALED state. Fences must be reset before being submitted. The Vulkan spec states: If fence is not VK_NULL_HANDLE, fence must be unsignaled (https://vulkan.lunarg.com/doc/view/1.3.283.0/linux/1.3-extensions/vkspec.html#VUID-vkQueueSubmit-fence-00063)
+// validation layer: Validation Error: [ VUID-vkQueueSubmit-pWaitSemaphores-03238 ] Object 0: handle = 0x95a125000000001a, type = VK_OBJECT_TYPE_SEMAPHORE; Object 1: handle = 0x55b68b4e33c0, type = VK_OBJECT_TYPE_QUEUE; | MessageID = 0xb50452b0 | vkQueueSubmit(): pSubmits[0].pWaitSemaphores[0] queue (VkQueue 0x55b68b4e33c0[]) is waiting on semaphore (VkSemaphore 0x95a125000000001a[]) that has no way to be signaled. The Vulkan spec states: All elements of the pWaitSemaphores member of all elements of pSubmits created with a VkSemaphoreType of VK_SEMAPHORE_TYPE_BINARY must reference a semaphore signal operation that has been submitted for execution and any semaphore signal operations on which it depends must have also been submitted for execution (https://vulkan.lunarg.com/doc/view/1.3.283.0/linux/1.3-extensions/vkspec.html#VUID-vkQueueSubmit-pWaitSemaphores-03238)
   if (vkQueueSubmit(Gra::m_graphicsQueue, 1, &submitInfo,
                     m_inFlightFences[currSwapFrame]) != VK_SUCCESS) {
     throw std::runtime_error("failed to submit draw command buffer!");

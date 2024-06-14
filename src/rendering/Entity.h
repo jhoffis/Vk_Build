@@ -2,13 +2,14 @@
 
 #include "math/Vec3.h"
 #include "math/Vec2.h"
+#include <vector>
 
 struct Entity {
     Vec3 pos{};
     Vec2 size{};
     bool visible{true};
     bool selected{};
-    std::string sprite{};
+    std::vector<std::string> sprite{};
 
     [[nodiscard]] constexpr
     bool isAbove(float x, float y) const {
