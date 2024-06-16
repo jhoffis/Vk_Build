@@ -12,19 +12,11 @@ void Map::createMap(int xy) {
 
 void Map::createVisual(int xy) {
 
-    for (int x = 0; x < xy; x++) {
-        for (int y = 0; y < xy; y++) {
-            auto entity = std::make_shared<Entity>(Entity{
-                    .pos = {static_cast<float>(x) * tileSize,
-                            static_cast<float>(y) * tileSize},
-                    .size = {tileSize,
-                             tileSize},
-                    .visible = true,
-            });
-            Shaders::m_grassModel.addEntity(entity, false);
+    for (auto x = 0; x < xy; x++) {
+        for (auto y = 0; y < xy; y++) {
+            Shaders::m_grassModel.spawn({static_cast<float>(x), static_cast<float>(y)}, "grass.png");
         }
     }
-    Shaders::m_grassModel.recreateUboBuffer();
 }
 
 void Map::destroy() {
