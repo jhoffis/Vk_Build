@@ -144,15 +144,15 @@ void SceneHandler::create() {
   //        z: " << Camera::m_cam.pos.z << std::endl;
   //    });
 
-  // Map::createVisual(Map::m_map->xy);
-  // Villager::spawn(1.75f, 1.33);
-  // Villager::spawn(1.5f, 1);
-  // Villager::spawn(2, 1);
-  // Villager::spawn(1.7f, .75);
-  // Villager::spawn(0, 0);
-  // Villager::spawn(0, 0);
+  Map::createVisual(Map::m_map->xy);
+  Villager::spawn(1.75f, 1.33, true);
+  Villager::spawn(1.5f, 1, false);
+  Villager::spawn(2, 1, false);
+  Villager::spawn(1.7f, .75, true);
+  Villager::spawn(0, 0, true);
+  Villager::spawn(0, 0, false);
   //
-  auto alice = Shaders::m_villModel.spawn({1, 4}, "unit.png");
+  auto alice = Shaders::m_villModel.spawn({1, 4}, "mill.png");
   auto bob = Shaders::m_villModel.spawn({3, 4}, "texture.jpg");
   // Villager::
 }

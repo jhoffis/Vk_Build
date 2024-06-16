@@ -40,8 +40,7 @@ namespace Building {
     void place(float wX, float wY) {
         stopHovering();
         auto mapCoor = Map::worldToMapCoorFloor(wX, wY);
-        auto worldCoor = Map::mapToWorldCoordinates(mapCoor);
-        Shaders::m_houseModel.spawn(worldCoor.x, worldCoor.y);
+        Shaders::m_houseModel.spawn({mapCoor.x, mapCoor.y}, m_hoveringBuilding->sprite[0]);
         Map::m_map->setInaccessible(true, mapCoor.x, mapCoor.y);
         Map::m_map->setInaccessible(true, mapCoor.x + 1, mapCoor.y);
         Map::m_map->setInaccessible(true, mapCoor.x + 1, mapCoor.y + 1);

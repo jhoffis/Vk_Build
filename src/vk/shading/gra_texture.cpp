@@ -301,7 +301,7 @@ std::vector<VkImageView> getTexImageViews(std::vector<std::string> textures) {
   std::vector<VkImageView> res{};
   for (auto &texture : textures) {
     if (!texImageViews.contains(texture)) {
-        // TODO We cannot do this during a draw call...
+        // TODO We shouldn't do this during a draw call...
       auto img = Texture::loadImage(texture.c_str());
       texImageViews[texture] = Texture::createTexture(img);
     }

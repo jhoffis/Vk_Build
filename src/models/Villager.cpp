@@ -16,15 +16,12 @@ namespace Villager {
 
     float z = 0;
 
-    void spawn(float x, float y) {
+    void spawn(float x, float y, bool male) {
         z = 0.1f;
-        auto male = m_vills.emplace_back(Vill{
-                .entity = std::make_shared<Entity>(Entity{
-                        .pos = {x * Map::tileSize, y * Map::tileSize, z},
-                        .size = {Shaders::m_villModel.width(), Shaders::m_villModel.height()},
-                }),
-        });
-        Shaders::m_villModel.addEntity(male.entity, true);
+        auto vill = m_vills.emplace_back(Vill{
+                .entity = Shaders::m_villModel.spawn({x, y},
+                        {male ? "male.png" : "female.png"})
+                });
     }
 
     void destroy() {

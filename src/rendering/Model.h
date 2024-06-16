@@ -80,7 +80,6 @@ struct Model {
     void addEntity(const std::shared_ptr<Entity>& entity, bool update);
     void addEntity(const std::shared_ptr<Entity>& entity);
     void removeEntity(const std::shared_ptr<Entity>&  sharedPtr);
-    void spawn(float x, float y);
     void sort();
 
     VkCommandBuffer renderMeshes(uint32_t imageIndex);

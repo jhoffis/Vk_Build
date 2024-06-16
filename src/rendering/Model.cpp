@@ -173,22 +173,22 @@ std::vector<VkDescriptorSet> Model::createDescriptorSets() const {
   std::vector<VkImageView> texImageViews{};
   std::vector<VkImageView> texImageViews2{};
   replaceTextures({"house.png"}, texImageViews2);
-  
-    auto ogSwapFrame = Drawing::currSwapFrame;
+
+  auto ogSwapFrame = Drawing::currSwapFrame;
 
   for (auto i = 0; i < uboMem.amount; i++) {
     // TODO here we can change the imageInfo to the one you want
     // because the var size is the amount of entities!!!
     if (order.size() == 2) {
-    Drawing::currSwapFrame = 0;
-    updateDescriptorSet(i, texImageViews2, uboMem, order, descriptorSets);
-    Drawing::currSwapFrame = 1;
-    updateDescriptorSet(i, texImageViews2, uboMem, order, descriptorSets);
+      Drawing::currSwapFrame = 0;
+      updateDescriptorSet(i, texImageViews2, uboMem, order, descriptorSets);
+      Drawing::currSwapFrame = 1;
+      updateDescriptorSet(i, texImageViews2, uboMem, order, descriptorSets);
     } else {
-    Drawing::currSwapFrame = 0;
-    updateDescriptorSet(i, texImageViews, uboMem, order, descriptorSets);
-    Drawing::currSwapFrame = 1;
-    updateDescriptorSet(i, texImageViews, uboMem, order, descriptorSets);
+      Drawing::currSwapFrame = 0;
+      updateDescriptorSet(i, texImageViews, uboMem, order, descriptorSets);
+      Drawing::currSwapFrame = 1;
+      updateDescriptorSet(i, texImageViews, uboMem, order, descriptorSets);
     }
   }
 
@@ -294,40 +294,34 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
   if (queueRecreateUboBuffer) {
     queueRecreateUboBuffer = false;
     runRecreateUbo();
-  std::cout << "step-1" << std::endl;
   }
   if (entities.size() == 0)
     return nullptr;
-  std::cout << "step0" << std::endl;
   auto n = 0;
   for (auto i = 0; i < entities.size(); i++) {
+      auto entity = entities[i];
+      auto sprites = entity->sprite;
     if (!entities[i]->visible)
       continue;
-  std::cout << "step1" << std::endl;
     updateRenderUbo(&uboMem,
                     entities[i]); // TODO maybe just return a ubostruct?
     Gra_Uniform::updateUniformBuffer(uboMem, Drawing::currSwapFrame, n);
     // TODO update other uniforms here like imgs
     // Vel, ved bare 1 entity så går fps fra 7000 til 2400.
-  std::cout << "step2" << std::endl;
+    // TODO throw error if you're supposted to have sprites?? Maybe.
     if (entities[i]->sprite.size() > 0 && !queueRecreateUboBuffer) {
-  std::cout << "step3" << std::endl;
       updateDescriptorSet(i, Texture::getTexImageViews(entities[i]->sprite),
                           uboMem, order, descriptorSets);
     }
     n++;
   }
 
-  std::cout << "step4" << std::endl;
   Gra_Uniform::clearRestUniformBuffer(uboMem, Drawing::currSwapFrame, n);
 
-  std::cout << "step5" << std::endl;
   auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
   vkResetCommandBuffer(cmd, 0);
-  std::cout << "step6" << std::endl;
   Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, descriptorSets);
 
-  std::cout << "step7" << std::endl;
   return cmd;
 }
 
@@ -348,12 +342,6 @@ void Model::removeEntity(const std::shared_ptr<Entity> &sharedPtr) {
   entities.erase(std::remove(entities.begin(), entities.end(), sharedPtr),
                  entities.end());
   recreateUboBuffer();
-}
-
-void Model::spawn(float x, float y) {
-  recreateUboBuffer();
-  entities.emplace_back(std::make_shared<Entity>(
-      Entity{.pos = {x, y, 0}, .size = {width(), height()}}));
 }
 
 void Model::createPipeline() {
