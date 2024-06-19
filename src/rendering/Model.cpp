@@ -230,6 +230,7 @@ void Model::init() {
     }
     mesh.init(w, h);
     Gra::createVertexBuffer(&mesh);
+    Gra::createInstanceBuffer(&mesh);
     Gra::createIndexBuffer(&mesh);
 
     uboMem = Gra_Uniform::createUniformBuffers(1, sizeOfUBO);

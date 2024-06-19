@@ -17,6 +17,7 @@ namespace Gra {
     };
 
     void createVertexBuffer(Mesh2D *mesh);
+    void createInstanceBuffer(Mesh2D *mesh);
     void createIndexBuffer(Mesh2D *mesh);
 
     void cleanupVertex();

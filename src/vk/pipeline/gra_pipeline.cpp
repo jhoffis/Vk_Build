@@ -60,9 +60,9 @@ namespace Raster {
 
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexBindingDescriptionCount = 1;
+        vertexInputInfo.vertexBindingDescriptionCount = bindingDescription.size();
         vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-        vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+        vertexInputInfo.pVertexBindingDescriptions = bindingDescription.data();
         vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
         /*
@@ -168,10 +168,15 @@ namespace Raster {
         /*
          * Raster layout
          */
+
+        // FIXME temp
+        VkDescriptorSetLayout layoutsTemp[4];
+        for (int i = 0; i < 4; i++) layoutsTemp[i] = descriptorSetLayout;
+
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipelineLayoutInfo.setLayoutCount = 1;
-        pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
+        pipelineLayoutInfo.setLayoutCount = 4;
+        pipelineLayoutInfo.pSetLayouts = layoutsTemp;
         pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
         pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
@@ -211,6 +216,10 @@ namespace Raster {
             VK_SUCCESS) {
             throw std::runtime_error("failed to create graphics pipeline!");
         }
+        /*
+         *ERROR:
+         validation layer: Validation Error: [ VUID-VkPipelineVertexInputStateCreateInfo-pVertexAttributeDescriptions-00617 ] | MessageID = 0x3b5abdfa | vkCreateGraphicsPipelines(): pCreateInfos[0].pVertexInputState->pVertexAttributeDescriptions->location (0) is already in pVertexAttributeDescriptions[0]. The Vulkan spec states: All elements of pVertexAttributeDescriptions must describe distinct attribute locations (https://vulkan.lunarg.com/doc/view/1.3.283.0/linux/1.3-extensions/vkspec.html#VUID-VkPipelineVertexInputStateCreateInfo-pVertexAttributeDescriptions-00617)
+         * */
 
         vkDestroyShaderModule(Gra::m_device, fragShaderModule, nullptr);
         vkDestroyShaderModule(Gra::m_device, vertShaderModule, nullptr);

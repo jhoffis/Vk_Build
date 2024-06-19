@@ -74,6 +74,39 @@ namespace Gra {
         vkFreeMemory(m_device, stagingBufferMemory, nullptr);
     }
 
+    void createInstanceBuffer(Mesh2D *mesh) {
+
+        VkDeviceSize bufferSize = sizeof(InstanceData) * 2;
+
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                     VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
+                     stagingBufferMemory);
+
+        void *data;
+        vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0,
+                    &data);
+        memcpy(data, mesh->vertices, (size_t) bufferSize);
+        vkUnmapMemory(m_device, stagingBufferMemory);
+
+        VkDeviceMemory mem{};
+        VkBuffer buffer{};
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+                                 VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, // Device local = at the gpu
+                     mem);
+        bufferMemToClean.emplace_back(mem);
+        vkBuffersToClean.emplace_back(buffer);
+
+        copyBuffer(stagingBuffer, buffer, bufferSize);
+        mesh->instanceBuffer = buffer;
+
+        vkDestroyBuffer(m_device, stagingBuffer, nullptr);
+        vkFreeMemory(m_device, stagingBufferMemory, nullptr);
+    }
+
     void createIndexBuffer(Mesh2D *mesh) {
         // The bufferSize is now equal to the
         // number of indices times the size of the index type, either uint16_t or uint32_t.

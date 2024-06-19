@@ -19,4 +19,9 @@ void Mesh2D::init(float width, float height) {
     vertices[3] = {{0.0f, 0.0f, 0.0f},
                    {1.0f, 1.0f, 1.0f},
                    {0.0f, 1.0f}}; //bot right
+
+    instanceData.resize(2);
+    instanceData[0] = {0, 0};
+    instanceData[1] = {1, 1};
+
 }
