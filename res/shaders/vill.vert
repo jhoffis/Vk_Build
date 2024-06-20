@@ -31,6 +31,12 @@ void main() {
  //  gl_Position.z = fragColor.r;
 
     fragColor.rgb = ubo.selected == 1 ? vec3(1.0) : vec3(0.0);
+if (gl_InstanceIndex == 0) {
+    fragColor.b = 1.0;
+}
+if (gl_InstanceIndex == 1) {
+    fragColor.r = 1.0;
+}
     gl_Position.z = 0.5*ubo.pos.y + .1 + ubo.pos.z;
     fragTexCoord = inTexCoord;
 }
