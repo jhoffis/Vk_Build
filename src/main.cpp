@@ -67,9 +67,9 @@ int main() {
             fpsTime -= 1.;
             fps = 0;
         }
-//#if RMDEV
-//        std::this_thread::sleep_for(std::chrono::milliseconds(2));
-//#endif
+#if RMDEV
+       std::this_thread::sleep_for(std::chrono::milliseconds(2));
+#endif
     }
     vkDeviceWaitIdle(Gra::m_device);
 
