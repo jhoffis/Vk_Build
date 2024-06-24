@@ -3,12 +3,14 @@
 #include <stdexcept>
 #include <thread>
 #include <utility>
+#include <vulkan/vulkan_core.h>
 
 #include "camera.h"
 #include "models/Map.h"
 #include "models/SelectionBoxModel.h"
 #include "timer_util.h"
 #include "vk/drawing/gra_drawing.h"
+#include "vk/gra_descriptors.h"
 #include "vk/gra_setup.h"
 #include "vk/presentation/gra_swap_chain.h"
 #include "vk/shading/gra_uniform.h"
@@ -129,8 +131,7 @@ void updateDescriptorSet(int index,
       descriptorWrites[a].dstSet = descriptorSets[n];
       descriptorWrites[a].dstBinding = a;
       descriptorWrites[a].dstArrayElement = 0;
-      descriptorWrites[a].descriptorType =
-          VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+      descriptorWrites[a].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
       descriptorWrites[a].descriptorCount = 1;
       descriptorWrites[a].pImageInfo = &imageInfos[nImg];
       nImg++;
@@ -215,7 +216,7 @@ void Model::init() {
   // attributes. Feks at de først har uniform buffer og så image sampler.
   cmdBuffer.init();
 
-  pool = Gra_Uniform::createDescriptorPool(1);
+  pool = Gra_desc::createDescriptorPool( Gra::MAX_FRAMES_IN_FLIGHT *1);
 
   { // Shader stuff
 
@@ -246,7 +247,7 @@ void Model::init() {
         break;
       }
     }
-    descriptorSetLayout = Gra_Uniform::createDescriptorSetLayout(bindings);
+    descriptorSetLayout = Gra_desc::createDescriptorSetLayout(bindings);
     // descriptorSets = createDescriptorSets();
   }
   createPipeline();
@@ -275,7 +276,7 @@ void Model::runRecreateUbo() {
   auto t1 = Timer::nowNanos();
   vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
   auto t2 = Timer::nowNanos();
-  pool = Gra_Uniform::createDescriptorPool(amount);
+  pool = Gra_desc::createDescriptorPool( Gra::MAX_FRAMES_IN_FLIGHT *amount);
   auto t3 = Timer::nowNanos();
   uboMem.destroy();
   auto t4 = Timer::nowNanos();

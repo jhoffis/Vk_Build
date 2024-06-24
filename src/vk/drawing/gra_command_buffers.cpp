@@ -64,6 +64,7 @@ std::vector<VkCommandBuffer> createCommandBuffers(VkCommandPool pool) {
   return commandBuffers;
 }
 
+// TODO reuse descriptorsets and so on (and calls in one render pass?? don't quite remember...https://www.youtube.com/watch?v=5VBVWCg7riQ)
 void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex,
                          const Mesh2D &mesh, const Raster::Pipeline &pipe,
                          std::vector<VkDescriptorSet> &descriptorSets) {

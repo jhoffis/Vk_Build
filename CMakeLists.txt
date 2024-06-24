@@ -17,6 +17,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 file(COPY ${CMAKE_SOURCE_DIR}/res DESTINATION ${PROJECT_BINARY_DIR})
 
 add_executable(${PROJECT_NAME}
+        src/vk/gra_descriptors.cpp
+        src/vk/gra_descriptors.h
         src/models/Building.cpp
         src/models/Building.h
         src/path_finding.cpp

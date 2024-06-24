@@ -1,4 +1,3 @@
-//#define RM_DEV
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -28,6 +27,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 #else
+
 int main() {
 #endif
 //    std::srand(Timer::nowMillis());

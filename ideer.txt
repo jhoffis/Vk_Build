@@ -47,3 +47,6 @@ Det er Tor som sloss mot "demoner" eller jotner. På samme måte som når metall
  Norse: Must hang people. This strengthens the gods knowledge, which in turn strengthens their fight against evil extraterrestial creatures.
  Egyptians: Must venerate the pharaoh.
  Cult of Freyja: Has orgy with a temple prostitute.
+
+ Ha memory visualizer som tar memory location og så størrelse på minne og så viser visuelt hvor det er hen i ram minnet?
+ Kunne vært kult.
