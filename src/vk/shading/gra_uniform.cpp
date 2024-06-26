@@ -17,23 +17,25 @@
 
 namespace Gra_Uniform {
 
-    UBOMem createUniformBuffers(int amount, int sizeOfUBO) {
+    UBOMem createUniformBuffers(uint32_t amount, uint32_t count, uint32_t sizeOfUBO) {
         // TODO make custom shit, hmmm vel du kan basere deg på en size av en struct som har endret størrelse da! Lag en struct med en vector med components kanskje?
-        int singleSize = sizeOfUBO; // sizeof(UniformBufferObject);
-        int offset;
+        auto singleSize = count * sizeOfUBO; 
+        auto offset = 0u; 
         if (singleSize <= Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment) {
            offset = static_cast<int>(Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment);
         } else {
-           int multiple = std::ceil(static_cast<float>(singleSize) /  static_cast<float>(Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment));
+           int multiple = std::ceil(static_cast<float>(singleSize) / static_cast<float>(Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment));
            offset = multiple * static_cast<int>(Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment);
+           // FIXME er ikke dette bare alltid singleSize?
         }
         VkDeviceSize bufferSize = amount * offset + 1;
 
         std::cout << "created ubo with Range " << singleSize << " and offset " << offset << std::endl;
 
         UBOMem uboMem{};
+        uboMem.count = count;
         uboMem.amount = amount;
-        uboMem.range = singleSize;
+        uboMem.range = sizeOfUBO;
         uboMem.offset = offset;
         uboMem.uniformBuffers.resize(Gra::MAX_FRAMES_IN_FLIGHT);
         uboMem.uniformBuffersMemory.resize(Gra::MAX_FRAMES_IN_FLIGHT);
@@ -62,7 +64,7 @@ namespace Gra_Uniform {
                     &data);
         memcpy(data,
                uboMem.uboStruct,
-               uboMem.range);
+               uboMem.count * uboMem.range);
         vkUnmapMemory(Gra::m_device,
                       uboMem.uniformBuffersMemory[currentSwapImage]);
     }

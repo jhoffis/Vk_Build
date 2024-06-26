@@ -20,12 +20,19 @@ using std::move;
 
 void grassUpdateRenderUbo(Gra_Uniform::UBOMem *uboMem,
                           const std::shared_ptr<Entity> &entity) {
-  delete static_cast<Gra::UniformBufferObject *>(uboMem->uboStruct);
-  uboMem->uboStruct = new Gra::UniformBufferObject{
-      .pos = entity->pos - Camera::m_cam.pos,
-      .aspect = Gra::m_swapChainAspectRatio,
-      .selected = entity->selected,
-  };
+    delete static_cast<Gra::UniformBufferObject *>(uboMem->uboStruct);
+    auto ubos = new Gra::UniformBufferObject[2];
+    ubos[0] = {
+        .pos = entity->pos - Camera::m_cam.pos,
+        .aspect = Gra::m_swapChainAspectRatio,
+        .selected = entity->selected,
+    };
+    ubos[1] = {
+        .pos = (Vec3{.x = .5, .y = .2 } - Camera::m_cam.pos),
+        .aspect = Gra::m_swapChainAspectRatio,
+        .selected = entity->selected,
+    };
+    uboMem->uboStruct = ubos;
 }
 
 std::vector<Model *> m_renderModels{};
@@ -218,20 +225,22 @@ void Model::init() {
     Gra::createInstanceBuffer(&mesh);
     Gra::createIndexBuffer(&mesh);
 
-    box = Gra_desc::createDescriptorBox(2, {
-          {
-           .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-           .bindingNum = 0,
-           .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-           .sizeofUBO = sizeof(Gra::UniformBufferObject), 
-          },
-          {
-           .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-           .bindingNum = 1,
-           .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
-           .textureName = "unit.png"
-          },
-          });
+    box = Gra_desc::createDescriptorBox(2, // TODO make remake/resize function
+            {
+            {
+            .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+            .bindingNum = 0,
+            .count = 2,
+            .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+            .sizeofUBO = sizeof(Gra::UniformBufferObject), 
+            },
+            {
+            .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+            .bindingNum = 1,
+            .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
+            .textureName = "unit.png"
+            },
+            });
 
     createPipeline();
     updateRenderUbo = grassUpdateRenderUbo;
@@ -295,8 +304,7 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
         auto sprites = entity->sprite;
         if (!entities[i]->visible)
             continue;
-        updateRenderUbo(&box.uboMem,
-                entities[i]); // TODO maybe just return a ubostruct?
+        updateRenderUbo(&box.uboMem, entities[i]); // TODO maybe just return a ubostruct?
         Gra_Uniform::updateUniformBuffer(box.uboMem, Drawing::currSwapFrame, n);
         // TODO update other uniforms here like imgs
         // Vel, ved bare 1 entity så går fps fra 7000 til 2400.
