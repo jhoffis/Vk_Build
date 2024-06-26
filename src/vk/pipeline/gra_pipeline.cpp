@@ -2,6 +2,8 @@
 // Created by jh on 8/23/2022.
 //
 
+#include <cassert>
+#include <iostream>
 #include <stdexcept>
 #include "gra_pipeline.h"
 #include "file_util.h"
@@ -14,9 +16,12 @@
 #include <stdlib.h>
 #include <filesystem>
 
+
+
 namespace Raster {
 
     Pipeline createGraphicsPipeline(VkDescriptorSetLayout descriptorSetLayout, const std::string &shaderName) {
+        assert(shaderName.size() != 0);
         auto vertShaderCode = readFile("res/shaders/compiled/" + shaderName + "_vert.spv");
         auto fragShaderCode = readFile("res/shaders/compiled/" + shaderName + "_frag.spv");
 

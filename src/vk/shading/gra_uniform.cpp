@@ -70,15 +70,17 @@ namespace Gra_Uniform {
     void clearRestUniformBuffer(const UBOMem &uboMem,
                                 uint32_t currentSwapImage,
                                 uint32_t startEntityIndex) {
+        auto size = uboMem.amount - startEntityIndex;
+        if (size == 0) return;
         void *data;
         vkMapMemory(Gra::m_device,
                     uboMem.uniformBuffersMemory[currentSwapImage],
                     startEntityIndex * uboMem.offset,
-                    (uboMem.amount - startEntityIndex) * uboMem.offset,
+                    size * uboMem.offset,
                     0,
                     &data);
         // Calculate the size of the memory to clear
-        size_t clearSize = (uboMem.amount - startEntityIndex) * uboMem.offset;
+        size_t clearSize = size * uboMem.offset;
         // Clear the memory to zero
         memset(data, 0, clearSize);
         vkUnmapMemory(Gra::m_device,

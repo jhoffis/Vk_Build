@@ -1,6 +1,6 @@
 #version 450
 
-layout(set = 0, binding = 0) uniform UniformBufferObject {
+layout(binding = 0) uniform UniformBufferObject {
     vec3 pos;
     float aspect;
     int selected;
@@ -37,6 +37,6 @@ if (gl_InstanceIndex == 0) {
 if (gl_InstanceIndex == 1) {
     fragColor.r = 1.0;
 }
-    gl_Position.z = 0.5*ubo.pos.y + .1 + ubo.pos.z;
+    // gl_Position.z = 0.5*ubo.pos.y + .1 + ubo.pos.z;
     fragTexCoord = inTexCoord;
 }

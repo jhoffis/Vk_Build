@@ -16,14 +16,14 @@ namespace SelectionBox {
             .size = {1.5, 1.5},
             .visible = true
         });
-        Shaders::m_selectionBoxModel.addEntity(entity, false);
-        Shaders::m_selectionBoxModel.recreateUboBuffer();
+        // Shaders::m_selectionBoxModel.spawn({-.1, -.1}, ""); //FIXME
+        // Shaders::m_selectionBoxModel.recreateUboBuffer();
 
         hide(false);
     }
 
     void visible(float x, float y) {
-        Shaders::m_selectionBoxModel.visible = true;
+        // Shaders::m_selectionBoxModel.visible = true;
         m_ubo.posOriginal.x = x;
         m_ubo.posOriginal.y = y;
         m_ubo.posNew.x = x;
@@ -31,7 +31,7 @@ namespace SelectionBox {
     }
 
     void hide(bool select) {
-        Shaders::m_selectionBoxModel.visible = false;
+        // Shaders::m_selectionBoxModel.visible = false;
         m_selected.clear();
 
         if (!select) return;
@@ -63,10 +63,11 @@ namespace SelectionBox {
     }
 
     bool isVisible() {
-        return Shaders::m_selectionBoxModel.visible;
+        // return Shaders::m_selectionBoxModel.visible;
+        return false;
     }
 
     void destroy() {
-        Shaders::m_selectionBoxModel.destroy();
+        // Shaders::m_selectionBoxModel.destroy();
     }
 }

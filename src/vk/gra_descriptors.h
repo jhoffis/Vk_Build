@@ -1,5 +1,4 @@
 #pragma once
-#include "vk/drawing/gra_command_buffers.h"
 #include "vk/drawing/gra_drawing.h"
 #include "vk/shading/gra_uniform.h"
 #include <vector>
@@ -12,32 +11,45 @@ namespace Gra_desc {
 
     // TODO opprett UBOMem her automatisk bak descriptor?
 
+    struct DescriptorBindInfo {
+        const VkDescriptorType type{};
+        const uint32_t bindingNum{};
+        const uint32_t count{1};
+        const VkShaderStageFlags stageFlags{};
+        const std::string &textureName{};
+        const uint32_t sizeofUBO{0};
+        // const VkDescriptorImageInfo*  pImageInfo;
+        // const VkDescriptorBufferInfo* pBufferInfo;
+    };
+
     /*
      * One descriptor describes one resource.
      * Always organized in sets. Can contain one or more descriptors.
-     * Can combine descriptors which are used in conjuction.
+     * Can combine descriptors which are usedin conjuction.
      */
     struct DescriptorSet {
-        int bufferIndex{}; // where on the UBOMem buffer 
-        VkDescriptorSet sets[Gra::MAX_FRAMES_IN_FLIGHT];
+        VkDescriptorSet sets[2];
     };
 
     struct DescriptorBox {
         VkDescriptorPool pool{}; 
-        Gra_Uniform::UBOMem uboMem{};
         std::vector<DescriptorSet> sets{};
+        VkDescriptorSetLayout layout{};
+        Gra_Uniform::UBOMem uboMem{};
     };
 
-
-    void bindUBODescriptor(DescriptorSet &descriptor,
-                           const int swapIndex,
-                           const Gra_Uniform::UBOMem &uboMem);
-
-    void bindImageDescriptor(DescriptorSet &descriptor,
-                             const int swapIndex,
-                             const std::vector<VkImageView> &texImageViews);
+    // void bindDescriptor(DescriptorSet &descriptor,
+    //                     const std::vector<DescriptorBindInfo> &bindInfos,
+    //                     const int bufferIndex,
+    //                     const int swapIndex,
+    //                     const Gra_Uniform::UBOMem &uboMem,
+    //                     const std::vector<VkImageView> &texImageViews);
 
     VkDescriptorSetLayout createDescriptorSetLayout(std::vector<VkDescriptorSetLayoutBinding> bindings);
     VkDescriptorPool createDescriptorPool(int amountEntities);
-    DescriptorBox createDescriptorBox(const int amount);
+    DescriptorBox createDescriptorBox(const int amount,
+                                      const std::vector<DescriptorBindInfo> &bindInfos);
+    void destroyDescriptorBox(const DescriptorBox &box);
+
+
 }

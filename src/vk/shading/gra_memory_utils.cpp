@@ -48,15 +48,14 @@ namespace Gra {
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memoryRequirements.size;
-        allocInfo.memoryTypeIndex =
-                findMemoryType(memoryRequirements.memoryTypeBits, properties);
+        allocInfo.memoryTypeIndex = findMemoryType(memoryRequirements.memoryTypeBits, properties);
 
         if (vkAllocateMemory(m_device, &allocInfo, nullptr, &bufferMemory)
             != VK_SUCCESS) {
             throw std::runtime_error("failed to allocate buffer memory!");
         }
 
-        vkBindBufferMemory(m_device, buffer, bufferMemory, 0);
+        vkBindBufferMemory(m_device, buffer, bufferMemory, 0); // TODO maybe combine many buffers into one bufferMemory using offset?
     }
 
     VkCommandBuffer beginSingleTimeCommands() {

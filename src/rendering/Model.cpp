@@ -16,6 +16,8 @@
 #include "vk/shading/gra_uniform.h"
 #include "vk/shading/gra_vertex.h"
 
+using std::move;
+
 void grassUpdateRenderUbo(Gra_Uniform::UBOMem *uboMem,
                           const std::shared_ptr<Entity> &entity) {
   delete static_cast<Gra::UniformBufferObject *>(uboMem->uboStruct);
@@ -27,6 +29,7 @@ void grassUpdateRenderUbo(Gra_Uniform::UBOMem *uboMem,
 }
 
 std::vector<Model *> m_renderModels{};
+/*
 Model Shaders::m_grassModel("grass", grassUpdateRenderUbo,
                             {
                                 vert_ubo,
@@ -41,8 +44,9 @@ Model Shaders::m_houseModel("grass", grassUpdateRenderUbo,
                             },
                             sizeof(Gra::UniformBufferObject), 0, 0,
                             {"house.png"});
-
-Model Shaders::m_villModel{"vill",
+*/
+Model Shaders::m_villModel("vill"); 
+/*"vill",
                            grassUpdateRenderUbo,
                            {
                                vert_ubo,
@@ -51,9 +55,10 @@ Model Shaders::m_villModel{"vill",
                            sizeof(Gra::UniformBufferObject),
                            0,
                            0,
-                           {"unit.png"}};
+                           {"unit.png"}};*/
 
-Model Shaders::m_selectionBoxModel{
+// Model Shaders::m_selectionBoxModel{}; 
+/*
     "selectionbox",
     [](auto uboMem, auto entity) {
       SelectionBox::m_ubo.aspect = Gra::m_swapChainAspectRatio;
@@ -70,12 +75,8 @@ Model Shaders::m_selectionBoxModel{
     sizeof(SelectionBox::SelectionBoxUBO),
     128,
     128,
-    {}};
-
-#ifdef RMDEV
-std::vector<Raster::Pipeline> m_leftoverPipelines;
-#endif
-
+    {}};*/
+/*
 void replaceTextures(const std::vector<std::string> &textures,
                      std::vector<VkImageView> &texImageViews) {
   texImageViews.clear();
@@ -84,7 +85,8 @@ void replaceTextures(const std::vector<std::string> &textures,
     texImageViews.emplace_back(tex);
   }
 }
-
+*/
+/*
 void updateDescriptorSet(int index,
                          const std::vector<VkImageView> &texImageViews,
                          const Gra_Uniform::UBOMem &uboMem,
@@ -144,9 +146,12 @@ void updateDescriptorSet(int index,
                          static_cast<uint32_t>(descriptorWrites.size()),
                          descriptorWrites.data(), 0, nullptr);
 }
+*/
+
 /*
  * Extremely slow method here.
  */
+/*
 std::vector<VkDescriptorSet> Model::createDescriptorSets() const {
   auto size = Gra::MAX_FRAMES_IN_FLIGHT *
               uboMem.amount; // Dette er amount: auto amount =
@@ -196,73 +201,58 @@ std::vector<VkDescriptorSet> Model::createDescriptorSets() const {
   Drawing::currSwapFrame = ogSwapFrame;
   return descriptorSets;
 }
-
-Model::Model(std::string shaderName,
-             std::function<void(Gra_Uniform::UBOMem *,
-                                const std::shared_ptr<Entity> &entity)>
-                 updateRenderUbo,
-             std::vector<ShaderComponentOrder> order, const int sizeOfUBO,
-             const float overrideWidth, const float overrideHeight,
-             std::vector<std::string> textures)
-    : shaderName(std::move(shaderName)),
-      updateRenderUbo(std::move(updateRenderUbo)), order(std::move(order)),
-      sizeOfUBO(sizeOfUBO), overrideWidth(overrideWidth),
-      overrideHeight(overrideHeight), textures(std::move(textures)) {
+*/
+Model::Model(const std::string &shaderName) : shaderName(std::move(shaderName)) {
   m_renderModels.emplace_back(this);
 }
 
 void Model::init() {
-  // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og
-  // attributes. Feks at de først har uniform buffer og så image sampler.
-  cmdBuffer.init();
+    // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og
+    // attributes. Feks at de først har uniform buffer og så image sampler.
+    cmdBuffer.init();
 
-  pool = Gra_desc::createDescriptorPool( Gra::MAX_FRAMES_IN_FLIGHT *1);
-
-  { // Shader stuff
-
-    auto w = overrideWidth;
-    auto h = overrideHeight;
-    for (const auto &tex : textures) { // FIXME!
-      auto img = Texture::loadImage(tex.c_str());
-      if (w == 0)
-        w = static_cast<float>(img.w);
-      if (h == 0)
-        h = static_cast<float>(img.h);
-    }
+    auto w = 128;
+    auto h = 128;
     mesh.init(w, h);
     Gra::createVertexBuffer(&mesh);
     Gra::createInstanceBuffer(&mesh);
     Gra::createIndexBuffer(&mesh);
 
-    uboMem = Gra_Uniform::createUniformBuffers(1, sizeOfUBO);
-    // These two can be combined
-    std::vector<VkDescriptorSetLayoutBinding> bindings{};
-    for (int i = 0; i < order.size(); i++) {
-      switch (order[i]) {
-      case vert_ubo:
-        bindings.emplace_back(UBOComponent::binding(i));
-        break;
-      case frag_image:
-        bindings.emplace_back(ImageComponent::binding(i));
-        break;
-      }
-    }
-    descriptorSetLayout = Gra_desc::createDescriptorSetLayout(bindings);
-    // descriptorSets = createDescriptorSets();
-  }
-  createPipeline();
+    box = Gra_desc::createDescriptorBox(2, {
+          {
+           .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+           .bindingNum = 0,
+           .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+           .sizeofUBO = sizeof(Gra::UniformBufferObject), 
+          },
+          {
+           .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+           .bindingNum = 1,
+           .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
+           .textureName = "unit.png"
+          },
+          });
+
+    createPipeline();
+    updateRenderUbo = grassUpdateRenderUbo;
 }
+
+void Model::sort() {
+  std::sort(entities.begin(), entities.end(),
+            [](auto a, auto b) { return a->pos.y > b->pos.y; });
+}
+
 
 std::shared_ptr<Entity> Model::spawn(Vec2 mapPos, std::string texture) {
-  mapPos = Map::mapToWorldCoordinates(mapPos);
+    mapPos = Map::mapToWorldCoordinates(mapPos);
 
-  auto entity = std::make_shared<Entity>(Entity{.pos = {mapPos.x, mapPos.y, 0},
-                                                .size = {width(), height()},
-                                                .sprite = {texture}});
-  addEntity(entity);
-  return entity;
+    auto entity = std::make_shared<Entity>(Entity{.pos = {mapPos.x, mapPos.y, 0},
+            .size = {1, 1}, // FIXME
+            .sprite = {texture}});
+    entities.emplace_back(entity); // TODO
+    return entity;
 }
-
+/*
 void Model::runRecreateUbo() {
   // liste med alle referanser til ubos - bare utvid vector listen med descSets
   // og så bruk currswapframe for å tegne alle.
@@ -291,66 +281,55 @@ void Model::runRecreateUbo() {
   Timer::printTimeDiffNanos(t0, t5);
   Timer::printTimeDiffNanos(t0, t6);
 }
-
+*/
 VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
-  if (queueRecreateUboBuffer) {
-    queueRecreateUboBuffer = false;
-    runRecreateUbo();
-  }
-  if (entities.size() == 0)
-    return nullptr;
-  auto n = 0;
-  for (auto i = 0; i < entities.size(); i++) {
-      auto entity = entities[i];
-      auto sprites = entity->sprite;
-    if (!entities[i]->visible)
-      continue;
-    updateRenderUbo(&uboMem,
-                    entities[i]); // TODO maybe just return a ubostruct?
-    Gra_Uniform::updateUniformBuffer(uboMem, Drawing::currSwapFrame, n);
-    // TODO update other uniforms here like imgs
-    // Vel, ved bare 1 entity så går fps fra 7000 til 2400.
-    // TODO throw error if you're supposted to have sprites?? Maybe.
-    if (entities[i]->sprite.size() > 0 && !queueRecreateUboBuffer) {
-      updateDescriptorSet(i, Texture::getTexImageViews(entities[i]->sprite),
-                          uboMem, order, descriptorSets);
+    if (queueRecreateUboBuffer) {
+        queueRecreateUboBuffer = false;
+        // runRecreateUbo();
     }
-    n++;
-  }
+    if (entities.size() == 0)
+        return nullptr;
+    auto n = 0;
+    for (auto i = 0; i < entities.size(); i++) {
+        auto entity = entities[i];
+        auto sprites = entity->sprite;
+        if (!entities[i]->visible)
+            continue;
+        updateRenderUbo(&box.uboMem,
+                entities[i]); // TODO maybe just return a ubostruct?
+        Gra_Uniform::updateUniformBuffer(box.uboMem, Drawing::currSwapFrame, n);
+        // TODO update other uniforms here like imgs
+        // Vel, ved bare 1 entity så går fps fra 7000 til 2400.
+        // TODO throw error if you're supposted to have sprites?? Maybe.
+        // if (entities[i]->sprite.size() > 0 && !queueRecreateUboBuffer) {
+        //     updateDescriptorSet(i, Texture::getTexImageViews(entities[i]->sprite),
+        //             uboMem, order, descriptorSets);
+        // }
+        n++;
+    }
 
-  Gra_Uniform::clearRestUniformBuffer(uboMem, Drawing::currSwapFrame, n);
+    Gra_Uniform::clearRestUniformBuffer(box.uboMem, Drawing::currSwapFrame, n);
 
-  auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
-  vkResetCommandBuffer(cmd, 0);
-  Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, descriptorSets);
+    auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
+    vkResetCommandBuffer(cmd, 0);
+    Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, box.sets);
 
-  return cmd;
-}
-
-void Model::recreateUboBuffer() { queueRecreateUboBuffer = true; }
-
-void Model::addEntity(const std::shared_ptr<Entity> &entity) {
-  entities.emplace_back(entity);
-  recreateUboBuffer();
-}
-
-void Model::addEntity(const std::shared_ptr<Entity> &entity, bool update) {
-  entities.emplace_back(entity);
-  if (update)
-    recreateUboBuffer();
+    return cmd;
 }
 
 void Model::removeEntity(const std::shared_ptr<Entity> &sharedPtr) {
   entities.erase(std::remove(entities.begin(), entities.end(), sharedPtr),
                  entities.end());
-  recreateUboBuffer();
+  // recreateUboBuffer();
 }
 
 void Model::createPipeline() {
-  pipeline = Raster::createGraphicsPipeline(descriptorSetLayout, shaderName);
+  pipeline = Raster::createGraphicsPipeline(box.layout, shaderName);
 }
 
 #ifdef RMDEV
+
+std::vector<Raster::Pipeline> m_leftoverPipelines;
 
 void recreateModelPipelines() {
   for (auto model : m_renderModels) {
@@ -363,17 +342,9 @@ void recreateModelPipelines() {
 
 void Model::destroy() {
   vkDestroyCommandPool(Gra::m_device, cmdBuffer.commandPool, nullptr);
-  uboMem.destroy();
-  vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
   Raster::destroyPipeline(pipeline);
-  vkDestroyDescriptorSetLayout(Gra::m_device, descriptorSetLayout, nullptr);
+  Gra_desc::destroyDescriptorBox(box);
 }
-
-void Model::sort() {
-  std::sort(entities.begin(), entities.end(),
-            [](auto a, auto b) { return a->pos.y > b->pos.y; });
-}
-
 void destroyModels() {
   for (auto model : m_renderModels) {
     model->destroy();

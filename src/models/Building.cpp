@@ -19,12 +19,12 @@ namespace Building {
         m_hoveringBuilding->visible = true;
         m_hoveringBuilding->pos.x = wX;
         m_hoveringBuilding->pos.y = wY;
-        Shaders::m_houseModel.addEntity(m_hoveringBuilding, true);
+        // FIXME Shaders::m_houseModel.addEntity(m_hoveringBuilding, true);
     }
 
     void stopHovering() {
         m_hoveringBuilding->visible = false;
-        Shaders::m_houseModel.removeEntity(m_hoveringBuilding);
+        // FIXME Shaders::m_houseModel.removeEntity(m_hoveringBuilding);
     }
 
     bool isHovering() {
@@ -40,7 +40,7 @@ namespace Building {
     void place(float wX, float wY) {
         stopHovering();
         auto mapCoor = Map::worldToMapCoorFloor(wX, wY);
-        Shaders::m_houseModel.spawn({mapCoor.x, mapCoor.y}, m_hoveringBuilding->sprite[0]);
+        // FIXME Shaders::m_houseModel.spawn({mapCoor.x, mapCoor.y}, m_hoveringBuilding->sprite[0]);
         Map::m_map->setInaccessible(true, mapCoor.x, mapCoor.y);
         Map::m_map->setInaccessible(true, mapCoor.x + 1, mapCoor.y);
         Map::m_map->setInaccessible(true, mapCoor.x + 1, mapCoor.y + 1);

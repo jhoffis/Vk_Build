@@ -2,6 +2,7 @@
 
 #include <vulkan/vulkan.h>
 #include <vector>
+#include "vk/gra_descriptors.h"
 #include "vk/pipeline/gra_pipeline.h"
 #include "vk/drawing/gra_command_buffers.h"
 #include "vk/shading/gra_uniform.h"
@@ -16,23 +17,6 @@ struct ModelInfo {
     const char *textureName{};
 };
 
-/*
- * super inefficient first model version
- * Think of this class as a collection of a type of model instead of a single object to render.
- *
- * TODO for senere, hva om du definerer alle objekt du ønsker og så init de senere?
-*/
-struct Model {
-
-    const std::string shaderName;
-    const std::function<void(Gra_Uniform::UBOMem*, const std::shared_ptr<Entity> &)> updateRenderUbo;
-    const std::vector<ShaderComponentOrder> order;
-    const int sizeOfUBO;
-    const float overrideWidth;
-    const float overrideHeight;
-    const std::vector<std::string> textures;
-
-    Gra::CmdBuffer cmdBuffer{};
 
     /* These are what is put into the cmdbuffer:
        Like maybe this should all be somehow referred to in each entity or smt?
@@ -51,52 +35,38 @@ struct Model {
         });
         Shaders::m_villModel.addEntity(male.entity, true);
     */
-    std::shared_ptr<Entity> spawn(Vec2 mapPos, std::string texture);
+/*
+ * super inefficient first model version
+ * Think of this class as a collection of a type of model instead of a single object to render.
+ *
+*/
+struct Model {
 
-    Mesh2D mesh{};
-    Gra_Uniform::UBOMem uboMem{};
-    std::vector<VkDescriptorSet> descriptorSets{};
-
-    Raster::Pipeline pipeline{};
-    VkDescriptorPool pool{};
-    VkDescriptorSetLayout descriptorSetLayout{};
-
-    std::vector<std::shared_ptr<Entity>> entities{};
     bool visible = true;
     bool queueRecreateUboBuffer = false;
 
-    Model(std::string shaderName,
-          std::function<void(Gra_Uniform::UBOMem*, const std::shared_ptr<Entity> &entity)> updateRenderUbo,
-          std::vector<ShaderComponentOrder> order,
-          int sizeOfUBO,
-          float overrideWidth,
-          float overrideHeight,
-          std::vector<std::string> textures);
+    const std::string shaderName{};
+    std::vector<std::shared_ptr<Entity>> entities{}; // TODO make not contain pointers
+    Gra::CmdBuffer cmdBuffer{};
+    Gra_desc::DescriptorBox box{};
+    Raster::Pipeline pipeline{};
+    Mesh2D mesh{};
+
+    std::function<void(Gra_Uniform::UBOMem*, const std::shared_ptr<Entity> &)> updateRenderUbo;
+    std::function<void(const Model &model)> renderPasses{};
+
+    Model(const std::string &shaderName);
 
     void init();
-
-    [[nodiscard]] std::vector<VkDescriptorSet> createDescriptorSets() const;
-    void recreateUboBuffer();
-    void addEntity(const std::shared_ptr<Entity>& entity, bool update);
-    void addEntity(const std::shared_ptr<Entity>& entity);
-    void removeEntity(const std::shared_ptr<Entity>&  sharedPtr);
-    void sort();
-
-    VkCommandBuffer renderMeshes(uint32_t imageIndex);
-
-    [[nodiscard]] float width() const {
-        return mesh.worldWidth;
-    }
-
-    [[nodiscard]] float height() const {
-        return mesh.worldHeight;
-    }
     void createPipeline();
-
+    VkCommandBuffer renderMeshes(uint32_t imageIndex);
+    void sort();
+    std::shared_ptr<Entity> spawn(Vec2 mapPos, std::string texture);
+    void removeEntity(const std::shared_ptr<Entity>&  sharedPtr);
     void destroy();
-
-    void runRecreateUbo();
 };
+
+
 #ifdef RMDEV
 void recreateModelPipelines();
 #endif
@@ -106,8 +76,8 @@ void destroyModels();
 extern std::vector<Model *> m_renderModels;
 
 namespace Shaders {
-    extern Model m_grassModel;
-    extern Model m_houseModel;
+//     extern Model m_grassModel;
+//     extern Model m_houseModel;
     extern Model m_villModel;
-    extern Model m_selectionBoxModel;
+//     extern Model m_selectionBoxModel;
 }

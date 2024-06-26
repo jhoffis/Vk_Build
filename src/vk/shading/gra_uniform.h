@@ -19,7 +19,7 @@ namespace Gra_Uniform {
         std::vector<VkBuffer> uniformBuffers{}; // Size = MAX_FRAMES_IN_FLIGHT
         std::vector<VkDeviceMemory> uniformBuffersMemory{}; // Actual memory location. Size = MAX_FRAMES_IN_FLIGHT
 
-        void destroy() {
+        void destroy() const {
             for (size_t i = 0; i < uniformBuffers.size(); i++) {
                 vkDestroyBuffer(Gra::m_device, uniformBuffers[i], nullptr);
                 vkFreeMemory(Gra::m_device, uniformBuffersMemory[i], nullptr);

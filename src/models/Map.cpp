@@ -14,13 +14,13 @@ void Map::createVisual(int xy) {
 
     for (auto x = 0; x < xy; x++) {
         for (auto y = 0; y < xy; y++) {
-            Shaders::m_grassModel.spawn({static_cast<float>(x), static_cast<float>(y)}, "grass.png");
+            // Shaders::m_grassModel.spawn({static_cast<float>(x), static_cast<float>(y)}, "grass.png"); FIXME
         }
     }
 }
 
 void Map::destroy() {
-    Shaders::m_grassModel.destroy();
+    // Shaders::m_grassModel.destroy();
 }
 
 Vec2 Map::worldToMapCoordinates(double x, double y) {

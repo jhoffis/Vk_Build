@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "vk/gra_descriptors.h"
 #include "window.h"
 #include "rendering/Mesh2D.h"
 #include "vk/pipeline/gra_pipeline.h"
@@ -25,7 +26,6 @@ namespace Gra {
             uint32_t imageIndex,
             const Mesh2D& mesh,
             const Raster::Pipeline& pipe,
-            std::vector<VkDescriptorSet> &descriptorSets
-            );
+            std::vector<Gra_desc::DescriptorSet> &descriptorSets);
 
 }

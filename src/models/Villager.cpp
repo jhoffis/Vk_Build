@@ -11,7 +11,7 @@ namespace Villager {
     std::vector<Vill*> m_selectedVills{}; //TODO should it be selected entities instead? Hm...
 
     void initVillModel() {
-        Shaders::m_villModel.recreateUboBuffer();
+        // Shaders::m_villModel.recreateUboBuffer();
     }
 
     float z = 0;

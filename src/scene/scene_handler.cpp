@@ -8,6 +8,7 @@
 #include "rendering/Model.h"
 #include "scene_data.h"
 #include "timer_util.h"
+#include "vk/gra_descriptors.h"
 
 #include <iostream>
 #include <vector>
@@ -155,11 +156,19 @@ void SceneHandler::create() {
   // auto alice = Shaders::m_villModel.spawn({1, 4}, "mill.png");
   // auto bob = Shaders::m_villModel.spawn({3, 4}, "texture.jpg");
   // Villager::
+
+  // auto desc = Gra_desc::createDescriptorBox(1, {
+  //         {
+  //          .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+  //          .bindingNum = 0,
+  //          .stageFlags =VK_SHADER_STAGE_VERTEX_BIT,
+  //          .sizeofUBO = sizeof(Gra::UniformBufferObject), 
+  //         }});
 }
 
 void SceneHandler::update() {
   Camera::m_cam.update();
-  Shaders::m_villModel.sort();
+  // Shaders::m_villModel.sort();
   Villager::sort();
   Villager::update();
 

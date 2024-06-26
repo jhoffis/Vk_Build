@@ -12,6 +12,7 @@
 #include "src/vk/presentation/gra_swap_chain.h"
 #include "src/vk/setup/gra_queue_families.cpp.h"
 #include "src/vk/shading/gra_uniform.h"
+#include "vk/gra_descriptors.h"
 #include "vk/shading/gra_vertex.h"
 
 namespace Gra {
@@ -65,50 +66,55 @@ std::vector<VkCommandBuffer> createCommandBuffers(VkCommandPool pool) {
 }
 
 // TODO reuse descriptorsets and so on (and calls in one render pass?? don't quite remember...https://www.youtube.com/watch?v=5VBVWCg7riQ)
-void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex,
-                         const Mesh2D &mesh, const Raster::Pipeline &pipe,
-                         std::vector<VkDescriptorSet> &descriptorSets) {
-  VkCommandBufferBeginInfo beginInfo{};
-  beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-  beginInfo.flags = 0;                  // Optional
-  beginInfo.pInheritanceInfo = nullptr; // Optional
+void recordCommandBuffer(VkCommandBuffer commandBuffer,
+                         uint32_t imageIndex,
+                         const Mesh2D &mesh, 
+                         const Raster::Pipeline &pipe,
+                         std::vector<Gra_desc::DescriptorSet> &descriptorSets) {
 
-  if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
-    throw std::runtime_error("failed to begin recording command buffer!");
-  }
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = 0;                  // Optional
+    beginInfo.pInheritanceInfo = nullptr; // Optional
 
-  beginRenderPass(commandBuffer, imageIndex, Drawing::clear);
-  {
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                      pipe.graphicsPipeline);
-    Gra::recordSwapChain(commandBuffer);
-
-    VkBuffer vertexBuffers[] = {mesh.vertexBuffer};
-    VkDeviceSize offsets[] = {0};
-    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-    vkCmdBindVertexBuffers(commandBuffer, 1, 1, &mesh.instanceBuffer, offsets);
-
-    vkCmdBindIndexBuffer(commandBuffer, mesh.indexBuffer, 0,
-                         VK_INDEX_TYPE_UINT32);
-
-    std::vector<VkDescriptorSet> descSet{};
-    for (auto i = Drawing::currSwapFrame; i < descriptorSets.size(); i += 2) {
-      descSet.emplace_back(descriptorSets[i]);
+    if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
+        throw std::runtime_error("failed to begin recording command buffer!");
     }
 
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                            pipe.pipelineLayout, // inneholder descriptor layout
-                            0, 1,
-                            &descSet[0], // inneholder uniformbuffer ref
-                            0, nullptr);
+    // Move this render pass (-es) into a std::function in Model.
+    beginRenderPass(commandBuffer, imageIndex, Drawing::clear);
+    {
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipe.graphicsPipeline);
+        Gra::recordSwapChain(commandBuffer);
 
-    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(6), 2, 0, 0, 0); // descSet.size(), 0, 0, 0);
-  }
-  vkCmdEndRenderPass(commandBuffer);
+        VkBuffer vertexBuffers[] = {mesh.vertexBuffer};
+        VkDeviceSize offsets[] = {0};
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+        vkCmdBindVertexBuffers(commandBuffer, 1, 1, &mesh.instanceBuffer, offsets);
 
-  if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
-    throw std::runtime_error("failed to record command buffer!");
-  }
+        vkCmdBindIndexBuffer(commandBuffer, mesh.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+        // std::vector<VkDescriptorSet> descSet{};
+        // for (auto i = Drawing::currSwapFrame; i < descriptorSets.size(); i += 2) {
+        //     descSet.emplace_back(descriptorSets[i]);
+        // }
+
+        vkCmdBindDescriptorSets(commandBuffer, 
+                                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                pipe.pipelineLayout, // inneholder descriptor layout
+                                0, 
+                                1,
+                                &descriptorSets[0].sets[Drawing::currSwapFrame], // inneholder uniformbuffer ref
+                                0, 
+                                nullptr);
+
+        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(6), 2, 0, 0, 0); // descSet.size(), 0, 0, 0);
+    }
+    vkCmdEndRenderPass(commandBuffer);
+
+    if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+        throw std::runtime_error("failed to record command buffer!");
+    }
 }
 
 void CmdBuffer::init() {
