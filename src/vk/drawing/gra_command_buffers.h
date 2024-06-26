@@ -21,11 +21,11 @@ namespace Gra {
     extern VkCommandPool m_commandPool;
 
     void createCommandPool();
-    void recordCommandBuffer(
-            VkCommandBuffer commandBuffer,
-            uint32_t imageIndex,
-            const Mesh2D& mesh,
-            const Raster::Pipeline& pipe,
-            std::vector<Gra_desc::DescriptorSet> &descriptorSets);
+    void recordCommandBuffer(VkCommandBuffer commandBuffer,
+                             uint32_t imageIndex,
+                             const Mesh2D& mesh,
+                             const Raster::Pipeline& pipe,
+                             std::vector<Gra_desc::DescriptorSet> &descriptorSets,
+                             uint32_t entityCount);
 
 }

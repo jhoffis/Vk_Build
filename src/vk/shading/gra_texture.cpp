@@ -6,6 +6,7 @@
 #include "src/vk/gra_setup.h"
 #include "src/vk/presentation/gra_image_views.h"
 #include <filesystem>
+#include <iostream>
 #include <map>
 #include <stb_image.h>
 #include <stdexcept>
@@ -246,8 +247,9 @@ VkImageView createTexture(ImageData &img) { // TODO Maybe save imgs for later in
 void createTextureSampler() {
   VkPhysicalDeviceProperties properties{};
   vkGetPhysicalDeviceProperties(*Gra::m_physicalDevice, &properties);
+  std::cout << "maxPerStageDescriptorUniformBuffers: " << properties.limits.maxPerStageDescriptorUniformBuffers << std::endl;
 
-  VkSamplerCreateInfo samplerInfo{
+  VkSamplerCreateInfo samplerInfo {
       .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
       .magFilter = VK_FILTER_NEAREST, // specify how to interpolate texels that
                                       // are magnified or minified

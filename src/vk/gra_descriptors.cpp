@@ -16,27 +16,6 @@ namespace Gra_desc {
         };
     }
  
-
-    VkDescriptorSetLayoutBinding uboLayoutBinding(uint32_t bindingNum) {
-        return {
-                .binding = bindingNum, // binding is the binding number of this entry and corresponds to a resource of the same binding number in the shader stages.
-                .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                .descriptorCount = 1,
-                .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-                .pImmutableSamplers = nullptr // only relevant for image sampling related descriptor,
-        };
-    }
-    VkDescriptorSetLayoutBinding imageLayoutBinding(uint32_t bindingNum) {
-        return {
-                .binding = bindingNum,
-                .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                .descriptorCount = 1,
-                .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT, // fragment shader.  It is possible to use texture sampling in the vertex shader, for example to dynamically deform a grid of vertices by a heightmap
-                .pImmutableSamplers = nullptr,
-        };
-    }
-
-
     void bindDescriptor(DescriptorSet &descriptor,
                         const std::vector<DescriptorBindInfo> &bindInfos,
                         const int bufferIndex,
@@ -72,7 +51,7 @@ namespace Gra_desc {
                             .range  = uboMem.range,
                         };
                     }
-                    descriptorWrites[i].pBufferInfo = new VkDescriptorBufferInfo[bindInfos[i].count]; // TODO delete
+                    descriptorWrites[i].pBufferInfo = new VkDescriptorBufferInfo[bindInfos[i].count];
                     std::copy(std::begin(bufferInfos), 
                               std::end(bufferInfos), 
                               const_cast<VkDescriptorBufferInfo*>(descriptorWrites[i].pBufferInfo));
@@ -87,6 +66,10 @@ namespace Gra_desc {
                     descriptorWrites.data(),
                     0, 
                     nullptr);
+
+            for (auto &write : descriptorWrites) {
+                delete write.pBufferInfo;
+            }
         }
     }
 
@@ -102,28 +85,6 @@ namespace Gra_desc {
         }
         return descriptorSetLayout;
     }
-
-    VkDescriptorPool createDescriptorPool(int amount) {
-        std::array<VkDescriptorPoolSize, 2> poolSizes{};
-        poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        poolSizes[0].descriptorCount = amount; 
-        poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        poolSizes[1].descriptorCount = amount;
-
-        VkDescriptorPoolCreateInfo poolInfo{};
-        poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        poolInfo.poolSizeCount = poolSizes.size();
-        poolInfo.pPoolSizes = poolSizes.data();
-        poolInfo.maxSets = amount + 1;
-        poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-
-        VkDescriptorPool pool{};
-        if (vkCreateDescriptorPool(Gra::m_device, &poolInfo, nullptr, &pool) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create descriptor pool!");
-        }
-        return pool;
-    }
-
 
     VkDescriptorPool createDescriptorPool2(const int amount,
                                            const std::vector<DescriptorBindInfo> &bindInfos) {

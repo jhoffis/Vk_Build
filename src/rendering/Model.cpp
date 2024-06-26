@@ -225,12 +225,12 @@ void Model::init() {
     Gra::createInstanceBuffer(&mesh);
     Gra::createIndexBuffer(&mesh);
 
-    box = Gra_desc::createDescriptorBox(2, // TODO make remake/resize function
+    box = Gra_desc::createDescriptorBox(1, // TODO make remake/resize function
             {
             {
             .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
             .bindingNum = 0,
-            .count = 2,
+            .count = 100,
             .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
             .sizeofUBO = sizeof(Gra::UniformBufferObject), 
             },
@@ -304,8 +304,11 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
         auto sprites = entity->sprite;
         if (!entities[i]->visible)
             continue;
+
+        // Maybe do something like this?: void * entitiesData = new Gra::UniformBufferObject[entities.size()];
+
         updateRenderUbo(&box.uboMem, entities[i]); // TODO maybe just return a ubostruct?
-        Gra_Uniform::updateUniformBuffer(box.uboMem, Drawing::currSwapFrame, n);
+        Gra_Uniform::updateUniformBuffer(box.uboMem, Drawing::currSwapFrame, n); // FIXME when count is more than 1 then it does not act properly!
         // TODO update other uniforms here like imgs
         // Vel, ved bare 1 entity så går fps fra 7000 til 2400.
         // TODO throw error if you're supposted to have sprites?? Maybe.
@@ -320,7 +323,7 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
 
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
-    Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, box.sets);
+    Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, box.sets, entities.size());
 
     return cmd;
 }

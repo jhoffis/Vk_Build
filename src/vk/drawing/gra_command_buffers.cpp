@@ -70,7 +70,8 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer,
                          uint32_t imageIndex,
                          const Mesh2D &mesh, 
                          const Raster::Pipeline &pipe,
-                         std::vector<Gra_desc::DescriptorSet> &descriptorSets) {
+                         std::vector<Gra_desc::DescriptorSet> &descriptorSets,
+                         uint32_t entityCount) {
 
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;

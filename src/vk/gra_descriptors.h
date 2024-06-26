@@ -38,15 +38,6 @@ namespace Gra_desc {
         Gra_Uniform::UBOMem uboMem{};
     };
 
-    // void bindDescriptor(DescriptorSet &descriptor,
-    //                     const std::vector<DescriptorBindInfo> &bindInfos,
-    //                     const int bufferIndex,
-    //                     const int swapIndex,
-    //                     const Gra_Uniform::UBOMem &uboMem,
-    //                     const std::vector<VkImageView> &texImageViews);
-
-    VkDescriptorSetLayout createDescriptorSetLayout(std::vector<VkDescriptorSetLayoutBinding> bindings);
-    VkDescriptorPool createDescriptorPool(int amountEntities);
     DescriptorBox createDescriptorBox(const int amount,
                                       const std::vector<DescriptorBindInfo> &bindInfos);
     void destroyDescriptorBox(const DescriptorBox &box);
