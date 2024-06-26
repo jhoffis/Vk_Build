@@ -30,7 +30,7 @@ void grassUpdateRenderUbo(Gra_Uniform::UBOMem *uboMem,
     ubos[1] = {
         .pos = (Vec3{.x = .5, .y = .2 } - Camera::m_cam.pos),
         .aspect = Gra::m_swapChainAspectRatio,
-        .selected = entity->selected,
+        .selected = true,
     };
     uboMem->uboStruct = ubos;
 }

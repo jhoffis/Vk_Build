@@ -25,16 +25,17 @@ void main() {
     // fragColor.r = 0.5*ubo.pos.y + .1 + ubo.pos.z;
     //  gl_Position.z = fragColor.r;
 
-    fragColor.rgb = ubo[0].selected == 1 ? vec3(1.0) : vec3(0.0);
 
     int num = gl_InstanceIndex;
 
     if (num == 0) {
+        fragColor.rgb = ubo[0].selected == 1 ? vec3(1.0) : vec3(0.0);
         fragColor.b = 1.0;
         gl_Position.x += ubo[0].pos.x;
         gl_Position.y += -ubo[0].pos.y + 0.1*inPos.y;
     }
     if (num == 1) {
+        fragColor.rgb = ubo[1].selected == 1 ? vec3(1.0) : vec3(0.0);
         fragColor.r = 1.0;
         gl_Position.x += ubo[1].pos.x;
         gl_Position.y += -ubo[1].pos.y;
