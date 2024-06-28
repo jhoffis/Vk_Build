@@ -76,7 +76,7 @@ namespace Gra {
 
     void createInstanceBuffer(Mesh2D *mesh) {
 
-        VkDeviceSize bufferSize = sizeof(InstanceData) * 2;
+        VkDeviceSize bufferSize = sizeof(InstanceData) * mesh->instanceData.size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -88,7 +88,7 @@ namespace Gra {
         void *data;
         vkMapMemory(m_device, stagingBufferMemory, 0, bufferSize, 0,
                     &data);
-        memcpy(data, mesh->vertices, (size_t) bufferSize);
+        memcpy(data, mesh->instanceData.data(), (size_t) bufferSize);
         vkUnmapMemory(m_device, stagingBufferMemory);
 
         VkDeviceMemory mem{};

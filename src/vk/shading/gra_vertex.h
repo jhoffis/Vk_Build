@@ -8,7 +8,7 @@
 namespace Gra {
 
     struct UniformBufferObject {
-        alignas(8) Vec3 pos;
+        alignas(16) Vec3 pos;
         alignas(4) float aspect{};
         alignas(4) int selected;
 //        alignas(16) glm::mat4 model{};

@@ -16,23 +16,14 @@
 #include "vk/shading/gra_uniform.h"
 #include "vk/shading/gra_vertex.h"
 
-using std::move;
-
 void grassUpdateRenderUbo(Gra_Uniform::UBOMem *uboMem,
-                          const std::shared_ptr<Entity> &entity) {
-    delete static_cast<Gra::UniformBufferObject *>(uboMem->uboStruct);
-    auto ubos = new Gra::UniformBufferObject[2];
-    ubos[0] = {
+                          const std::shared_ptr<Entity> &entity,
+                          const uint16_t index) {
+    static_cast<Gra::UniformBufferObject*>(uboMem->uboStruct)[index] = {
         .pos = entity->pos - Camera::m_cam.pos,
         .aspect = Gra::m_swapChainAspectRatio,
         .selected = entity->selected,
     };
-    ubos[1] = {
-        .pos = (Vec3{.x = .5, .y = .2 } - Camera::m_cam.pos),
-        .aspect = Gra::m_swapChainAspectRatio,
-        .selected = true,
-    };
-    uboMem->uboStruct = ubos;
 }
 
 std::vector<Model *> m_renderModels{};
@@ -53,6 +44,7 @@ Model Shaders::m_houseModel("grass", grassUpdateRenderUbo,
                             {"house.png"});
 */
 Model Shaders::m_villModel("vill"); 
+Model Shaders::m_selectionBoxModel("selectionbox");
 /*"vill",
                            grassUpdateRenderUbo,
                            {
@@ -213,37 +205,41 @@ Model::Model(const std::string &shaderName) : shaderName(std::move(shaderName)) 
   m_renderModels.emplace_back(this);
 }
 
-void Model::init() {
+void Model::init(const uint16_t countInstances) {
     // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og
     // attributes. Feks at de først har uniform buffer og så image sampler.
     cmdBuffer.init();
 
     auto w = 128;
     auto h = 128;
-    mesh.init(w, h);
+    mesh.init(w, h, countInstances);
     Gra::createVertexBuffer(&mesh);
     Gra::createInstanceBuffer(&mesh);
     Gra::createIndexBuffer(&mesh);
 
-    box = Gra_desc::createDescriptorBox(1, // TODO make remake/resize function
-            {
-            {
-            .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-            .bindingNum = 0,
-            .count = 100,
-            .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-            .sizeofUBO = sizeof(Gra::UniformBufferObject), 
-            },
-            {
-            .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-            .bindingNum = 1,
-            .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
-            .textureName = "unit.png"
-            },
-            });
+    // box = Gra_desc::createDescriptorBox(1, // TODO make remake/resize function
+    //         {
+    //         {
+    //         .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+    //         .bindingNum = 0,
+    //         .count = 100,
+    //         .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+    //         .sizeofUBO = sizeof(Gra::UniformBufferObject), 
+    //         },
+    //         {
+    //         .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+    //         .bindingNum = 1,
+    //         .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
+    //         .textureName = "unit.png"
+    //         },
+    //         });
 
     createPipeline();
     updateRenderUbo = grassUpdateRenderUbo;
+    initRenderUbo = [](auto uboMem) {
+        delete static_cast<Gra::UniformBufferObject *>(uboMem->uboStruct);
+        uboMem->uboStruct = new Gra::UniformBufferObject[uboMem->count];
+    };
 }
 
 void Model::sort() {
@@ -299,16 +295,20 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     if (entities.size() == 0)
         return nullptr;
     auto n = 0;
-    for (auto i = 0; i < entities.size(); i++) {
-        auto entity = entities[i];
-        auto sprites = entity->sprite;
-        if (!entities[i]->visible)
-            continue;
+    for (auto i = 0; i < entities.size(); i += box.uboMem.count) {
+        initRenderUbo(&box.uboMem);
+        auto uboIndex = 0;
+        for (int a = 0; uboIndex < box.uboMem.count && a < entities.size(); a++) {
+            auto entity = entities[a];
+            if (!entity->visible)
+                continue;
+            updateRenderUbo(&box.uboMem, entity, uboIndex); // TODO maybe just return a ubostruct?
+            uboIndex++;
+        }
 
-        // Maybe do something like this?: void * entitiesData = new Gra::UniformBufferObject[entities.size()];
+        Gra_Uniform::updateUniformBuffer(box.uboMem, Drawing::currSwapFrame, n); 
+        n++;
 
-        updateRenderUbo(&box.uboMem, entities[i]); // TODO maybe just return a ubostruct?
-        Gra_Uniform::updateUniformBuffer(box.uboMem, Drawing::currSwapFrame, n); // FIXME when count is more than 1 then it does not act properly!
         // TODO update other uniforms here like imgs
         // Vel, ved bare 1 entity så går fps fra 7000 til 2400.
         // TODO throw error if you're supposted to have sprites?? Maybe.
@@ -316,9 +316,7 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
         //     updateDescriptorSet(i, Texture::getTexImageViews(entities[i]->sprite),
         //             uboMem, order, descriptorSets);
         // }
-        n++;
     }
-
     Gra_Uniform::clearRestUniformBuffer(box.uboMem, Drawing::currSwapFrame, n);
 
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];

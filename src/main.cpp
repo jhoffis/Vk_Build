@@ -38,6 +38,7 @@ int main() {
 
     SceneHandler::create();
     SelectionBox::init();
+    Villager::init();
     Timer::updateDelta();
 #ifdef RMDEV
     watchDir();

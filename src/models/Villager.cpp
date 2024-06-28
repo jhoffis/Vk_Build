@@ -9,12 +9,26 @@ namespace Villager {
 
     std::vector<Vill> m_vills{};
     std::vector<Vill*> m_selectedVills{}; //TODO should it be selected entities instead? Hm...
-
-    void initVillModel() {
-        // Shaders::m_villModel.recreateUboBuffer();
-    }
-
     float z = 0;
+
+    void init() {
+        Shaders::m_villModel.box = Gra_desc::createDescriptorBox(1, {
+                    {
+                    .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                    .bindingNum = 0,
+                    .count = 100,
+                    .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+                    .sizeofUBO = sizeof(Gra::UniformBufferObject), 
+                    },
+                    {
+                    .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                    .bindingNum = 1,
+                    .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
+                    .textureName = "unit.png"
+                    },
+                    });
+        Shaders::m_villModel.init(100);
+    }
 
     void spawn(float x, float y, bool male) {
         z = 0.1f;
@@ -30,10 +44,10 @@ namespace Villager {
 
     // TODO denne kopierer vill
     void villsWithinBounds(float x0,
-                                                         float y0,
-                                                         float x1,
-                                                         float y1,
-                                                         bool store) {
+                           float y0,
+                           float x1,
+                           float y1,
+                           bool store) {
         std::vector<Vill*> foundVills{};
         auto sizeOfBox = std::abs((x0 - x1) + (y0 - y1));
 

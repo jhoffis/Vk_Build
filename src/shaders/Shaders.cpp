@@ -58,7 +58,7 @@
 //};
 
 void Shaders::init() {
-    for (auto m : m_renderModels) {
-        m->init();
-    }
+    // for (auto m : m_renderModels) {
+    //     m->init();
+    // }
 }

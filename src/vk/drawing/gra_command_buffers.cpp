@@ -109,7 +109,7 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer,
                                 0, 
                                 nullptr);
 
-        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(6), 2, 0, 0, 0); // descSet.size(), 0, 0, 0);
+        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(6), entityCount, 0, 0, 0); // descSet.size(), 0, 0, 0);
     }
     vkCmdEndRenderPass(commandBuffer);
 

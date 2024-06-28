@@ -52,12 +52,15 @@ struct Model {
     Raster::Pipeline pipeline{};
     Mesh2D mesh{};
 
-    std::function<void(Gra_Uniform::UBOMem*, const std::shared_ptr<Entity> &)> updateRenderUbo;
+    std::function<void(Gra_Uniform::UBOMem*, 
+                       const std::shared_ptr<Entity> &,
+                       const uint16_t index)> updateRenderUbo{};
     std::function<void(const Model &model)> renderPasses{};
+    std::function<void(Gra_Uniform::UBOMem*)> initRenderUbo{};
 
     Model(const std::string &shaderName);
 
-    void init();
+    void init(const uint16_t countInstances);
     void createPipeline();
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
     void sort();
@@ -79,5 +82,5 @@ namespace Shaders {
 //     extern Model m_grassModel;
 //     extern Model m_houseModel;
     extern Model m_villModel;
-//     extern Model m_selectionBoxModel;
+    extern Model m_selectionBoxModel;
 }

@@ -14,5 +14,5 @@ struct Mesh2D {
     std::vector<InstanceData> instanceData{};
     float worldWidth, worldHeight;
 
-    void init(float width, float height);
+    void init(float width, float height, uint32_t numInstances);
 };

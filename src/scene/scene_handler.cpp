@@ -147,10 +147,10 @@ void SceneHandler::create() {
 
   // Map::createVisual(Map::m_map->xy);
   Villager::spawn(1.75f, 1.33, true);
-  Villager::spawn(1.5f, 1, false);
-  // Villager::spawn(2, 1, false);
-  // Villager::spawn(1.7f, .75, true);
-  // Villager::spawn(0, 0, true);
+  Villager::spawn(0.5f, 1, false);
+  Villager::spawn(3, 3, false);
+  Villager::spawn(1.7f, 4.75, true);
+  Villager::spawn(0, 0, true);
   // Villager::spawn(0, 0, false);
   //
   // auto alice = Shaders::m_villModel.spawn({1, 4}, "mill.png");

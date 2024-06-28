@@ -8,7 +8,7 @@
 
 namespace Villager {
 
-    void initVillModel();
+    void init();
     void spawn(float x, float y, bool male);
 
     void villsWithinBounds(float x0,
