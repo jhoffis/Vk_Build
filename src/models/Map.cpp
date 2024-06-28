@@ -11,16 +11,32 @@ void Map::createMap(int xy) {
 }
 
 void Map::createVisual(int xy) {
-
+    const uint32_t count = xy*xy;
+    Shaders::m_grassModel.box = Gra_desc::createDescriptorBox(1, {
+            {
+            .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+            .bindingNum = 0,
+            .count = count,
+            .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+            .sizeofUBO = sizeof(Gra::UniformBufferObject), 
+            },
+            {
+            .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+            .bindingNum = 1,
+            .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
+            .textureName = "grass.png"
+            },
+            });
+    Shaders::m_grassModel.init(count);
     for (auto x = 0; x < xy; x++) {
         for (auto y = 0; y < xy; y++) {
-            // Shaders::m_grassModel.spawn({static_cast<float>(x), static_cast<float>(y)}, "grass.png"); FIXME
+            Shaders::m_grassModel.spawn({static_cast<float>(x), static_cast<float>(y)}, "grass.png");
         }
     }
 }
 
 void Map::destroy() {
-    // Shaders::m_grassModel.destroy();
+    Shaders::m_grassModel.destroy();
 }
 
 Vec2 Map::worldToMapCoordinates(double x, double y) {

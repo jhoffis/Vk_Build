@@ -27,8 +27,9 @@ void grassUpdateRenderUbo(Gra_Uniform::UBOMem *uboMem,
 }
 
 std::vector<Model *> m_renderModels{};
-/*
-Model Shaders::m_grassModel("grass", grassUpdateRenderUbo,
+Model Shaders::m_grassModel("grass");
+Model Shaders::m_houseModel("grass");
+/* grassUpdateRenderUbo,
                             {
                                 vert_ubo,
                                 frag_image,
