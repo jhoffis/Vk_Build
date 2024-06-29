@@ -207,33 +207,15 @@ Model::Model(const std::string &shaderName) : shaderName(std::move(shaderName)) 
 }
 
 void Model::init(const uint16_t countInstances) {
-    // TODO Alle disse er hardkodet til shaderen triangle mtp bindings og
-    // attributes. Feks at de først har uniform buffer og så image sampler.
     cmdBuffer.init();
 
     auto w = 128;
     auto h = 128;
+    // TODO maybe support multiple vertex buffers?
     mesh.init(w, h, countInstances);
     Gra::createVertexBuffer(&mesh);
     Gra::createInstanceBuffer(&mesh);
     Gra::createIndexBuffer(&mesh);
-
-    // box = Gra_desc::createDescriptorBox(1, // TODO make remake/resize function
-    //         {
-    //         {
-    //         .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-    //         .bindingNum = 0,
-    //         .count = 100,
-    //         .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
-    //         .sizeofUBO = sizeof(Gra::UniformBufferObject), 
-    //         },
-    //         {
-    //         .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-    //         .bindingNum = 1,
-    //         .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
-    //         .textureName = "unit.png"
-    //         },
-    //         });
 
     createPipeline();
     updateRenderUbo = grassUpdateRenderUbo;

@@ -17,6 +17,7 @@ layout(location = 4) in uint inIndex;
 
 layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec2 fragTexCoord;
+layout(location = 2) out int fragTextureIndex;
 
 vec3 pos(int n)
 {
@@ -48,4 +49,9 @@ void main() {
     gl_Position.y += 1.;
     // gl_Position.z = 0.5*ubo.pos.y + .1 + ubo.pos.z;
     fragTexCoord = inTexCoord;
+
+    fragTextureIndex = 1;
+    if (num == 1) {
+        fragTextureIndex = 0;
+    }
 }

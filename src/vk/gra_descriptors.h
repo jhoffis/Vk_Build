@@ -16,7 +16,7 @@ namespace Gra_desc {
         const uint32_t bindingNum{};
         const uint32_t count{1};
         const VkShaderStageFlags stageFlags{};
-        const std::string &textureName{};
+        const std::vector<std::string> &textureNames{};
         const uint32_t sizeofUBO{0};
         // const VkDescriptorImageInfo*  pImageInfo;
         // const VkDescriptorBufferInfo* pBufferInfo;

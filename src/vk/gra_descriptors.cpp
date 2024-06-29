@@ -22,42 +22,46 @@ namespace Gra_desc {
                         const Gra_Uniform::UBOMem &uboMem,
                         const std::vector<VkImageView> &texImageViews) {
         // setup phase
-        std::vector<VkDescriptorImageInfo> imageInfos{texImageViews.size()};
-        for (int i = 0; i < imageInfos.size(); i++) {
-            imageInfos[i] = VkDescriptorImageInfo{
-                .sampler = Texture::m_textureSampler,
-                .imageView = texImageViews[i],
-                .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-            };
-        }
         std::cout << bindInfos[0].type << std::endl;
         for (int swapIndex = 0; swapIndex < 2; swapIndex++) { 
             std::vector<VkWriteDescriptorSet> descriptorWrites{bindInfos.size()};
 
             int nImg = 0; // gjør dette for hver entity basically.
             for (auto i = 0; i < descriptorWrites.size(); i++) {
+                const auto count = bindInfos[i].count;
                 descriptorWrites[i].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
                 descriptorWrites[i].dstSet = descriptor.sets[swapIndex];
                 descriptorWrites[i].dstBinding = bindInfos[i].bindingNum;
                 descriptorWrites[i].dstArrayElement = 0;
                 descriptorWrites[i].descriptorType = bindInfos[i].type;
-                descriptorWrites[i].descriptorCount = bindInfos[i].count;
+                descriptorWrites[i].descriptorCount = count;
                 if (bindInfos[i].type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) { // FIXME støtt flere typer!
-                    std::vector<VkDescriptorBufferInfo> bufferInfos(bindInfos[i].count);
-                    for (int a = 0; a < bufferInfos.size(); a++) {
-                        bufferInfos[a] = VkDescriptorBufferInfo{
+                    std::vector<VkDescriptorBufferInfo> uboBufferInfos(count);
+                    for (int a = 0; a < count; a++) {
+                        uboBufferInfos[a] = VkDescriptorBufferInfo{
                             .buffer = uboMem.uniformBuffers[swapIndex], 
                             .offset = uboMem.offset * bufferIndex + uboMem.range * a,
                             .range  = uboMem.range,
                         };
                     }
-                    descriptorWrites[i].pBufferInfo = new VkDescriptorBufferInfo[bindInfos[i].count];
-                    std::copy(std::begin(bufferInfos), 
-                              std::end(bufferInfos), 
+                    descriptorWrites[i].pBufferInfo = new VkDescriptorBufferInfo[count];
+                    std::copy(std::begin(uboBufferInfos), 
+                              std::end(uboBufferInfos), 
                               const_cast<VkDescriptorBufferInfo*>(descriptorWrites[i].pBufferInfo));
                 } else if (bindInfos[i].type == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER) {
-                    descriptorWrites[i].pImageInfo = &imageInfos[nImg];
-                    nImg++;
+                    std::vector<VkDescriptorImageInfo> imgCountBufferInfos(count);
+                    for (int a = 0; a < count; a++) {
+                        imgCountBufferInfos[a]= VkDescriptorImageInfo{
+                            .sampler = Texture::m_textureSampler,
+                            .imageView = texImageViews[nImg],
+                            .imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                        }; 
+                        nImg++;
+                    }
+                    descriptorWrites[i].pImageInfo = new VkDescriptorImageInfo[count];
+                    std::copy(std::begin(imgCountBufferInfos), 
+                              std::end(imgCountBufferInfos), 
+                              const_cast<VkDescriptorImageInfo*>(descriptorWrites[i].pImageInfo));
                 }
             }
 
@@ -69,6 +73,7 @@ namespace Gra_desc {
 
             for (auto &write : descriptorWrites) {
                 delete write.pBufferInfo;
+                delete write.pImageInfo;
             }
         }
     }
@@ -150,9 +155,10 @@ namespace Gra_desc {
         box.uboMem = Gra_Uniform::createUniformBuffers(amount, bindInfos[0].count, bindInfos[0].sizeofUBO); // FIXME
                                                                                         
         std::vector<std::string> texs{};
-        for (int i = 0; i < bindInfos.size(); i++) {
-            if (bindInfos[i].textureName.size() > 0) {
-                texs.emplace_back(bindInfos[i].textureName);
+        for (auto bindInfo : bindInfos) {
+            for (auto tex : bindInfo.textureNames) {
+                assert(tex.size() > 0);
+                texs.emplace_back(tex);
             }
         }
         auto images = Texture::getTexImageViews(texs);                             

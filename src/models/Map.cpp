@@ -24,7 +24,7 @@ void Map::createVisual(int xy) {
             .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
             .bindingNum = 1,
             .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
-            .textureName = "grass.png"
+            .textureNames = {"grass.png"}
             },
             });
     Shaders::m_grassModel.init(count);

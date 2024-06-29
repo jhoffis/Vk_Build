@@ -22,6 +22,7 @@ namespace Raster {
 
     Pipeline createGraphicsPipeline(VkDescriptorSetLayout descriptorSetLayout, const std::string &shaderName) {
         assert(shaderName.size() != 0);
+        // TODO Lag en preprocessor som kan fylle inn ting som %COUNT% elns slik at jeg kan ha "dynamiske" ubo størrelser
         auto vertShaderCode = readFile("res/shaders/compiled/" + shaderName + "_vert.spv");
         auto fragShaderCode = readFile("res/shaders/compiled/" + shaderName + "_frag.spv");
 

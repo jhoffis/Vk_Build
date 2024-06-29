@@ -13,18 +13,19 @@ namespace Villager {
 
     void init() {
         Shaders::m_villModel.box = Gra_desc::createDescriptorBox(1, {
-                    {
+                    Gra_desc::DescriptorBindInfo {
                     .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
                     .bindingNum = 0,
                     .count = 100,
                     .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
                     .sizeofUBO = sizeof(Gra::UniformBufferObject), 
                     },
-                    {
+                    Gra_desc::DescriptorBindInfo {
                     .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
                     .bindingNum = 1,
+                    .count = 2,
                     .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
-                    .textureName = "unit.png"
+                    .textureNames = {"male.png", "female.png"}
                     },
                     });
         Shaders::m_villModel.init(100);
