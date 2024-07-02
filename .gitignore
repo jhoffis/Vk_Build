@@ -7,6 +7,6 @@
 /debug/
 /release/
 /cmake/
-
+/res/shaders/compiled/
 *-autosave.kra
 *~

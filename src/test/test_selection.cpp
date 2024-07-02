@@ -23,6 +23,21 @@ const std::vector<std::function<void()>> m_tests{
 
         },
         []() {
+            Villager::spawn(0, 0, false);
+            Villager::villsWithinBounds(0, 2, 1, 1, true);
+            assert(Villager::m_selectedVills.size() == 0);
+            Villager::villsWithinBounds(0, 0, 1, 1, true);
+            assert(Villager::m_selectedVills.size() == 1);
+            Villager::spawn(1.75f, 1.33, true);
+            Villager::spawn(0.5f, 1, false);
+            Villager::spawn(3, 3, false);
+            Villager::spawn(1.7f, 4.75, true);
+            Villager::villsWithinBounds(0.403101, 0.429371, 0.567183, 0.580965, true);
+            assert(Villager::m_selectedVills.size() == 1);
+            assert(Villager::m_selectedVills[0]->entity->pos.x == 0.375);
+            assert(Villager::m_selectedVills[0]->entity->pos.y == 0.375);
+        },
+        []() {
             auto sqrt0 = MyMath::fast_sqrt(9);
             assert((int) sqrt0 == 3);
             auto sqrt1 = MyMath::fast_sqrt(5434);

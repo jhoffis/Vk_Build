@@ -14,7 +14,9 @@ void main() {
     if (fragTextureIndex == 0) {
         outColor = mix(texture(texSampler[0], fragTexCoord), vec4(fragColor.rgb, 1.), .1);
     } else if (fragTextureIndex == 1) {
-        outColor = mix(texture(texSampler[1], fragTexCoord), vec4(fragColor.rgb, 1.), .1);
+        outColor = mix(texture(texSampler[0], fragTexCoord), vec4(fragColor.rgb, 1.), .1);
     }
 }
-
+/*
+validation layer: Validation Error: [ VUID-VkPipelineLayoutCreateInfo-graphicsPipelineLibrary-06753 ] | MessageID = 0x57ab6143 | vkCreatePipelineLayout(): pCreateInfo->pSetLayouts[0] is VK_NULL_HANDLE, but VK_EXT_graphics_pipeline_library is not enabled. The Vulkan spec states: If graphicsPipelineLibrary is not enabled, elements of pSetLayouts must be valid VkDescriptorSetLayout objects (https://vulkan.lunarg.com/doc/view/1.3.283.0/linux/1.3-extensions/vkspec.html#VUID-VkPipelineLayoutCreateInfo-graphicsPipelineLibrary-06753)
+*/

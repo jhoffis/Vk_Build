@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "timer_util.h"
 #include "path_finding.h"
+#include <iostream>
 
 namespace Villager {
 
@@ -49,6 +50,7 @@ namespace Villager {
                            float x1,
                            float y1,
                            bool store) {
+        std::cout << "Mouse bounds: x0="<<x0<<", y0="<<y0<<", x1="<<x1<<", y1="<<y1<<std::endl;
         std::vector<Vill*> foundVills{};
         auto sizeOfBox = std::abs((x0 - x1) + (y0 - y1));
 
@@ -61,6 +63,7 @@ namespace Villager {
             }
         } else {
             for (unsigned long i = m_vills.size() - 1; i < m_vills.size(); i--) {
+                std::cout << "Entity pos: x="<<m_vills[i].entity->pos.x<<", y="<<m_vills[i].entity->pos.y<<", size: x="<<m_vills[i].entity->size.x<<", y="<<m_vills[i].entity->size.y<<std::endl;
                 if (m_vills[i].entity->isWithin(x0, y0, x1, y1)) {
                     foundVills.emplace_back(&m_vills[i]);
                 }
