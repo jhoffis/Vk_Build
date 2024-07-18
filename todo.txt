@@ -4,6 +4,7 @@ Now:
 - place a house where my mouse is.
 - then hover a see through house and place the house when I left click.
 - ha custom variabler til shaders $asd
+- ha at image descriptors blir valgt ut ifra entity elns. Ha grupper med imgs.
 
 - Xmap coordinates. Spawn based on that. Convert world coordinates <-> map coordinates.
 - Xpathfinding
