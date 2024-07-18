@@ -1,12 +1,15 @@
 
 Now:
+- Look into coordinates, we have mesh world size, map.tilesize, world coor, map coor... Too much too confusing
 - place a house where my mouse is.
 - then hover a see through house and place the house when I left click.
+- ha custom variabler til shaders $asd
 
 - Xmap coordinates. Spawn based on that. Convert world coordinates <-> map coordinates.
 - Xpathfinding
 
 Later:
+- scaling av entities
 - endre til bare en type villager elns
 - type selectable
 - få bare compiling på de som skal compiles

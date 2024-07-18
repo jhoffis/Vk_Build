@@ -51,3 +51,5 @@ Det er Tor som sloss mot "demoner" eller jotner. På samme måte som når metall
 
  Ha memory visualizer som tar memory location og så størrelse på minne og så viser visuelt hvor det er hen i ram minnet?
  Kunne vært kult.
+
+ niche små ting som endrer humør og helse og tørsthet på folk. Folk er sulte, tørste og trøtte osv. Te gir mye slukk mens saltvann kan gjøre en syk.

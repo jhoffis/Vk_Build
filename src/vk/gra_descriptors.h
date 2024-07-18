@@ -16,7 +16,7 @@ namespace Gra_desc {
         const uint32_t bindingNum{};
         const uint32_t count{1};
         const VkShaderStageFlags stageFlags{};
-        const std::vector<std::string> &textureNames{};
+        const std::vector<std::string> textureNames{};
         const uint32_t sizeofUBO{0};
         // const VkDescriptorImageInfo*  pImageInfo;
         // const VkDescriptorBufferInfo* pBufferInfo;
@@ -36,10 +36,13 @@ namespace Gra_desc {
         std::vector<DescriptorSet> sets{};
         VkDescriptorSetLayout layout{};
         Gra_Uniform::UBOMem uboMem{};
+        std::vector<DescriptorBindInfo> bindInfos{};
     };
 
     DescriptorBox createDescriptorBox(const int amount,
                                       const std::vector<DescriptorBindInfo> &bindInfos);
+    DescriptorBox recreateDescriptorBox(const DescriptorBox &box,
+                                        const int amount);
     void destroyDescriptorBox(const DescriptorBox &box);
 
 

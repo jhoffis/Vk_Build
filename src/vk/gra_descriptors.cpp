@@ -118,7 +118,7 @@ namespace Gra_desc {
     DescriptorBox createDescriptorBox(const int amount,
                                       const std::vector<DescriptorBindInfo> &bindInfos) {
         assert(amount > 0);
-        auto box = DescriptorBox{};
+        auto box = DescriptorBox{.bindInfos = bindInfos};
         auto amountWithSwap = 2 * amount; // Dette er amount: auto amount =
                                                                   // MyMath::nextPowerOfTwo(entitiesSize); Men...
                                                                   // why? Hvorfor ikke bare ha mengden entities?
@@ -174,6 +174,14 @@ namespace Gra_desc {
         }
 
         return box;
+    }
+
+    DescriptorBox recreateDescriptorBox(const DescriptorBox &box,
+                                        const int amount) {
+        destroyDescriptorBox(box);
+        auto size = box.bindInfos[0].textureNames.size();
+        auto size2 = box.bindInfos[1].textureNames.size();
+        return createDescriptorBox(amount, box.bindInfos);
     }
 
     void destroyDescriptorBox(const DescriptorBox &box) {

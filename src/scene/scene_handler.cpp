@@ -88,7 +88,10 @@ void SceneHandler::create() {
                                                   vill->entity->pos.y);
           auto target =
               Map::worldToMapCoordinates(SceneData::xWorld, SceneData::yWorld);
+          auto t0 = Timer::nowNanos();
           auto res3 = PathFinder::findPath(start, target, *Map::m_map, OutPath);
+          auto t1 = Timer::nowNanos();
+          Timer::printTimeDiffNanos(t0, t1);
           if (res3) {
             vill->pathIndex = 0;
             PathFinder::convertMapPathToWorldPath(

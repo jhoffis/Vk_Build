@@ -28,7 +28,7 @@ void grassUpdateRenderUbo(Gra_Uniform::UBOMem *uboMem,
 
 std::vector<Model *> m_renderModels{};
 Model Shaders::m_grassModel("grass");
-Model Shaders::m_houseModel("grass");
+Model Shaders::m_houseModel("house");
 /* grassUpdateRenderUbo,
                             {
                                 vert_ubo,
@@ -209,7 +209,7 @@ Model::Model(const std::string &shaderName) : shaderName(std::move(shaderName)) 
 void Model::init(const uint16_t countInstances) {
     cmdBuffer.init();
 
-    auto w = 128;
+    auto w = 128; // FIXME har ingen sammenheng med textureSize
     auto h = 128;
     // TODO maybe support multiple vertex buffers?
     mesh.init(w, h, countInstances);
@@ -225,8 +225,24 @@ void Model::init(const uint16_t countInstances) {
     };
 }
 
+void Model::runRecreateUbo() {
+    auto entitiesSize = static_cast<int>(entities.size());
+    if (entitiesSize <= box.uboMem.amount * box.uboMem.count)
+        return;
+
+    // liste med alle referanser til ubos - bare utvid vector listen med descSets
+    // og så bruk currswapframe for å tegne alle.
+    auto amount = MyMath::nextPowerOfTwo(entitiesSize);
+    if (amount == box.uboMem.amount)
+        return;
+    std::cout << "recreates ubo to size " << amount << std::endl;
+    vkDeviceWaitIdle(Gra::m_device); // TODO maybe replace this
+    box = Gra_desc::recreateDescriptorBox(box, amount);
+}
+
+
 void Model::sort() {
-  std::sort(entities.begin(), entities.end(),
+    std::sort(entities.begin(), entities.end(),
             [](auto a, auto b) { return a->pos.y > b->pos.y; });
 }
 
@@ -234,42 +250,21 @@ void Model::sort() {
 std::shared_ptr<Entity> Model::spawn(Vec2 mapPos, std::string texture) {
     mapPos = Map::mapToWorldCoordinates(mapPos);
 
-    auto entity = std::make_shared<Entity>(Entity{.pos = {mapPos.x, mapPos.y, 0},
-            .size = {1, 1}, // FIXME
-            .sprite = {texture}});
+    auto entity = std::make_shared<Entity>(
+            Entity{
+            .pos = {mapPos.x, mapPos.y, 0},
+            .mesh = &mesh,
+            .sprite = {texture}
+            });
     entities.emplace_back(entity); // TODO
     return entity;
 }
-/*
-void Model::runRecreateUbo() {
-  // liste med alle referanser til ubos - bare utvid vector listen med descSets
-  // og så bruk currswapframe for å tegne alle.
-  auto entitiesSize = static_cast<int>(entities.size());
-  auto amount = MyMath::nextPowerOfTwo(entitiesSize);
-  if (amount == uboMem.amount)
-    return;
-  std::cout << "recreates ubo to size " << amount << std::endl;
-  auto t0 = Timer::nowNanos();
-  vkDeviceWaitIdle(Gra::m_device); // TODO maybe replace this
-  auto t1 = Timer::nowNanos();
-  vkDestroyDescriptorPool(Gra::m_device, pool, nullptr);
-  auto t2 = Timer::nowNanos();
-  pool = Gra_desc::createDescriptorPool( Gra::MAX_FRAMES_IN_FLIGHT *amount);
-  auto t3 = Timer::nowNanos();
-  uboMem.destroy();
-  auto t4 = Timer::nowNanos();
-  uboMem = Gra_Uniform::createUniformBuffers(amount, uboMem.range);
-  auto t5 = Timer::nowNanos();
-  descriptorSets = createDescriptorSets();
-  auto t6 = Timer::nowNanos();
-  Timer::printTimeDiffNanos(t0, t1);
-  Timer::printTimeDiffNanos(t0, t2);
-  Timer::printTimeDiffNanos(t0, t3);
-  Timer::printTimeDiffNanos(t0, t4);
-  Timer::printTimeDiffNanos(t0, t5);
-  Timer::printTimeDiffNanos(t0, t6);
+
+void Model::spawn(const std::shared_ptr<Entity> &entity) {
+    entities.emplace_back(entity);
 }
-*/
+
+
 VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     if (queueRecreateUboBuffer) {
         queueRecreateUboBuffer = false;
@@ -277,11 +272,12 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
     }
     if (entities.size() == 0)
         return nullptr;
+    runRecreateUbo();
     auto n = 0;
     for (auto i = 0; i < entities.size(); i += box.uboMem.count) {
         initRenderUbo(&box.uboMem);
         auto uboIndex = 0;
-        for (int a = 0; uboIndex < box.uboMem.count && a < entities.size(); a++) {
+        for (int a = i; uboIndex < box.uboMem.count && a < entities.size(); a++) {
             auto entity = entities[a];
             if (!entity->visible)
                 continue;
@@ -304,7 +300,7 @@ VkCommandBuffer Model::renderMeshes(uint32_t imageIndex) {
 
     auto cmd = cmdBuffer.commandBuffers[Drawing::currSwapFrame];
     vkResetCommandBuffer(cmd, 0);
-    Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, box.sets, entities.size());
+    Gra::recordCommandBuffer(cmd, imageIndex, mesh, pipeline, box.sets, entities.size(), box.uboMem);
 
     return cmd;
 }

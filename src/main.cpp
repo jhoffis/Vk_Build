@@ -1,3 +1,4 @@
+#include "models/Building.h"
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -39,6 +40,7 @@ int main() {
     SceneHandler::create();
     SelectionBox::init();
     Villager::init();
+    Building::init();
     Timer::updateDelta();
 #ifdef RMDEV
     watchDir();

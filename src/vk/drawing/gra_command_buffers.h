@@ -26,6 +26,7 @@ namespace Gra {
                              const Mesh2D& mesh,
                              const Raster::Pipeline& pipe,
                              std::vector<Gra_desc::DescriptorSet> &descriptorSets,
-                             uint32_t entityCount);
+                             uint32_t entityCount,
+                             const Gra_Uniform::UBOMem uboMem);
 
 }

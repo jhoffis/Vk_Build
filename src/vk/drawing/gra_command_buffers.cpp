@@ -1,6 +1,7 @@
 //
 // Created by jh on 8/31/2022.
 //
+#include <cassert>
 #include <stdexcept>
 
 #include "gra_command_buffers.h"
@@ -71,7 +72,8 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer,
                          const Mesh2D &mesh, 
                          const Raster::Pipeline &pipe,
                          std::vector<Gra_desc::DescriptorSet> &descriptorSets,
-                         uint32_t entityCount) {
+                         uint32_t entityCount,
+                         const Gra_Uniform::UBOMem uboMem) {
 
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -99,17 +101,23 @@ void recordCommandBuffer(VkCommandBuffer commandBuffer,
         // for (auto i = Drawing::currSwapFrame; i < descriptorSets.size(); i += 2) {
         //     descSet.emplace_back(descriptorSets[i]);
         // }
+        auto descN = 0;
+        while (entityCount > 0) {
+            auto drawCount = entityCount > uboMem.count ? uboMem.count : entityCount;
+            entityCount -= drawCount;
+            vkCmdBindDescriptorSets(commandBuffer, 
+                    VK_PIPELINE_BIND_POINT_GRAPHICS,
+                    pipe.pipelineLayout, // inneholder descriptor layout
+                    0, 
+                    1,
+                    &descriptorSets[descN].sets[Drawing::currSwapFrame], // inneholder uniformbuffer ref
+                    0, 
+                    nullptr);
 
-        vkCmdBindDescriptorSets(commandBuffer, 
-                                VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                pipe.pipelineLayout, // inneholder descriptor layout
-                                0, 
-                                1,
-                                &descriptorSets[0].sets[Drawing::currSwapFrame], // inneholder uniformbuffer ref
-                                0, 
-                                nullptr);
-
-        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(6), entityCount, 0, 0, 0); // descSet.size(), 0, 0, 0);
+            assert(drawCount <= uboMem.count);
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(6), drawCount, 0, 0, 0); // descSet.size(), 0, 0, 0);
+            descN++;                                                                                            
+        }                                                                                        
     }
     vkCmdEndRenderPass(commandBuffer);
 

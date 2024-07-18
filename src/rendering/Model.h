@@ -59,12 +59,14 @@ struct Model {
     std::function<void(Gra_Uniform::UBOMem*)> initRenderUbo{};
 
     Model(const std::string &shaderName);
-
     void init(const uint16_t countInstances);
+
+    void runRecreateUbo();
     void createPipeline();
     VkCommandBuffer renderMeshes(uint32_t imageIndex);
     void sort();
     std::shared_ptr<Entity> spawn(Vec2 mapPos, std::string texture);
+    void spawn(const std::shared_ptr<Entity> &entity);
     void removeEntity(const std::shared_ptr<Entity>&  sharedPtr);
     void destroy();
 };
