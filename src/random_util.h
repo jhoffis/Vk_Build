@@ -1,6 +1,6 @@
 #pragma once
 
-#include <random>
+#include <cstdint>
 #include <limits.h>
 
 namespace RandomUtil {
