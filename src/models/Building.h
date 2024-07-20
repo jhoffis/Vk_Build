@@ -4,11 +4,23 @@
 #include "math/Vec3.h"
 namespace Building {
 
+    enum BuildingType {
+        house, mill, COUNT
+    };
+
     struct HouseUBO {
         alignas(16) Vec3 pos;
         alignas(4) float aspect{};
         alignas(4) int selected;
         alignas(8) Vec2 dimensions;
+    };
+
+    struct BuildingStats {
+        BuildingType type{};
+    };
+
+    struct BuildingTypeInfo {
+        Vec2 dimensions{};
     };
 
     void init();

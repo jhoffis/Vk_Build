@@ -39,4 +39,5 @@ struct Vec2 {
         x /= magn;
         y /= magn;
     }
+
 };

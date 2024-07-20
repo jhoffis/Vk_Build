@@ -27,10 +27,17 @@ void Map::createVisual(int xy) {
             .textureNames = {"grass.png"}
             },
             });
-    Shaders::m_grassModel.init(count);
+    
+    auto img = Texture::loadImage("grass.png");
+    Shaders::m_grassModel.init(count, img.w, img.h);
     for (auto x = 0; x < xy; x++) {
         for (auto y = 0; y < xy; y++) {
-            Shaders::m_grassModel.spawn({static_cast<float>(x), static_cast<float>(y)}, "grass.png");
+            float X = static_cast<float>(x); 
+            float Y = static_cast<float>(y); 
+            Shaders::m_grassModel.spawn({
+                    (X - Y) * .5f*static_cast<float>(img.w) / 128.0f,
+                    (X + Y) * .5f*static_cast<float>(img.h) / 128.0f},
+                    "grass.png");
         }
     }
 }

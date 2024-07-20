@@ -1,13 +1,14 @@
 
 Now:
-- Look into coordinates, we have mesh world size, map.tilesize, world coor, map coor... Too much too confusing
-- then hover a see through house and place the house when I left click.
-- ha custom variabler til shaders $asd
-- ha at image descriptors blir valgt ut ifra entity elns. Ha grupper med imgs.
-- riktig størrelse på mesh, mer dynamisk ved at bygning kan ha 2x2 og 3x3 bygninger.
+- Forskjellige sprites, male and female, red and blue house. Ha at image descriptors blir valgt ut ifra entity elns. Ha grupper med imgs.
+- see-through house
 - isometrisk map
+ -> Look into coordinates, we have mesh world size, map.tilesize, world coor, map coor... Too much too confusing
+- ha custom variabler til shaders $asd
+- riktig størrelse på mesh, mer dynamisk ved at bygning kan ha 2x2 og 3x3 bygninger.
 - ha at sprite størrelse og plassering ikke er lik map plassering, altså at bygninger kan ha sprite over øverste map y nivå.
-
+- fiks det at man må bruke for loop på shaderen!
+- blokker mer alle x*y tilesa som en bygning står på, så mer enn 1 og fire
 
 ====== DONE ======
 X få selectionbox til å fange units
