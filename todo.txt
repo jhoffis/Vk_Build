@@ -18,6 +18,7 @@ X map coordinates. Spawn based on that. Convert world coordinates <-> map coordi
 X pathfinding
 X riktig størrelse på mesh.
 X rydd opp i villager og vill
+X grid plassering av bygninger.
 
 
 Later:

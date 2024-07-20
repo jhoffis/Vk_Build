@@ -6,6 +6,7 @@
 #include <vector>
 
 struct Entity {
+    uint32_t id{};
     Vec3 pos{};
     Vec2 scale{1, 1}; // TODO make work
     Mesh2D* mesh{};
