@@ -59,7 +59,7 @@ struct Model {
     std::function<void(Gra_Uniform::UBOMem*)> initRenderUbo{};
 
     Model(const std::string &shaderName);
-    void init(const uint16_t countInstances);
+    void init(const uint16_t countInstances, const int w = 128, const int h = 128);
 
     void runRecreateUbo();
     void createPipeline();

@@ -1,6 +1,8 @@
 #include "Building.h"
+#include "camera.h"
 #include "rendering/Model.h"
 #include "models/Map.h"
+#include "vk/presentation/gra_swap_chain.h"
 #include <cstdint>
 
 namespace Building {
@@ -24,7 +26,21 @@ namespace Building {
                 .textureNames = {"house.png"}
                 },
                 });
+
+        // auto img = Texture::loadImage("house.png");
         Shaders::m_houseModel.init(count);
+        Shaders::m_houseModel.updateRenderUbo = [](auto uboMem, auto entity, auto index) {
+            static_cast<HouseUBO*>(uboMem->uboStruct)[index] = {
+                .pos = entity->pos - Camera::m_cam.pos,
+                .aspect = Gra::m_swapChainAspectRatio,
+                .selected = entity->selected,
+                .dimensions = {3,2}
+            };
+        };
+        Shaders::m_houseModel.initRenderUbo = [](auto uboMem) {
+            delete static_cast<HouseUBO *>(uboMem->uboStruct);
+            uboMem->uboStruct = new HouseUBO[uboMem->count];
+        };
     }
 
     void startHovering(int i, float wX, float wY) {

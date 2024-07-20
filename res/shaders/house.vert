@@ -4,6 +4,7 @@ layout(binding = 0) uniform UniformBufferObject {
     vec3 pos;
     float aspect;
     int selected;
+    vec2 dimensions;
 } ubo[1];
 
 layout(location = 0) in vec3 inPosition;
@@ -22,9 +23,20 @@ vec3 pos(int n)
     return ubo[index].pos;
 }
 
+vec2 dimensions(int n)
+{
+    int index = n;
+	for (int i = 0; i < ubo.length(); i++) {
+		if (i == index) return ubo[index].dimensions;
+	}
+    return ubo[index].dimensions;
+}
+
 
 void main() {
     gl_Position = vec4(inPosition.x, inPosition.yz, 1.0);// ubo.proj * ubo.view * ubo.model * vec4(inPosition, 1.0);
+    gl_Position.x *= dimensions(gl_InstanceIndex).x;
+    gl_Position.y *= dimensions(gl_InstanceIndex).y;
     gl_Position.x += pos(gl_InstanceIndex).x;
     gl_Position.y += -pos(gl_InstanceIndex).y;
     gl_Position.x /= ubo[0].aspect;
@@ -32,6 +44,7 @@ void main() {
     gl_Position.y *= 2.;
     gl_Position.x -= 1.;
     gl_Position.y += 1.;
+
 
   //  fragColor.r = pos(gl_InstanceIndex).z*.005*ubo.pos.y;
    // fragColor.r = .5*ubo.pos.y + .1;

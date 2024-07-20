@@ -73,8 +73,6 @@ add_executable(${PROJECT_NAME}
         src/game/vills/Maleness.h
         src/game/vills/Femaleness.cpp
         src/game/vills/Femaleness.h
-        src/game/vills/Vill.cpp
-        src/game/vills/Vill.h
         src/timer_util.cpp
         src/timer_util.h
         src/game/vills/Bodyparts.cpp src/game/vills/Bodyparts.h

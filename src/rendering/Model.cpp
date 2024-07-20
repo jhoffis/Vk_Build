@@ -206,11 +206,11 @@ Model::Model(const std::string &shaderName) : shaderName(std::move(shaderName)) 
   m_renderModels.emplace_back(this);
 }
 
-void Model::init(const uint16_t countInstances) {
+void Model::init(const uint16_t countInstances, const int w, const int h) {
     cmdBuffer.init();
 
-    auto w = 128; // FIXME har ingen sammenheng med textureSize
-    auto h = 128;
+    // auto w = 128; // FIXME har ingen sammenheng med textureSize
+    // auto h = 128;
     // TODO maybe support multiple vertex buffers?
     mesh.init(w, h, countInstances);
     Gra::createVertexBuffer(&mesh);

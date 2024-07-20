@@ -29,7 +29,8 @@ namespace Villager {
                     .textureNames = {"male.png", "female.png"}
                     },
                     });
-        Shaders::m_villModel.init(100);
+        auto img = Texture::loadImage("male.png");
+        Shaders::m_villModel.init(100, img.w, img.h);
     }
 
     void spawn(float x, float y, bool male) {
