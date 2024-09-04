@@ -1,8 +1,12 @@
 #include "Map.h"
 #include "rendering/Model.h"
 #include "shaders/Shaders.h"
+#include <iostream>
 
 std::shared_ptr<Map::Map> Map::m_map{};
+
+float mapImgW{};
+float mapImgH{};
 
 void Map::createMap(int xy) {
     m_map = std::make_shared<Map>(Map{.xy = xy});
@@ -29,14 +33,17 @@ void Map::createVisual(int xy) {
             });
     
     auto img = Texture::loadImage("grass.png");
+    mapImgW = img.w;
+    mapImgH = img.h;
     Shaders::m_grassModel.init(count, img.w, img.h);
+    std::cout << "iw: " << img.w << std::endl;
+    std::cout << "ih: " << img.h << std::endl;
     for (auto x = 0; x < xy; x++) {
         for (auto y = 0; y < xy; y++) {
             float X = static_cast<float>(x); 
             float Y = static_cast<float>(y); 
-            Shaders::m_grassModel.spawn({
-                    (X - Y) * .5f*static_cast<float>(img.w) / 128.0f,
-                    (X + Y) * .5f*static_cast<float>(img.h) / 128.0f},
+            Shaders::m_grassModel.spawn(
+                    isometricCoor(X, Y),
                     "grass.png");
         }
     }
@@ -44,6 +51,10 @@ void Map::createVisual(int xy) {
 
 void Map::destroy() {
     Shaders::m_grassModel.destroy();
+}
+
+Vec2 Map::isometricCoor(float x, float y) {
+    return {(x - y) * .5f, (x + y) * .5f*mapImgH / mapImgW};
 }
 
 Vec2 Map::worldToMapCoordinates(double x, double y) {
@@ -63,10 +74,14 @@ Vec2 Map::mapToWorldCoordinates(Vec2 vec2) {
 }
 
 Vec2 Map::Map::indexToWorld(int i) const {
-    return Vec2(
-            static_cast<float>(i % xy) * tileSize,
-            static_cast<float>(i / xy) * tileSize
-    );
+    auto pos = isometricCoor(std::floor(i % xy), std::floor(static_cast<float>(i) / xy));
+    pos.x *= tileSize;
+    pos.y *= tileSize;
+    return pos;
+    // return Vec2(
+            // static_cast<float>(i % xy) * tileSize,
+    //         static_cast<float>(i / xy) * tileSize
+    // );
 }
 
 int Map::Map::mapCoorToIndex(Vec2 vec2) {

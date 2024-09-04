@@ -21,6 +21,7 @@ namespace Map {
     };
     extern std::shared_ptr<Map> m_map;
 
+    Vec2 isometricCoor(float x, float y);
     Vec2 worldToMapCoordinates(double x, double y);
     Vec2 worldToMapCoorFloor(double x, double y);
     Vec2 worldToMapCoordinates(Vec2 vec2);
