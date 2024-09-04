@@ -23,8 +23,7 @@ namespace SelectionBox {
                     .sizeofUBO = sizeof(SelectionBoxUBO), 
                     },
                     });
-        Shaders::m_selectionBoxModel.init(
-                1);
+        Shaders::m_selectionBoxModel.init(1);
         Shaders::m_selectionBoxModel.updateRenderUbo = 
             [](auto uboMem, auto entity, auto index) {
                 SelectionBox::m_ubo.aspect = Gra::m_swapChainAspectRatio;

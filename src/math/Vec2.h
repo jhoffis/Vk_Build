@@ -21,11 +21,11 @@ struct Vec2 {
         y *= other;
     }
 
-    constexpr bool operator>(const Vec2& other) const {
+    bool operator>(const Vec2& other) const {
         return (std::abs(x)+std::abs(y)) > (std::abs(other.x)+std::abs(other.y));
     }
 
-    constexpr bool operator==(const Vec2& other) const {
+    bool operator==(const Vec2& other) const {
         return x==other.x && y==other.y;
     }
 

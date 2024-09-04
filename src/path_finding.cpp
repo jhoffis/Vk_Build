@@ -120,7 +120,7 @@ std::vector<Vec2> PathFinder::getLineTilesDDA(Vec2 start, Vec2 end) {
     auto dx = x1 - x0;
     auto dy = y1 - y0;
 
-    auto steps = MyMath::max(std::abs(dx), std::abs(dy));
+    auto steps = MyMath::maximum(std::abs(dx), std::abs(dy));
 
     auto xIncrement = dx / steps;
     auto yIncrement = dy / steps;

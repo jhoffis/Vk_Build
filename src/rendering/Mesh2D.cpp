@@ -24,8 +24,8 @@ void Mesh2D::init(float width, float height, uint32_t numInstances) {
     for (uint32_t i = 0; i < numInstances; i++) {
         instanceData[i] = InstanceData{.index = i};
     }
-    instanceData[0].pos = {0, 0};
-    instanceData[1].pos = {1, 1};
+    instanceData[0].pos = {0, 0}; 
+    //instanceData[1].pos = {1, 1}; // FIXME something is COMPLETELY off with this one. Why is it going after instance number? Like for instance therer is only one instance of selection box
     
 
 }

@@ -32,9 +32,9 @@ constexpr int abs(int x) {
   return (x ^ y) - y;
 }
 
-constexpr auto min(auto a, auto b) { return a < b ? a : b; }
+constexpr auto minimum(auto a, auto b) { return a < b ? a : b; }
 
-constexpr auto max(auto a, auto b) { return a > b ? a : b; }
+constexpr auto maximum(auto a, auto b) { return a > b ? a : b; }
 
 constexpr int nextPowerOfTwo(int n) {
   n = (n <= 0) ? 1 : n;

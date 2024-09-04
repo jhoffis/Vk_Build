@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <Windows.h>
 
 
 std::string getFilename(const std::string &path) {
@@ -14,7 +15,7 @@ std::string getFilename(const std::string &path) {
     auto backslashIndex = path.find_last_of('\\');
     if (backslashIndex == std::string::npos) backslashIndex = 0;
 
-    return path.substr(MyMath::max(slashIndex, backslashIndex) + 1);
+    return path.substr(MyMath::maximum(slashIndex, backslashIndex) + 1);
 }
 
 std::vector<char> readFile(const std::string &filename) {

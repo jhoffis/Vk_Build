@@ -242,8 +242,9 @@ void Model::runRecreateUbo() {
 
 
 void Model::sort() {
-    std::sort(entities.begin(), entities.end(),
-            [](auto a, auto b) { return a->pos.y > b->pos.y; });
+    // FIXME Windows Visual studio does not like this... 
+    // std::sort(entities.begin(), entities.end(),
+    //        [](auto a, auto b) { return a->pos.y > b->pos.y; });
 }
 
 

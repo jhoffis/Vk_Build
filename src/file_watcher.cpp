@@ -17,6 +17,7 @@ struct FolderParams {
 std::vector<FolderParams *> folderParamsThreads{};
 
 #include <thread>
+#include <iostream>
 
 #ifdef _WIN32
 std::vector<HANDLE> folderWatcherThreads{};
@@ -81,11 +82,15 @@ void createFolderWatcher(FolderParams *params) {
 
 
 void watchDir() {
+#if _MSC_VER
+                const static std::string path = "../../../res/shaders";
+#else
+                const static std::string path = "../res/shaders";
+#endif
     createFolderWatcher(new FolderParams{
-            "../res/shaders",
+            path.c_str(),
             []() {
                 auto timeCompare = Timer::nowMillisFile() - 5000;
-                std::string path = "../res/shaders";
                 bool found = false;
                 for (const auto &entry: std::filesystem::directory_iterator(path)) {
                     auto entryPath = entry.path().string();
