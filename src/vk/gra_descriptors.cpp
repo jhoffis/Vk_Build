@@ -38,9 +38,10 @@ namespace Gra_desc {
                 if (bindInfos[i].type == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER) { // FIXME støtt flere typer!
                     std::vector<VkDescriptorBufferInfo> uboBufferInfos(count);
                     for (int a = 0; a < count; a++) {
+
                         uboBufferInfos[a] = VkDescriptorBufferInfo{
-                            .buffer = uboMem.uniformBuffers[swapIndex], 
-                            .offset = uboMem.offset * bufferIndex + uboMem.range * a,
+                            .buffer = uboMem.uniformBuffers[swapIndex],
+                            .offset = uboMem.offset * bufferIndex + uboMem.range* a,
                             .range  = uboMem.range,
                         };
                     }

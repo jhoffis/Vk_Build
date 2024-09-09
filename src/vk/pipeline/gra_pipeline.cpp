@@ -16,7 +16,9 @@
 #include <stdlib.h>
 #include <filesystem>
 
-
+std::unordered_map<const char*, const char*> shaderVariables{
+    {"num", "3"}
+};
 
 namespace Raster {
 
@@ -181,7 +183,7 @@ namespace Raster {
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipelineLayoutInfo.setLayoutCount = 4;
+        pipelineLayoutInfo.setLayoutCount = 4; // TODO What the hell is this for and why does it MULTIPLY the number of ubo instances in one cmd?
         pipelineLayoutInfo.pSetLayouts = layoutsTemp;
         pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
         pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
@@ -240,7 +242,9 @@ namespace Raster {
     void compilePipelines(bool recreate) {
         // TODO this method leaks 0.2 MB data.
         const auto compiledFolder = "res/shaders/compiled/";
+        const auto prepareCompileFolder = "res/shaders/prepare/";
         makeSureDirExists(compiledFolder);
+        makeSureDirExists(prepareCompileFolder);
         for (const auto &entry: std::filesystem::directory_iterator("res/shaders")) {
             auto path = entry.path().string();
             bool vert = path.ends_with(".vert");
@@ -249,12 +253,54 @@ namespace Raster {
                 continue;
             }
 
-            auto newPath = getFilename(path);
-            newPath.erase(newPath.size() - 5);
-	    if (newPath.find("res/shaders/") != std::string::npos) {
-		    newPath.erase(0, 12);
-	    }
-            newPath = compiledFolder + newPath + (vert ? "_vert.spv" : "_frag.spv");
+            auto cleanName = getFilename(path);
+            cleanName.erase(cleanName.size() - 5);
+	        if (cleanName.find("res/shaders/") != std::string::npos) {
+                cleanName.erase(0, 12);
+	        }
+            auto newPath = compiledFolder + cleanName + (vert ? "_vert.spv" : "_frag.spv");
+            auto preparePath = prepareCompileFolder + cleanName + (vert ? ".vert" : ".frag");
+
+            // copy contents but replace variables
+            auto content = readFile(path);
+            boolean found = false;
+            std::string variableName{};
+            std::string newFile{};
+            for (auto c : content) {
+                if (found) {
+                    if (c < 'A' || c > 'z' || (c > 'Z' && c < 'a')) {
+                        // end variable
+                        found = false;
+                        bool foundVariable{};
+                        for (auto varPair : shaderVariables) {
+                            if (varPair.first == variableName) {
+                                foundVariable = true;
+                                newFile += varPair.second;
+                                break;
+                            }
+                        }
+                        if (!foundVariable) {
+                            std::cerr << "Could not find variable $" << variableName << std::endl;
+                            assert(false);
+                        }
+                    }
+                    else {
+                        variableName += c;
+                        continue;
+                    }
+                }
+
+                if (c == '$') {
+                    variableName = "";
+                    found = true;
+                    continue;
+                }
+
+                newFile += c;
+            }
+            path = preparePath;
+            writeFile(path, newFile);
+
 #ifdef _WIN32
             runExecutable(std::format(
                     R"({}/Bin/glslc.exe {} -o {})",

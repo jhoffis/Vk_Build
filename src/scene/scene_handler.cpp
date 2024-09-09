@@ -18,7 +18,7 @@ static size_t y = 0;
 
 void SceneHandler::create() {
 
-    Map::createMap(15);
+    //Map::createMap(2);
 
     glfwSetKeyCallback(Window::m_window, [](auto window, auto key, auto scancode,
                 auto action, auto mods) {
@@ -147,11 +147,11 @@ void SceneHandler::create() {
     //        z: " << Camera::m_cam.pos.z << std::endl;
     //    });
 
-    Map::createVisual(Map::m_map->xy);
-    Villager::spawn(1.75f, 1.33, true);
-    Villager::spawn(0.5f, 1, false);
+    // Map::createVisual(Map::m_map->xy);
+    //Villager::spawn(1.75f, 1.33, true);
+    // Villager::spawn(0.5f, 1, false);
     Villager::spawn(3, 3, false);
-    Villager::spawn(1.7f, 4.75, true);
+    // Villager::spawn(1.7f, 4.75, true);
     // Villager::spawn(0, 0, true);
     // Villager::spawn(0, 0, false);
     //

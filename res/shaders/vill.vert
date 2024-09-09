@@ -7,7 +7,7 @@ layout(binding = 0) uniform UniformBufferObject {
 //    mat4 model;
 //    mat4 view;
 //    mat4 proj;
-} ubo[100];
+} ubo[$num];
 
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inColor;

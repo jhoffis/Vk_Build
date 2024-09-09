@@ -17,7 +17,7 @@ namespace Villager {
                     Gra_desc::DescriptorBindInfo {
                     .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
                     .bindingNum = 0,
-                    .count = 100,
+                    .count = 3, // TODO $ val in shaders!
                     .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
                     .sizeofUBO = sizeof(Gra::UniformBufferObject), 
                     },
@@ -30,7 +30,7 @@ namespace Villager {
                     },
                     });
         auto img = Texture::loadImage("male.png");
-        Shaders::m_villModel.init(100, img.w, img.h);
+        Shaders::m_villModel.init(3, img.w, img.h); // TODO $ val in shaders!
     }
 
     void spawn(float x, float y, bool male) {

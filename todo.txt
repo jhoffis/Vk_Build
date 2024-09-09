@@ -5,6 +5,8 @@ Now:
 - isometrisk map
  -> Look into coordinates, we have mesh world size, map.tilesize, world coor, map coor... Too much too confusing
 - ha custom variabler til shaders $asd
+  burde være et system for å sjekke på maxPerStageDescriptorUniformBuffers
+  se gra_pipeline.cpp
 - riktig størrelse på mesh, mer dynamisk ved at bygning kan ha 2x2 og 3x3 bygninger.
 - ha at sprite størrelse og plassering ikke er lik map plassering, altså at bygninger kan ha sprite over øverste map y nivå.
 - fiks det at man må bruke for loop på shaderen!

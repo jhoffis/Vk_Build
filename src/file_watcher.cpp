@@ -92,7 +92,7 @@ void watchDir() {
             []() {
                 auto timeCompare = Timer::nowMillisFile() - 5000;
                 bool found = false;
-                for (const auto &entry: std::filesystem::directory_iterator(path)) {
+                for (const auto& entry : std::filesystem::directory_iterator(path)) {
                     auto entryPath = entry.path().string();
                     if (!(entryPath.ends_with(".vert") || entryPath.ends_with(".frag"))) {
                         continue;
@@ -106,6 +106,7 @@ void watchDir() {
                     if (std::filesystem::exists(newPath)) {
                         std::filesystem::remove(newPath);
                     }
+                    
                     std::filesystem::copy(entryPath, newPath);
                 }
                 if (found)

@@ -36,6 +36,15 @@ std::vector<char> readFile(const std::string &filename) {
     return buffer;
 }
 
+void writeFile(const std::string& filename, const std::string &content) {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        throw std::runtime_error("failed to open file: " + filename);
+    }
+    file << content;
+    file.close();
+}
+
 void makeSureDirExists(const char *folder) {
     if (!std::filesystem::exists(folder)) {
         std::filesystem::create_directory(folder);

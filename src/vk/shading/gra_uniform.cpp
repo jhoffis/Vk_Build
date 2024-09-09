@@ -19,6 +19,11 @@ namespace Gra_Uniform {
 
     UBOMem createUniformBuffers(uint32_t amount, uint32_t count, uint32_t sizeOfUBO) {
         // TODO make custom shit, hmmm vel du kan basere deg på en size av en struct som har endret størrelse da! Lag en struct med en vector med components kanskje?
+
+        if (sizeOfUBO < Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment) {
+            sizeOfUBO = static_cast<int>(Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment);
+        }
+
         auto singleSize = count * sizeOfUBO; 
         auto offset = 0u; 
         if (singleSize <= Gra::m_deviceProperties.limits.minUniformBufferOffsetAlignment) {
